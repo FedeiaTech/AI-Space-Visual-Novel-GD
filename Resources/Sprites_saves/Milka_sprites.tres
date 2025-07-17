@@ -1,0 +1,29 @@
+[gd_resource type="SpriteFrames" load_steps=2 format=3 uid="uid://dqwvo4vp6ttya"]
+
+[ext_resource type="Texture2D" uid="uid://divbiroffix5b" path="res://Assets/Milka/Idle/milka_idle.png" id="1_hboqn"]
+
+[resource]
+animations = [{
+"frames": [],
+"loop": true,
+"name": &"happy-idle",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"happy-talking",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_hboqn")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"talking",
+"speed": 5.0
+}]

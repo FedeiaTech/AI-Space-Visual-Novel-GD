@@ -1,0 +1,98 @@
+[gd_scene load_steps=5 format=3 uid="uid://t00wn4dwmk2q"]
+
+[ext_resource type="Script" uid="uid://b84251mbmxnt0" path="res://Scripts/dialog_ui.gd" id="1_oixmp"]
+[ext_resource type="Script" uid="uid://c1mxqje3axf07" path="res://Scripts/text_blip_sound.gd" id="2_dy63b"]
+[ext_resource type="PackedScene" uid="uid://bsqoddjcxp3nn" path="res://Scenes/player_choice.tscn" id="3_kymi5"]
+[ext_resource type="Theme" uid="uid://b6ifxrvymt2nj" path="res://Resources/Text_format/dialogue_text.tres" id="3_yqatb"]
+
+[node name="DialogUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_oixmp")
+
+[node name="SentencePauseTimer" type="Timer" parent="."]
+unique_name_in_owner = true
+wait_time = 0.328
+one_shot = true
+
+[node name="TextBlipTimer" type="Timer" parent="."]
+unique_name_in_owner = true
+wait_time = 0.052
+
+[node name="TextBlipSound" type="AudioStreamPlayer" parent="."]
+script = ExtResource("2_dy63b")
+
+[node name="ChoicesContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ChoiceList" type="VBoxContainer" parent="ChoicesContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 43
+
+[node name="Button" parent="ChoicesContainer/ChoiceList" instance=ExtResource("3_kymi5")]
+visible = false
+layout_mode = 2
+
+[node name="DialogBox" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -100.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="DialogLine" type="RichTextLabel" parent="DialogBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("3_yqatb")
+bbcode_enabled = true
+text = "Dialogo de texto [wave] movil [/wave]
+Ahora a [shake] bailar [/shake]"
+scroll_active = false
+
+[node name="SpakerBox" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(300, 50)
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -240.0
+offset_right = 175.0
+offset_bottom = -200.0
+grow_vertical = 0
+
+[node name="SpeakerName" type="Label" parent="SpakerBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Name"
+horizontal_alignment = 1
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -40.0
+offset_top = -40.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="triangleNext" type="Polygon2D" parent="Control"]
+position = Vector2(-24, -22)
+polygon = PackedVector2Array(0, 0, 40, 20, 0, 40)

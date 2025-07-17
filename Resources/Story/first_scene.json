@@ -1,0 +1,12 @@
+[
+	{"location": "spaceship_room", "music": "track01"},
+	
+	{"speaker": "Astro", "text": "Hola de nuevo..."},
+	{"speaker": "Astro", "text": "Tengo algo que contarles"},
+	{"speaker": "Astro", "text": "Ahora tengo expresiones nuevas", "expression": "happy"},
+	{"speaker": "Milka", "text": "Hey. No sos el único", "show_character": "Astro", "expression":"happy"},
+	{"speaker": "Astro", "text": "¿Cómo hiciste eso?", "expression": "excited"},
+	{"speaker": "Milka", "text": "No puedo decirte", "expression": "happy"},
+	
+	{"next_scene": "", "transition": "fade"}
+]

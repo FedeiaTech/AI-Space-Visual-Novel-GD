@@ -1,0 +1,85 @@
+[gd_resource type="SpriteFrames" load_steps=4 format=3 uid="uid://clw31hlnrdecy"]
+
+[ext_resource type="Texture2D" uid="uid://duklv55jtvnmk" path="res://Assets/Astro/Idle/Astro.png" id="1_lpw28"]
+[ext_resource type="Texture2D" uid="uid://dvfyry3oamr2x" path="res://Assets/Astro/Idle/Astro_idle2.png" id="2_pphee"]
+[ext_resource type="Texture2D" uid="uid://ctradncjp61bm" path="res://Assets/Astro/Talking/Astro_talking1.png" id="3_kykoa"]
+
+[resource]
+animations = [{
+"frames": [],
+"loop": true,
+"name": &"angry-idle",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"excited-idle",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"excited-talking",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"happy-idle",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"happy-talking",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 8.0,
+"texture": ExtResource("1_lpw28")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_pphee")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"pondering-talking",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"sad-idle",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"sad-talking",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"scared",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"scared-talking",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 0.5,
+"texture": ExtResource("3_kykoa")
+}, {
+"duration": 0.5,
+"texture": ExtResource("1_lpw28")
+}],
+"loop": true,
+"name": &"talking",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"worried-idle",
+"speed": 5.0
+}]

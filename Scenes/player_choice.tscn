@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://bsqoddjcxp3nn"]
+
+[ext_resource type="Theme" uid="uid://c7kebt85foo2f" path="res://Resources/Text_format/opton_choice_button.tres" id="1_krtt2"]
+
+[node name="Button" type="Button"]
+custom_minimum_size = Vector2(700, 50)
+theme = ExtResource("1_krtt2")
+text = "Primer opción"

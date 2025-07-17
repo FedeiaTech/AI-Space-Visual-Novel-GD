@@ -1,0 +1,22 @@
+# Godot-specific ignores
+.gdignore
+.import/
+*.import
+export/
+export_presets.cfg
+*.translation
+
+# Godot 4 specific:
+.godot/
+
+# Editor specific (optional, depending on your setup)
+.vs/
+build/
+bin/
+
+# Crash dumps (optional)
+*.dmp
+
+# Temporary / Cache files (optional, can be useful for debugging some issues)
+tmp/
+temp/

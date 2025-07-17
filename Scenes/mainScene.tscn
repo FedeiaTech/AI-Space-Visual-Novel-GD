@@ -1,0 +1,54 @@
+[gd_scene load_steps=6 format=3 uid="uid://bypw7eihxexrm"]
+
+[ext_resource type="Script" uid="uid://cox74slg0ewob" path="res://Scripts/main_scene.gd" id="1_m8nr8"]
+[ext_resource type="AudioStream" uid="uid://c2np4otufsxe5" path="res://Assets/Sounds/Fx/blink.wav" id="2_47rga"]
+[ext_resource type="Texture2D" uid="uid://dyoy417ouemrl" path="res://Assets/Scenes_images/spaceship_door.png" id="2_m8nr8"]
+[ext_resource type="PackedScene" uid="uid://bx718nuvws00d" path="res://Scenes/character.tscn" id="3_yyxd1"]
+[ext_resource type="PackedScene" uid="uid://t00wn4dwmk2q" path="res://Scenes/dialog_ui.tscn" id="4_0vbqt"]
+
+[node name="MainScene" type="Node2D"]
+script = ExtResource("1_m8nr8")
+
+[node name="BackgroundMusic" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+
+[node name="NextSentenceSound" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("2_47rga")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = -1
+
+[node name="Background" type="TextureRect" parent="CanvasLayer"]
+unique_name_in_owner = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -42.0
+offset_top = -131.0
+offset_right = 406.0
+offset_bottom = 121.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_m8nr8")
+
+[node name="CanvasLayer2" type="CanvasLayer" parent="."]
+
+[node name="Control" type="Control" parent="CanvasLayer2"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 3
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_top = -40.0
+offset_right = 20.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="CharacterSprite" parent="CanvasLayer2/Control" instance=ExtResource("3_yyxd1")]
+position = Vector2(-546, -538)
+
+[node name="DialogUI" parent="CanvasLayer2" instance=ExtResource("4_0vbqt")]

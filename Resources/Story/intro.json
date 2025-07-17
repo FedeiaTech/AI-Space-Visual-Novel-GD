@@ -1,0 +1,32 @@
+[
+	{"location": "spaceship_door", "music": "track01"},
+	
+	{"speaker": "Astro", "text": "Hola mi nombre es astro."},
+	{"speaker": "Astro", "text": "Cada vez que hablo muevo la boca. Tambien digo algo mas luego de una pausa."},
+	{"choices":
+		[
+			{"text": "Encender IA", "goto": "first_choice"},
+			{"text": "No encender, es MALIGNA", "goto": "second_choice"}
+		]
+	},
+	
+	{"anchor": "first_choice"},
+	{"speaker": "IA", "text": "Motores encendidos."},
+	{"goto": "end"},
+	
+	{"anchor": "second_choice"},
+	{"speaker": "Astro", "text": "Pues no la encendere..."},
+	{"goto": "end"},
+	
+	{"anchor": "end"},
+	{"goto": "post_choice"},
+	{"speaker": "IA", "text": "Cuando habla alguien que no tiene cuerpo muestro al ultimo personaje pero no lo muevo. Tambien cambio mi voz"},
+	
+	{"anchor": "post_choice"},
+	{"speaker": "Milka", "text": "Ahora hablo yo. Me llamo Milka."},
+	{"speaker": "Astro", "text": "Miren quien volvio!"},
+	{"speaker": "Milka", "text": "Hey! yo tambien quiero moverme!"},
+	{"speaker": "Astro", "text": "JAJAJA. Se vienen cositas..."},
+	
+	{"next_scene": "first_scene", "transition": "fade"}
+]
