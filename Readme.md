@@ -3,7 +3,7 @@
 ¡Bienvenido al repositorio de **AI Space Visual Novel**! Este proyecto es un juego de novela visual en desarrollo, creado con Godot Engine, que te sumergirá en una narrativa interactiva con elementos de ciencia ficción.
 
 ---
-## ✨ Nuevas Características y Mejoras (v0.0.2 Alpha)
+## ✨ Nuevas Características y Mejoras (v0.0.2 Alpha) 20-07-2025
 
 Esta versión introduce mejoras significativas en la interactividad y la gestión de ítems:
 
@@ -12,15 +12,15 @@ Esta versión introduce mejoras significativas en la interactividad y la gestió
     * Gestión de ítems mediante un `InventoryManager` centralizado.
     * Manejo de cantidades de ítems al añadirlos al inventario.
     * Integración para agregar ítems a través de elecciones de diálogo.
-    * Integración para agregar ítems directamente desde líneas de diálogo (sin opciones).
-    * Mecanismo de notificación visual temporal al adquirir nuevos ítems (con soporte para múltiples ítems en secuencia).
-    * Posibilidad de abrir y cerrar el inventario usando la tecla 'I' (o la acción configurada).
+    * Integración para agregar ítems directamente desde líneas de diálogo.
+    * Mecanismo de notificación visual temporal al adquirir nuevos ítems (soporte para múltiples ítems en secuencia).
+    * Posibilidad de abrir y cerrar el inventario usando la tecla 'I'.
     * Pausa automática del juego al abrir el inventario y reanudación al cerrarlo.
 * **Manejo de Entrada Global**: Implementado un sistema robusto para escuchar entradas clave (como la tecla de inventario) incluso cuando el juego está pausado, utilizando un manejador de entrada global.
 
 ---
 
-## 🚀 Mecánicas Implementadas (v0.0.1 Alpha)
+## 🚀 Mecánicas Implementadas (v0.0.1 Alpha) 17-07-2025
 
 En esta versión alpha inicial, las siguientes mecánicas clave ya están funcionales:
 
