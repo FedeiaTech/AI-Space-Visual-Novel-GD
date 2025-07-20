@@ -3,6 +3,22 @@
 ¡Bienvenido al repositorio de **AI Space Visual Novel**! Este proyecto es un juego de novela visual en desarrollo, creado con Godot Engine, que te sumergirá en una narrativa interactiva con elementos de ciencia ficción.
 
 ---
+## ✨ Nuevas Características y Mejoras (v0.0.2 Alpha)
+
+Esta versión introduce mejoras significativas en la interactividad y la gestión de ítems:
+
+* **Sistema de Inventario Básico**:
+    * Implementada la funcionalidad para abrir y cerrar un panel de inventario.
+    * Gestión de ítems mediante un `InventoryManager` centralizado.
+    * Manejo de cantidades de ítems al añadirlos al inventario.
+    * Integración para agregar ítems a través de elecciones de diálogo.
+    * Integración para agregar ítems directamente desde líneas de diálogo (sin opciones).
+    * Mecanismo de notificación visual temporal al adquirir nuevos ítems (con soporte para múltiples ítems en secuencia).
+    * Posibilidad de abrir y cerrar el inventario usando la tecla 'I' (o la acción configurada).
+    * Pausa automática del juego al abrir el inventario y reanudación al cerrarlo.
+* **Manejo de Entrada Global**: Implementado un sistema robusto para escuchar entradas clave (como la tecla de inventario) incluso cuando el juego está pausado, utilizando un manejador de entrada global.
+
+---
 
 ## 🚀 Mecánicas Implementadas (v0.0.1 Alpha)
 
@@ -21,10 +37,10 @@ En esta versión alpha inicial, las siguientes mecánicas clave ya están funcio
 
 El desarrollo del juego continúa, y la siguiente lista representa las principales características y contenidos que planeamos implementar:
 
-* **Sistema de Inventario:** Desarrollar una mecánica para que el jugador pueda recolectar y gestionar ítems que influyan en la historia o las interacciones.
-* **Sistema de Tiempo:** Implementar un sistema de progresión temporal que pueda afectar eventos, disponibilidad de personajes o decisiones.
-* **Añadir Sprites de Expresiones Básicas:** Integrar los recursos visuales (sprites) para las expresiones fundamentales de los personajes, haciendo que la narrativa sea más dinámica y expresiva.
-* **Historia del Primer Capítulo:** Escribir e implementar la narrativa completa del primer capítulo, incluyendo diálogos, eventos y ramificaciones iniciales.
+* [ ] Sistema de Inventario: (Aunque las bases están, aún quedan mejoras por hacer como la visualización detallada de ítems, el uso/equipamiento, etc. - si aplica)
+* [ ] Sistema de Tiempo: Implementar un sistema de progresión temporal que pueda afectar eventos, disponibilidad de personajes o decisiones.
+* [ ] Añadir Sprites de Expresiones Básicas: Integrar los recursos visuales (sprites) para las expresiones fundamentales de los personajes, haciendo que la narrativa sea más dinámica y expresiva.
+* [ ] Historia del Primer Capítulo: Escribir e implementar la narrativa completa del primer capítulo, incluyendo diálogos, eventos y ramificaciones iniciales.
 
 ---
 

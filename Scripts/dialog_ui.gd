@@ -1,7 +1,7 @@
 extends Control
 
 signal text_animation_done
-signal choice_selected
+signal choice_selected(anchor: String, item_given_data: Dictionary)
 
 #precarga de escena de eleccion
 const ChoiceButtonScene = preload("res://Scenes/player_choice.tscn")
@@ -65,8 +65,16 @@ func display_choices(choices: Array):
 	for choice in choices:
 		var choice_button = ChoiceButtonScene.instantiate()
 		choice_button.text = choice["text"]
-		#Adjuntar señal al botón
-		choice_button.pressed.connect(_on_choice_button_pressed.bind(choice["goto"]))
+		# Obtener los datos del ítem, si existen
+		var item_given_data = null
+		if choice.has("item_given"):
+			item_given_data = choice["item_given"]
+			
+		# Adjuntar señal al botón, pasando el 'item_given_data'
+		choice_button.pressed.connect(func():
+			choice_selected.emit(choice["goto"], item_given_data)
+			choice_list.hide()
+			)
 		#agregar boton al la lista de opciones
 		choice_list.add_child(choice_button)
 	#mostrar la lista de opciones (visible)
@@ -81,6 +89,8 @@ func _on_text_blip_timeout():
 func _on_sentence_pause_timeout():
 	text_blip_timer.start()
 
-func _on_choice_button_pressed(anchor: String):
-	choice_selected.emit(anchor)
+# El método que recibe la señal del botón de elección ahora acepta el `item_given_data`
+func _on_choice_button_pressed(anchor: String, item_given_data: Dictionary):
+	# Emitir la señal con los datos del ítem
+	choice_selected.emit(anchor, item_given_data) 
 	choice_list.hide()

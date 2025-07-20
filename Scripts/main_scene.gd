@@ -2,14 +2,23 @@ extends Node2D
 
 @onready var background: TextureRect = %Background
 @onready var background_music: AudioStreamPlayer = %BackgroundMusic
-@onready var character_sprite = $CanvasLayer2/Control/CharacterSprite
-@onready var dialog_ui: Control = $CanvasLayer2/DialogUI
+@onready var character_sprite = $CanvasMain/Control/CharacterSprite
+@onready var dialog_ui: Control = $CanvasMain/DialogUI
 @onready var next_sentence_sound: AudioStreamPlayer = %NextSentenceSound
+
+@onready var item_acquired_notification: Label = %ItemAcquiredNotification
+@onready var notification_timer: Timer = %NotificationTimer
+
+const InventoryUIScene = preload("res://Scenes/UI/inventory_ui.tscn")
 
 var transition_effect: String = "fade"
 var dialog_file: String = "res://Resources/Story/intro.json"
 var dialog_index : int = 0
 var dialog_lines : Array = []
+# Variable para almacenar la instancia del inventario abierto
+var current_inventory_ui: CanvasLayer = null
+#Cola de notificaciones para adquisicion de items simultaneos
+var notification_queue: Array = []
 
 func _ready() -> void:
 	#Cargar dialogo
@@ -22,10 +31,14 @@ func _ready() -> void:
 	#primera linea de dialogo
 	dialog_index = 0
 	SceneManager.transition_in()
+	# Timer de notificacion de item
+	notification_timer.timeout.connect(_on_notification_timer_timeout)
+	GameEvents.item_acquired_notification_requested.connect(show_item_acquired_notification_requested)
 	
 func _input(event: InputEvent) -> void:
 	var line = dialog_lines[dialog_index]
 	var has_choices = line.has("choices")
+	# Avanzar en el dialogo
 	if event.is_action_pressed("next_line") and not has_choices:
 		if dialog_ui.animate_text:
 			dialog_ui.skip_text_animation()
@@ -34,7 +47,13 @@ func _input(event: InputEvent) -> void:
 				dialog_index += 1
 				next_sentence_sound.play()
 				process_current_line()
-
+	#Inventario
+	if event.is_action_pressed("toggle_inventory"): # Asume que tienes esta acción en Project Settings
+		if current_inventory_ui == null:
+			# Abrir el inventario
+			open_inventory()
+		else:
+			close_inventory()
 
 func process_current_line():
 	if dialog_index >= dialog_lines.size() or dialog_index < 0:
@@ -42,6 +61,17 @@ func process_current_line():
 		return
 	#Extrae la linea actual
 	var line = dialog_lines[dialog_index]
+	
+	# Procesa la adquisición de ítems si la línea actual los tiene
+	if line.has("item_given"):
+		var item_data = line["item_given"]
+		if item_data is Array: # Si es un array de ítems
+			for item_details in item_data:
+				if item_details is Dictionary and not item_details.is_empty():
+					InventoryManager.add_item(InventoryManager.current_player_character, item_details)
+		elif item_data is Dictionary and not item_data.is_empty(): # Si es un solo ítem
+			InventoryManager.add_item(InventoryManager.current_player_character, item_data)
+	
 	#Verifica si es el final de la escena
 	if line.has("next_scene"):
 		var next_scene = line["next_scene"]
@@ -129,10 +159,77 @@ func load_dialog(file_path):
 	#devolver dialogo
 	return json_content
 
+"""Funciones de inventario"""
+func open_inventory():
+	if current_inventory_ui == null:
+		current_inventory_ui = InventoryUIScene.instantiate()
+		# Conecta la señal `inventory_closed` del inventario
+		current_inventory_ui.inventory_closed.connect(_on_inventory_closed_signal_received)
+		# Añade el inventario como hijo de la Main Scene
+		add_child(current_inventory_ui)
+		#o
+		#get_tree().root.add_child(current_inventory_ui)
+
+		# Opcional: Pausar el juego mientras el inventario está abierto
+		get_tree().paused = true 
+
+		# Asegurarse de que la interfaz de diálogo esté oculta o inactiva
+		# Esto es importante para evitar que el jugador siga avanzando el diálogo
+		# mientras el inventario está abierto.
+		dialog_ui.hide() 
+
+func close_inventory():
+	if current_inventory_ui:
+		# Es importante desconectar la señal antes de liberar el nodo para evitar errores
+		# si la señal se dispara justo mientras el nodo está siendo liberado.
+		current_inventory_ui.inventory_closed.disconnect(_on_inventory_closed_signal_received)
+		current_inventory_ui.queue_free() # Libera el nodo del inventario
+		current_inventory_ui = null # Limpia la referencia
+		get_tree().paused = false # Despausa el juego
+		dialog_ui.show() # Muestra de nuevo la interfaz de diálogo
+
+func show_item_acquired_notification_requested(item_name: String):
+	var notification_message = "¡Item adquirido!\n" + item_name
+	notification_queue.append(notification_message)
+	
+	# Si el temporizador no está corriendo, significa que no hay notificación visible,
+	# así que mostramos la primera de la cola inmediatamente.
+	if notification_timer.is_stopped() and notification_queue.size() == 1:
+		_display_next_notification_from_queue()
+	#item_acquired_notification.text = "¡Item adquirido!\n" + item_name
+	#item_acquired_notification.show() # Hacer visible
+	#notification_timer.start() # Iniciar el temporizador
+
+func _display_next_notification_from_queue():
+	if notification_queue.is_empty():
+		item_acquired_notification.hide()
+	else:
+		var next_message = notification_queue.pop_front() # Obtener y eliminar el primer mensaje
+		item_acquired_notification.text = next_message
+		item_acquired_notification.show()
+		notification_timer.start() # Iniciar/Reiniciar el temporizador
+
+func _on_notification_timer_timeout():
+	#item_acquired_notification.hide() # Ocultar la notificación
+	_display_next_notification_from_queue() # Llama a la función para mostrar la siguiente
+
+func _on_inventory_closed_signal_received():
+	# Esta función se llama cuando el botón de cerrar del inventario es presionado.
+	close_inventory()
+
+"""Funciones para señales"""
 func _on_text_animation_done():
 	character_sprite.play_idle_animation()
 
-func _on_choice_selected(anchor: String):
+# MODIFICADO: Añadido item_given_data como parámetro opcional con valor por defecto
+func _on_choice_selected(anchor: String, _item_given_data = null): #Dictionary = {}): # Añade `item_given_data` como parámetro opcional
+	#if item_given_data is Array: # Si es un array de ítems
+	#	for item_details in item_given_data:
+	#		if item_details is Dictionary and not item_details.is_empty():
+	#			InventoryManager.add_item(InventoryManager.current_player_character, item_details)
+	#elif item_given_data is Dictionary and not item_given_data.is_empty(): # Si es un solo ítem (el comportamiento anterior)
+	#	InventoryManager.add_item(InventoryManager.current_player_character, item_given_data)
+   
 	dialog_index = get_anchor_position(anchor)
 	process_current_line()
 	next_sentence_sound.play()

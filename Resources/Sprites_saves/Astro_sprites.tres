@@ -1,8 +1,9 @@
-[gd_resource type="SpriteFrames" load_steps=4 format=3 uid="uid://clw31hlnrdecy"]
+[gd_resource type="SpriteFrames" load_steps=5 format=3 uid="uid://clw31hlnrdecy"]
 
-[ext_resource type="Texture2D" uid="uid://duklv55jtvnmk" path="res://Assets/Astro/Idle/Astro.png" id="1_lpw28"]
-[ext_resource type="Texture2D" uid="uid://dvfyry3oamr2x" path="res://Assets/Astro/Idle/Astro_idle2.png" id="2_pphee"]
-[ext_resource type="Texture2D" uid="uid://ctradncjp61bm" path="res://Assets/Astro/Talking/Astro_talking1.png" id="3_kykoa"]
+[ext_resource type="Texture2D" uid="uid://bloo014mghtsx" path="res://Assets/Astro/Idle-talking/astro_idle.png" id="1_rwec0"]
+[ext_resource type="Texture2D" uid="uid://bqa5qrh3it2hp" path="res://Assets/Astro/Idle-talking/astro_idle_blink.png" id="2_bk17h"]
+[ext_resource type="Texture2D" uid="uid://cwcownlfbk1bq" path="res://Assets/Astro/Idle-talking/astro_talking1.png" id="3_0ogde"]
+[ext_resource type="Texture2D" uid="uid://dkfjq5n0xr6pd" path="res://Assets/Astro/Idle-talking/astro_talking2.png" id="4_s1ldn"]
 
 [resource]
 animations = [{
@@ -32,11 +33,11 @@ animations = [{
 "speed": 5.0
 }, {
 "frames": [{
-"duration": 8.0,
-"texture": ExtResource("1_lpw28")
+"duration": 20.0,
+"texture": ExtResource("1_rwec0")
 }, {
 "duration": 1.0,
-"texture": ExtResource("2_pphee")
+"texture": ExtResource("2_bk17h")
 }],
 "loop": true,
 "name": &"idle",
@@ -68,15 +69,45 @@ animations = [{
 "speed": 5.0
 }, {
 "frames": [{
-"duration": 0.5,
-"texture": ExtResource("3_kykoa")
+"duration": 1.0,
+"texture": ExtResource("3_0ogde")
 }, {
-"duration": 0.5,
-"texture": ExtResource("1_lpw28")
+"duration": 1.0,
+"texture": ExtResource("4_s1ldn")
+}, {
+"duration": 0.7,
+"texture": ExtResource("1_rwec0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_s1ldn")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_0ogde")
+}, {
+"duration": 0.7,
+"texture": ExtResource("2_bk17h")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_0ogde")
+}, {
+"duration": 1.0,
+"texture": ExtResource("1_rwec0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_s1ldn")
+}, {
+"duration": 0.7,
+"texture": ExtResource("3_0ogde")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_s1ldn")
+}, {
+"duration": 0.7,
+"texture": ExtResource("1_rwec0")
 }],
 "loop": true,
 "name": &"talking",
-"speed": 5.0
+"speed": 8.0
 }, {
 "frames": [],
 "loop": true,

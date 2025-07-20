@@ -23,7 +23,20 @@
 	{"speaker": "IA", "text": "Cuando habla alguien que no tiene cuerpo muestro al ultimo personaje pero no lo muevo. Tambien cambio mi voz"},
 	
 	{"anchor": "post_choice"},
-	{"speaker": "Milka", "text": "Ahora hablo yo. Me llamo Milka."},
+	{"speaker": "Milka", "text": "Ahora hablo yo. Me llamo Milka.", "item_given": [
+				{
+				"id": "ia_chip_alpha",
+				"name": "Chip de IA (Alpha)",
+				"description": "Un prototipo inicial de un chip para la IA de la nave. Etiquetado como 'Alpha'.",
+				"quantity": 2,
+				"icon_path": "res://Assets/Inventory_icons/chip.png" },
+				{
+				"id": "lalala",
+				"name": "lalala",
+				"description": "Un prototipo inicial de un chip para la IA de la nave. Etiquetado como 'Alpha'.",
+				"quantity": 3,}
+				]
+				},
 	{"speaker": "Astro", "text": "Miren quien volvio!"},
 	{"speaker": "Milka", "text": "Hey! yo tambien quiero moverme!"},
 	{"speaker": "Astro", "text": "JAJAJA. Se vienen cositas..."},
