@@ -46,27 +46,40 @@ func _ready():
 # `item_details` ahora es un diccionario con "id", "name", "description", etc.
 func add_item(character_name: Character.Name, item_details: Dictionary):
 	if inventories.has(character_name):
-		# Crea una copia mutable del diccionario para añadir la propiedad 'is_new'
-		var item_to_add = item_details.duplicate()
+		var inventory = inventories[character_name]
 
-		# Asignar una cantidad inicial si no existe (útil para apilables)
-		if not item_to_add.has("quantity"):
-			item_to_add["quantity"] = 1
+		var item_id_to_add = item_details.get("id")
+		if item_id_to_add == null:
+			printerr("Error: El ítem a añadir no tiene una 'id'. No se puede añadir.")
+			return
 
-		# Por ahora, simplemente añade el diccionario completo del ítem a la lista.
-		# Más adelante, si necesitas, podemos añadir lógica para ítems apilables, límites de inventario, etc.
-		inventories[character_name].append(item_details)
-		print("Item '", item_details.get("name", item_details.get("id", "Item Desconocido")), "' añadido al inventario de ", Character.CHARACTER_DETAILS[character_name]["name"])
-		# Llamar a la función de notificación en la escena principal
-		# Asegúrate de que tu nodo principal tenga un nombre reconocible si no es el root directo,
-		# o que la variable 'main_scene_instance' se obtenga correctamente
-		#GameEvents.item_acquired_notification_requested.emit(item_to_add.get("name", "Item Desconocido"))
-		GameEvents.item_acquired_notification_requested.emit(item_to_add.get("name", "Item Desconocido"))
+		var quantity_to_add = item_details.get("quantity", 1)
+		if typeof(quantity_to_add) != TYPE_INT or quantity_to_add <= 0:
+			quantity_to_add = 1
+
+		var item_found_in_inventory = false
+		var final_item_name = item_details.get("name", item_id_to_add) # Nombre para la notificación
+		var is_new_item = true # Asumimos que es nuevo por defecto
+
+		for existing_item in inventory:
+			if existing_item.has("id") and existing_item["id"] == item_id_to_add:
+				var current_quantity = existing_item.get("quantity", 0)
+				existing_item["quantity"] = current_quantity + quantity_to_add
+				item_found_in_inventory = true
+				is_new_item = false # Ya no es un ítem nuevo
+				print("Cantidad de ítem '", final_item_name, "' actualizada a ", existing_item["quantity"])
+				break
+
+		if not item_found_in_inventory:
+			var new_item_entry = item_details.duplicate(true)
+			new_item_entry["quantity"] = quantity_to_add
+			
+			inventories[character_name].append(new_item_entry)
+			print("Nuevo ítem '", final_item_name, "' añadido al inventario de ", Character.CHARACTER_DETAILS[character_name]["name"])
+		GameEvents.item_acquired_notification_requested.emit(final_item_name, quantity_to_add, is_new_item)
 	else:
 		printerr("Error: El personaje ", Character.CHARACTER_DETAILS[character_name]["name"], " no tiene un inventario inicializado en InventoryManager.")
 
-# Retorna true si el ítem fue removido, false si no se encontró
-# Ahora busca por el "id" dentro de los diccionarios de ítems
 func remove_item(character_name: Character.Name, item_id: String) -> bool:
 	if inventories.has(character_name):
 		var inv = inventories[character_name]

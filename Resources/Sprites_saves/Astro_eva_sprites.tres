@@ -1,0 +1,39 @@
+[gd_resource type="SpriteFrames" load_steps=6 format=3 uid="uid://c4torjju5jh5s"]
+
+[ext_resource type="Texture2D" uid="uid://bkrcdpolw0m2t" path="res://Assets/Astro_eva/idle/eva3.png" id="1_lmitd"]
+[ext_resource type="Texture2D" uid="uid://bqn45t4ehqt7a" path="res://Assets/Astro_eva/idle/eva2.png" id="2_beran"]
+[ext_resource type="Texture2D" uid="uid://bcjjw0mfmqwm0" path="res://Assets/Astro_eva/idle/eva1.png" id="3_lhp51"]
+[ext_resource type="Texture2D" uid="uid://d1dvuj2v50ohr" path="res://Assets/Astro_eva/idle/eva4.png" id="4_tg2ev"]
+[ext_resource type="Texture2D" uid="uid://dfnm4bthkx8oq" path="res://Assets/Astro_eva/idle/eva5.png" id="5_mkgi1"]
+
+[resource]
+animations = [{
+"frames": [{
+"duration": 0.8,
+"texture": ExtResource("1_lmitd")
+}, {
+"duration": 0.8,
+"texture": ExtResource("2_beran")
+}, {
+"duration": 0.8,
+"texture": ExtResource("3_lhp51")
+}, {
+"duration": 0.8,
+"texture": ExtResource("2_beran")
+}, {
+"duration": 0.8,
+"texture": ExtResource("1_lmitd")
+}, {
+"duration": 0.8,
+"texture": ExtResource("4_tg2ev")
+}, {
+"duration": 0.8,
+"texture": ExtResource("5_mkgi1")
+}, {
+"duration": 0.8,
+"texture": ExtResource("4_tg2ev")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 3.0
+}]

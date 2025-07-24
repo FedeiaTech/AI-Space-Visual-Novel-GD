@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://w1rk61liebho"]
+[gd_scene load_steps=2 format=3 uid="uid://kirepjs8ufli"]
 
-[ext_resource type="Script" uid="uid://bej1wktfxnlb8" path="res://Scripts/inventory/InventorySlot.gd" id="1_owa7q"]
+[sub_resource type="GDScript" id="GDScript_5sh28"]
 
 [node name="InventorySlot" type="Control"]
 z_index = 99
@@ -9,7 +9,7 @@ layout_mode = 3
 anchors_preset = 0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_owa7q")
+script = SubResource("GDScript_5sh28")
 
 [node name="Background" type="Panel" parent="."]
 unique_name_in_owner = true

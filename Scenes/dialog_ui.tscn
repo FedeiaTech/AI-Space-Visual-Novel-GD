@@ -21,7 +21,7 @@ one_shot = true
 
 [node name="TextBlipTimer" type="Timer" parent="."]
 unique_name_in_owner = true
-wait_time = 0.052
+wait_time = 0.52
 
 [node name="TextBlipSound" type="AudioStreamPlayer" parent="."]
 script = ExtResource("2_dy63b")
@@ -63,7 +63,8 @@ text = "Dialogo de texto [wave] movil [/wave]
 Ahora a [shake] bailar [/shake]"
 scroll_active = false
 
-[node name="SpakerBox" type="PanelContainer" parent="."]
+[node name="SpeakerBox" type="PanelContainer" parent="."]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(300, 50)
 layout_mode = 1
 anchors_preset = 2
@@ -74,7 +75,7 @@ offset_right = 175.0
 offset_bottom = -200.0
 grow_vertical = 0
 
-[node name="SpeakerName" type="Label" parent="SpakerBox"]
+[node name="SpeakerName" type="Label" parent="SpeakerBox"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 30

@@ -49,22 +49,6 @@ func update_inventory_display():
 
 			item_list_container.add_child(item_label)
 
-# La lógica para mostrar la descripción al pasar el mouse ya está en _on_item_label_input
-# No es necesario que se seleccione el primer ítem por defecto si no lo quieres.
-			# Para detectar el mouse encima y clic, usaremos `gui_input` en la etiqueta.
-			# Es más simple que un Button si solo queremos hover y mostrar descripción.
-			#item_label.set_mouse_filter(Control.MOUSE_FILTER_STOP) # Para que la etiqueta capture el mouse
-			#item_label.gui_input.connect(_on_item_label_input.bind(item_details))
-
-			# Añadir la etiqueta a la lista
-			#item_list_container.add_child(item_label)
-
-		# Opcional: Mostrar la descripción del primer ítem al abrir (como antes, si lo quieres)
-		# if item_list_container.get_child_count() > 0:
-		#     var first_item_details = current_inventory[0]
-		#     item_name_label.text = first_item_details.get("name", "Nombre Desconocido")
-		#     item_description_label.text = first_item_details.get("description", "Sin descripción.")
-
 # Manejar eventos de mouse en las etiquetas de ítems
 func _on_item_label_input(event: InputEvent, item_details: Dictionary):
 	if event is InputEventMouseMotion: # Si el mouse se mueve sobre la etiqueta
@@ -95,6 +79,11 @@ func _on_item_label_input(event: InputEvent, item_details: Dictionary):
 		else:
 			item_icon_display.texture = null
 			item_icon_display.hide()
+		
+		# Para consumir el evento del click para evitar que avance el juego estando dentro del inventario
+			get_viewport().set_input_as_handled() 
+			# También podrías usar event.accept() si el evento fue creado específicamente para este Control,
+			# pero get_viewport().set_input_as_handled() es más general para cualquier evento que ya llegó al Viewport.
 
 func _on_item_slot_selected(item_details: Dictionary):
 	# Actualizar las etiquetas con la información del ítem seleccionado
@@ -102,6 +91,7 @@ func _on_item_slot_selected(item_details: Dictionary):
 	item_description_label.text = item_details.get("description", "Sin descripción.")
 
 func _on_close_button_pressed():
+	print("click cerrar inventario")
 	# Emitir la señal para que la escena principal sepa que debe cerrar el inventario
 	inventory_closed.emit()
 	# Eliminar esta instancia del inventario del árbol de la escena

@@ -1,28 +1,62 @@
 [
-	{"location": "spaceship_door", "music": "track01"},
+	{"location": "scene0_spaceship", "music": "track01"},
 	
-	{"speaker": "Astro", "text": "Hola mi nombre es astro."},
-	{"speaker": "Astro", "text": "Cada vez que hablo muevo la boca. Tambien digo algo mas luego de una pausa."},
+	{"text": "En alguna parte del espacio..."},
+	{"speaker": "Astro", "text": "¿Qué paso? mi cabeza...", "show_character": "Astro_EVA"},
+	{"speaker": "Astro", "text": "Muchachos.. ¿Cómo están ahi?", "show_character": "Astro_EVA"},
+	{"speaker": "IA", "text": "Sistema de comunicación desconectado. Se sugiere reiniciar."},
+	
+	{"anchor": "comunication_problems"},
 	{"choices":
 		[
-			{"text": "Encender IA", "goto": "first_choice"},
-			{"text": "No encender, es MALIGNA", "goto": "second_choice"}
+			{"text": "Reiniciar IA", "goto": "first_choice"},
+			{"text": "Seguir intentando comunicarse", "goto": "second_choice"}
 		]
 	},
 	
 	{"anchor": "first_choice"},
-	{"speaker": "IA", "text": "Motores encendidos."},
+	{"speaker": "Astro", "text": "¡Reinicia rápido!", "show_character": "Astro_EVA"},
+	{"speaker": "IA", "text": "..."},
+	{"speaker": "IA", "text": "..."},
+	{"speaker": "Astro", "text": "¡Vamos!", "show_character": "Astro_EVA"},
+	{"speaker": "IA", "text": "Sistema reiniciado Astro."},
+	{"speaker": "Astro", "text": "¡¿Ori estás ahí?! Responde Ori.", "show_character": "Astro_EVA"},
+	{"text": "..."},
+	{"speaker": "IA", "text": "Parece que puedo establecer comunicación con el centro de comandos pero no responde nadie."},
+	{"speaker": "IA", "text": "Astro, sugiero que vuelvas y hagas una inspección."},
 	{"goto": "end"},
 	
 	{"anchor": "second_choice"},
-	{"speaker": "Astro", "text": "Pues no la encendere..."},
-	{"goto": "end"},
+	{"speaker": "Astro", "text": "¿Hay comunicación? ¡¿Ori estás ahí?!", "show_character": "Astro_EVA"},
+	{"text": "...", "show_character": "Astro_EVA"},
+	{"goto": "comunication_problems"},
 	
 	{"anchor": "end"},
 	{"goto": "post_choice"},
-	{"speaker": "IA", "text": "Cuando habla alguien que no tiene cuerpo muestro al ultimo personaje pero no lo muevo. Tambien cambio mi voz"},
-	
+	{"anchor": "third_choice", "item_given":
+		{"id": "llave_antigua",
+		"name": "Llave Antigua",
+		"description": "Una llave oxidada que parece abrir algo muy viejo.",
+		"quantity": 3,
+		"icon_path": "res://Assets/Inventory_icons/old_key.png"}
+		},
+	{"speaker": "Astro", "text": "Pues no la encendere..."},
 	{"anchor": "post_choice"},
+	
+	{"speaker": "Astro", "text": "Pues parece que voy a tener que volver", "show_character": "Astro_EVA"},
+	
+	{"choices": [
+			{"text": "Volver a la Nave de Origen", "action": {"type": "load_scene", "scene_file": "first_scene", "anchor": "return_point_from_space"}},
+			{"text": "Explorar el Planeta", "action": {"type": "load_scene", "scene_file": "planet_surface", "anchor": "landing_site"}},
+			{"text": "Consultar el Mapa", "goto": "map_dialog_options"}
+		]
+	},
+	{"anchor": "map_dialog_options"},
+	{"speaker": "IA", "text": "No hay más lugares disponibles en el mapa ahora mismo."},
+	{"goto": "return_to_choices"},
+
+	
+	
 	{"speaker": "Milka", "text": "Ahora hablo yo. Me llamo Milka.", "item_given": [
 				{
 				"id": "ia_chip_alpha",
@@ -36,10 +70,11 @@
 				"description": "Un prototipo inicial de un chip para la IA de la nave. Etiquetado como 'Alpha'.",
 				"quantity": 3,}
 				]
-				},
+	},
 	{"speaker": "Astro", "text": "Miren quien volvio!"},
 	{"speaker": "Milka", "text": "Hey! yo tambien quiero moverme!"},
 	{"speaker": "Astro", "text": "JAJAJA. Se vienen cositas..."},
 	
-	{"next_scene": "first_scene", "transition": "fade"}
+	{"next_scene": "first_scene", "transition": "fade"},
+
 ]

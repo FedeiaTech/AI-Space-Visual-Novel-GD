@@ -1,8 +1,35 @@
-# AI Space Visual Novel - Versión 0.0.2 Alpha
+# AI Space Visual Novel - Versión 0.0.3 Alpha
 
 ¡Bienvenido al repositorio de **AI Space Visual Novel**! Este proyecto es un juego de novela visual en desarrollo, creado con Godot Engine, que te sumergirá en una narrativa interactiva con elementos de ciencia ficción.
 
 ---
+
+## ✨ Nuevas Características y Mejoras (v0.0.3) 24-07-2025
+
+Esta versión integra todas las funcionalidades y mejoras previas con importantes optimizaciones en las transiciones y el flujo de diálogo:
+
+* **Sistema de Inventario Mejorado**:
+    * **Apilamiento de Ítems:** Al recoger un ítem que ya tienes en el inventario, ahora se sumará la cantidad al ítem existente en lugar de duplicarlo como una entrada separada.
+    * **Notificaciones de Adquisición Detalladas:** Las notificaciones al adquirir un ítem son más informativas, diferenciando si es un ítem nuevo o si se ha aumentado la cantidad de uno existente (ej. "¡Ítem adquirido: Poción Roja!" vs. "Cantidad de Poción Roja aumentada (+1)").
+    * *Funcionalidades Preexistentes*: Conserva la capacidad de abrir y cerrar el panel de inventario, la gestión de ítems mediante un `InventoryManager` centralizado, el manejo de cantidades, la integración para agregar ítems a través de elecciones o líneas de diálogo, la notificación visual temporal al adquirir ítems y la pausa/reanudación del juego al abrir/cerrar el inventario.
+
+* **Transiciones de Escena Perfectas**:
+    * **Flujo Optimizado:** La transición entre escenas es ahora completamente fluida. La pantalla se oscurece por completo, la nueva escena carga todo su contenido (fondos, música) mientras está invisible, y solo entonces se revela. Esto elimina cualquier parpadeo o vista momentánea de la escena anterior.
+    * **Carga Inteligente de Contenido Inicial:** El sistema busca y carga proactivamente el fondo (`location`) y la música (`music`) de la nueva escena en el momento preciso (cuando la pantalla está negra), asegurando que los elementos visuales y auditivos estén listos antes de que la escena sea visible.
+    * **Inicio de Juego Coherente:** El juego ahora utiliza el mismo sistema de transición fluida desde el inicio, garantizando una primera impresión profesional.
+
+* **Sistema de Diálogo con Narrador**:
+    * **Líneas Narrativas Puras:** Es posible incluir líneas de diálogo sin un personaje específico. Usando `"speaker": "Narrator"` en el JSON, el texto aparece en la caja de diálogo principal y la caja del orador se oculta automáticamente.
+    * **Manejo Robusto de `speaker`:** El sistema de diálogo ahora puede manejar tanto los `enum` de `Character.Name` como `Strings` personalizados ("Narrator") para definir el orador.
+
+* **Manejo de Input y Pausa del Juego Refinado**:
+    * **Bloqueo de Input por UI:** Se ha implementado un sistema más robusto para bloquear los inputs del juego subyacente cuando una interfaz de usuario (como el inventario) está activa, evitando clics accidentales o avances involuntarios del diálogo.
+    * **Solución a Problemas de Cierre de UI:** Se resolvieron problemas donde los clics en los botones de cerrar de la interfaz de usuario no eran registrados, dando prioridad a los botones de la UI activa.
+    * **Optimización de `_input`:** La lógica de `main_scene._input` ha sido simplificada para ignorar selectivamente la acción `next_line` cuando el diálogo está bloqueado, permitiendo que otros inputs de la UI superpuesta se procesen correctamente.
+    * *Manejo de Entrada Global Preexistente*: El sistema robusto para escuchar entradas clave (como la tecla de inventario) incluso cuando el juego está pausado, utilizando un manejador de entrada global, se mantiene y se integra con estas mejoras.
+
+---
+
 ## ✨ Nuevas Características y Mejoras (v0.0.2 Alpha) 20-07-2025
 
 Esta versión introduce mejoras significativas en la interactividad y la gestión de ítems:

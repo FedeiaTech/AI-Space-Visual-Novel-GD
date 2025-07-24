@@ -3,8 +3,10 @@ extends Node
 
 enum Name {
 	ASTRO,
+	ASTRO_EVA,
 	IA,
 	MILKA,
+	NARRATOR,
 	ORI,
 	VIKTOR
 }
@@ -15,6 +17,11 @@ const CHARACTER_DETAILS : Dictionary = {
 		"gender": "male",
 		"sprite_frames": preload("res://Resources/Sprites_saves/Astro_sprites.tres"),
 	},
+	Name.ASTRO_EVA: {
+		"name" : "Astro_EVA",
+		"gender": "male",
+		"sprite_frames": preload("res://Resources/Sprites_saves/Astro_eva_sprites.tres"),
+	},
 	Name.IA: {
 		"name" : "IA",
 		"gender": "-",
@@ -24,6 +31,11 @@ const CHARACTER_DETAILS : Dictionary = {
 		"name" : "Milka",
 		"gender": "female",
 		"sprite_frames": preload("res://Resources/Sprites_saves/Milka_sprites.tres"),
+	},
+	Name.NARRATOR: {
+		"name" : "",
+		"gender": "-",
+		"sprite_frames": null,
 	},
 }
 

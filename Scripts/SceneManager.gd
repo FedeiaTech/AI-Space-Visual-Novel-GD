@@ -3,11 +3,12 @@ extends Node2D
 #Señales
 signal transition_out_completed
 signal transition_in_completed
+signal load_new_dialog_file_requested(new_file_path: String, anchor: String)
 
 #ColorRect transition Animation
 var transition_layer = CanvasLayer
 var transition_rect = ColorRect
-var transition_time : float = 0.5
+var transition_time : float = 2
 
 func _ready() -> void:
 	transition_layer = CanvasLayer.new()

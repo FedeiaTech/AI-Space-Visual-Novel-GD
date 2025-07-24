@@ -1,6 +1,10 @@
-[gd_resource type="SpriteFrames" load_steps=2 format=3 uid="uid://dqwvo4vp6ttya"]
+[gd_resource type="SpriteFrames" load_steps=6 format=3 uid="uid://dqwvo4vp6ttya"]
 
-[ext_resource type="Texture2D" uid="uid://divbiroffix5b" path="res://Assets/Milka/Idle/milka_idle.png" id="1_hboqn"]
+[ext_resource type="Texture2D" uid="uid://cfhnsustcy312" path="res://Assets/Milka/idle-talking/milka_idle.png" id="1_hvkw2"]
+[ext_resource type="Texture2D" uid="uid://b12vmxaa4my7c" path="res://Assets/Milka/idle-talking/milka_idle_blink.png" id="2_scibj"]
+[ext_resource type="Texture2D" uid="uid://tmfiurjfjj32" path="res://Assets/Milka/idle-talking/milka_talking1.png" id="3_2kqmk"]
+[ext_resource type="Texture2D" uid="uid://cov27tdqli3ic" path="res://Assets/Milka/idle-talking/milka_talking2.png" id="4_h7yyl"]
+[ext_resource type="Texture2D" uid="uid://v7pxn5ng6135" path="res://Assets/Milka/idle-talking/milka_talking2_blink.png" id="5_6y23a"]
 
 [resource]
 animations = [{
@@ -15,14 +19,56 @@ animations = [{
 "speed": 5.0
 }, {
 "frames": [{
+"duration": 20.0,
+"texture": ExtResource("1_hvkw2")
+}, {
 "duration": 1.0,
-"texture": ExtResource("1_hboqn")
+"texture": ExtResource("2_scibj")
 }],
 "loop": true,
 "name": &"idle",
 "speed": 5.0
 }, {
-"frames": [],
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_2kqmk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_h7yyl")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_2kqmk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("1_hvkw2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_h7yyl")
+}, {
+"duration": 1.0,
+"texture": ExtResource("1_hvkw2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_6y23a")
+}, {
+"duration": 1.0,
+"texture": ExtResource("1_hvkw2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_2kqmk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_2kqmk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_h7yyl")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_scibj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_2kqmk")
+}],
 "loop": true,
 "name": &"talking",
 "speed": 5.0
