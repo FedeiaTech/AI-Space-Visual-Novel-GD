@@ -8,9 +8,13 @@
 
 Esta versión integra todas las funcionalidades y mejoras previas con importantes optimizaciones en las transiciones y el flujo de diálogo:
 
+* **Mejoras Visuales y de Personajes**:
+    * **Nuevas Expresiones:** Se han añadido nuevas expresiones para los personajes, enriqueciendo sus reacciones y emociones durante el diálogo.
+    * **Correcciones en Transiciones Visuales:** Se han pulido las transiciones visuales de los personajes y los fondos de escena, asegurando que los cambios de sprites y texturas sean suaves y sin artefactos, contribuyendo a una experiencia más inmersiva.
+
 * **Sistema de Inventario Mejorado**:
     * **Apilamiento de Ítems:** Al recoger un ítem que ya tienes en el inventario, ahora se sumará la cantidad al ítem existente en lugar de duplicarlo como una entrada separada.
-    * **Notificaciones de Adquisición Detalladas:** Las notificaciones al adquirir un ítem son más informativas, diferenciando si es un ítem nuevo o si se ha aumentado la cantidad de uno existente (ej. "¡Ítem adquirido: Poción Roja!" vs. "Cantidad de Poción Roja aumentada (+1)").
+    * **Notificaciones de Adquisición Detalladas:** Las notificaciones al adquirir un ítem son más informativas, diferenciando si es un ítem nuevo o si se ha aumentado la cantidad de uno existente.
     * *Funcionalidades Preexistentes*: Conserva la capacidad de abrir y cerrar el panel de inventario, la gestión de ítems mediante un `InventoryManager` centralizado, el manejo de cantidades, la integración para agregar ítems a través de elecciones o líneas de diálogo, la notificación visual temporal al adquirir ítems y la pausa/reanudación del juego al abrir/cerrar el inventario.
 
 * **Transiciones de Escena Perfectas**:
@@ -27,6 +31,12 @@ Esta versión integra todas las funcionalidades y mejoras previas con importante
     * **Solución a Problemas de Cierre de UI:** Se resolvieron problemas donde los clics en los botones de cerrar de la interfaz de usuario no eran registrados, dando prioridad a los botones de la UI activa.
     * **Optimización de `_input`:** La lógica de `main_scene._input` ha sido simplificada para ignorar selectivamente la acción `next_line` cuando el diálogo está bloqueado, permitiendo que otros inputs de la UI superpuesta se procesen correctamente.
     * *Manejo de Entrada Global Preexistente*: El sistema robusto para escuchar entradas clave (como la tecla de inventario) incluso cuando el juego está pausado, utilizando un manejador de entrada global, se mantiene y se integra con estas mejoras.
+
+---
+
+* **Añadidos dos nuevos archivos:**:
+    * Tutorial Creando Archivos JSON.md
+    * Novedades técnicas.md
 
 ---
 
