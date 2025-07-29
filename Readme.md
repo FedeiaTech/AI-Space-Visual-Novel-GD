@@ -1,6 +1,43 @@
-# AI Space Visual Novel - Versión 0.0.3 Alpha
+# AI Space Visual Novel - Versión 0.0.4 Alpha
 
 ¡Bienvenido al repositorio de **AI Space Visual Novel**! Este proyecto es un juego de novela visual en desarrollo, creado con Godot Engine, que te sumergirá en una narrativa interactiva con elementos de ciencia ficción.
+
+---
+
+## ✨ Nuevas Características y Mejoras (v0.0.4) 29-07-2025
+
+Esta versión se centra en la **refactorización de la arquitectura central** del juego para mejorar la **escalabilidad y el mantenimiento**, además de pulir el **sistema de diálogo y la visualización de personajes** con mayor precisión.
+
+### Refactorización Mayor para Escalabilidad
+
+Se ha implementado una **modularización profunda del código**, abordando el problema de un `main_scene.gd` sobrecargado. Las responsabilidades se han dividido en scripts especializados:
+
+* **`CommandProcessor.gd` (Centralizado)**: Ahora actúa como el **ejecutor principal de comandos de diálogo**. Interpreta las líneas del JSON, disparando acciones (cambios de escena, música, fondos, ítems) y, crucialmente, gestiona la lógica de **visibilidad y expresión de personajes** y la presentación del texto.
+* **`DialogUI.gd` (Enfocado en UI)**: Se dedica exclusivamente a la **presentación visual del diálogo**. Muestra el texto animado, las opciones de diálogo y los nombres de los oradores, liberándose de la lógica interna de procesamiento.
+* **`GameManager.gd` (Coordinador de Alto Nivel)**: Reforzado para centralizar solicitudes clave como la carga de escenas y la gestión del estado general del juego.
+* **`main_scene.gd` (Simplificado)**: Transforma su rol a un **controlador**, encargándose de instanciar y conectar los módulos, así como de escuchar sus señales para actualizar la vista global (fondos, UI principal) y gestionar inputs generales.
+
+### Mejoras en el Sistema de Diálogo y Personajes
+
+Se han aplicado optimizaciones significativas para un control más preciso y una experiencia de diálogo más coherente:
+
+* **Gestión Robusta de Tipos (`Enum` y Ternario)**:
+    * **Compatibilidad del Operador Ternario**: Se eliminó el error `INCOMPATIBLE_TERNARY` en `main_scene.gd` mediante un **cast explícito a `int()`** en la asignación de `dialog_index`, asegurando que los tipos de datos sean compatibles.
+    * **Manejo de Valores `Enum`**: Se resolvió la advertencia `INT_AS_ENUM_WITHOUT_CAST` en `command_processor.gd` mediante un **cast explícito `as Character.Name`** al convertir nombres de `string` a `enum`, garantizando una correcta interpretación del tipo.
+* **Control Inteligente de Visibilidad de Personajes**:
+    * La lógica centralizada en `_handle_show_character()` y `_handle_text()` (dentro de `CommandProcessor.gd`) ahora gestiona la visibilidad con precisión:
+        * Si el **Narrador** es el orador, cualquier personaje visible en pantalla se **oculta automáticamente** con una transición de desvanecimiento suave (`fade-out`).
+        * Si un personaje **con sprites** habla, se **muestra** con una transición de aparición (`fade-in`) y se actualiza su expresión.
+        * Si un personaje **sin sprites** (ej. "IA") habla, el personaje que estaba visible **permanece en pantalla**, evitando interrupciones visuales.
+    * Las **opciones de diálogo** ahora también activan el ocultamiento del personaje, manteniendo la interfaz despejada durante la toma de decisiones del jugador.
+
+### Nuevos Activos Visuales
+
+Para enriquecer la narrativa y la inmersión, se han integrado nuevos recursos:
+
+* **Nuevas Imágenes para Todos los Personajes de la Tripulación**: Sprites actualizados y variados para cada miembro del equipo.
+* **Nuevas Expresiones para Diálogo**: Se han añadido más expresiones faciales/corporales para los personajes, permitiendo una mayor riqueza emocional y dinamismo en las conversaciones.
+* **Incorporación de CG (Computer Graphics)**: Integración de gráficos de computadora para escenas específicas, fondos detallados o momentos clave de la historia.
 
 ---
 

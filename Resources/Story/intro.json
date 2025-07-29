@@ -4,7 +4,7 @@
 	{"text": "En alguna parte del espacio..."},
 	{"speaker": "Astro", "text": "¿Qué paso? mi cabeza...", "show_character": "Astro_EVA"},
 	{"speaker": "Astro", "text": "Muchachos.. ¿Cómo están ahi?", "show_character": "Astro_EVA"},
-	{"speaker": "IA", "text": "Sistema de comunicación desconectado. Se sugiere reiniciar."},
+	{"speaker": "IA", "text": "Sistema de comunicación desconectado. Se sugiere reiniciar.", "show_character": "Astro_EVA"},
 	
 	{"anchor": "comunication_problems"},
 	{"choices":
@@ -16,14 +16,14 @@
 	
 	{"anchor": "first_choice"},
 	{"speaker": "Astro", "text": "¡Reinicia rápido!", "show_character": "Astro_EVA"},
-	{"speaker": "IA", "text": "..."},
-	{"speaker": "IA", "text": "..."},
+	{"speaker": "IA", "text": "...", "show_character": "Astro_EVA"},
+	{"speaker": "IA", "text": "...", "show_character": "Astro_EVA"},
 	{"speaker": "Astro", "text": "¡Vamos!", "show_character": "Astro_EVA"},
-	{"speaker": "IA", "text": "Sistema reiniciado Astro."},
+	{"speaker": "IA", "text": "Sistema reiniciado Astro.", "show_character": "Astro_EVA"},
 	{"speaker": "Astro", "text": "¡¿Ori estás ahí?! Responde Ori.", "show_character": "Astro_EVA"},
-	{"text": "..."},
-	{"speaker": "IA", "text": "Parece que puedo establecer comunicación con el centro de comandos pero no responde nadie."},
-	{"speaker": "IA", "text": "Astro, sugiero que vuelvas y hagas una inspección."},
+	{"text": "...", "show_character": "Astro_EVA"},
+	{"speaker": "IA", "text": "Parece que puedo establecer comunicación con el centro de comandos pero no responde nadie.", "show_character": "Astro_EVA"},
+	{"speaker": "IA", "text": "Astro, sugiero que vuelvas y hagas una inspección.", "show_character": "Astro_EVA"},
 	{"goto": "end"},
 	
 	{"anchor": "second_choice"},
@@ -32,13 +32,15 @@
 	{"goto": "comunication_problems"},
 	
 	{"anchor": "end"},
+	
 	{"goto": "post_choice"},
-	{"anchor": "third_choice", "item_given":
+	{"anchor": "third_choice", "item_given":[
 		{"id": "llave_antigua",
 		"name": "Llave Antigua",
 		"description": "Una llave oxidada que parece abrir algo muy viejo.",
 		"quantity": 3,
-		"icon_path": "res://Assets/Inventory_icons/old_key.png"}
+		"icon_path": "res://Assets/Inventory_icons/old_key.png"},
+		]
 		},
 	{"speaker": "Astro", "text": "Pues no la encendere..."},
 	{"anchor": "post_choice"},
@@ -46,13 +48,13 @@
 	{"speaker": "Astro", "text": "Pues parece que voy a tener que volver", "show_character": "Astro_EVA"},
 	
 	{"choices": [
-			{"text": "Volver a la Nave de Origen", "action": {"type": "load_scene", "scene_file": "first_scene", "anchor": "return_point_from_space"}},
+			{"text": "Volver a la Nave de Origen", "action": {"type": "load_scene", "scene_file": "spaceship_interior", "anchor": "return_point_from_space"}},
 			{"text": "Explorar el Planeta", "action": {"type": "load_scene", "scene_file": "planet_surface", "anchor": "landing_site"}},
 			{"text": "Consultar el Mapa", "goto": "map_dialog_options"}
 		]
 	},
 	{"anchor": "map_dialog_options"},
-	{"speaker": "IA", "text": "No hay más lugares disponibles en el mapa ahora mismo."},
+	{"speaker": "IA", "text": "No hay más lugares disponibles en el mapa ahora mismo.", "show_character": "Astro_EVA"},
 	{"goto": "return_to_choices"},
 
 	

@@ -1,3 +1,7 @@
+# inventory_ui
+# Capa de vista: mostrar los datos que le pide al InventoryManager. 
+# Sabe de botones, etiquetas y cómo reaccionar a un clic dentro de sí misma 
+# (como por ejemplo mostrar la descripción de un ítem)
 extends CanvasLayer
 
 signal inventory_closed # Señal para notificar a la escena principal que el inventario se cerró

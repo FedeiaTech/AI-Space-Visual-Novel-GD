@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://drryfmjyx8kew"]
 
-[ext_resource type="Script" uid="uid://deal1f2t13ec4" path="res://Scripts/inventory/inventory_ui.gd" id="1_p83af"]
+[ext_resource type="Script" uid="uid://deal1f2t13ec4" path="res://Scripts/Inventory/inventory_ui.gd" id="1_p83af"]
 
 [node name="InventoryUI" type="CanvasLayer"]
 process_mode = 3
@@ -27,9 +27,9 @@ layout_mode = 2
 
 [node name="ItemDetailsPanel" type="VBoxContainer" parent="."]
 offset_left = 550.0
-offset_top = 180.0
+offset_top = 101.0
 offset_right = 1063.0
-offset_bottom = 230.0
+offset_bottom = 455.0
 mouse_filter = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="ItemDetailsPanel"]
@@ -51,8 +51,10 @@ text = "Nombre"
 
 [node name="ItemDescriptionLabel" type="Label" parent="ItemDetailsPanel"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 180)
 layout_mode = 2
-text = "Descripcion del Item"
+text = "Descripcion del Item."
+autowrap_mode = 3
 
 [node name="CloseButton" type="Button" parent="."]
 unique_name_in_owner = true

@@ -1,15 +1,30 @@
-[gd_scene load_steps=7 format=3 uid="uid://bypw7eihxexrm"]
+[gd_scene load_steps=10 format=3 uid="uid://bypw7eihxexrm"]
 
 [ext_resource type="Script" uid="uid://cox74slg0ewob" path="res://Scripts/main_scene.gd" id="1_m8nr8"]
+[ext_resource type="Script" uid="uid://dupk7xq8ogjhp" path="res://Scripts/_command_processor/command_processor.gd" id="2_0vbqt"]
 [ext_resource type="AudioStream" uid="uid://c2np4otufsxe5" path="res://Assets/Sounds/Fx/blink.wav" id="2_47rga"]
 [ext_resource type="Texture2D" uid="uid://cxvq66lt1w87w" path="res://Assets/Scenes_images/scene0_spaceship.png" id="3_0vbqt"]
+[ext_resource type="Script" uid="uid://2mdj4khts5rv" path="res://Scripts/Inventory/inventory_ui_manager.gd" id="3_w1dup"]
 [ext_resource type="PackedScene" uid="uid://bx718nuvws00d" path="res://Scenes/character.tscn" id="3_yyxd1"]
 [ext_resource type="PackedScene" uid="uid://t00wn4dwmk2q" path="res://Scenes/dialog_ui.tscn" id="4_0vbqt"]
+[ext_resource type="Script" uid="uid://dwycxanoffwpy" path="res://Scripts/Dialogues/DialogueManager.gd" id="4_uvydw"]
 [ext_resource type="Theme" uid="uid://c7kebt85foo2f" path="res://Resources/Text_format/opton_choice_button.tres" id="6_yyxd1"]
 
 [node name="MainScene" type="Node2D" groups=["main_scene_group"]]
 process_mode = 3
 script = ExtResource("1_m8nr8")
+
+[node name="CommandProcessor" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("2_0vbqt")
+
+[node name="InventoryUIManager" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("3_w1dup")
+
+[node name="DialogueManager" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("4_uvydw")
 
 [node name="BackgroundMusic" type="AudioStreamPlayer" parent="."]
 unique_name_in_owner = true
@@ -50,6 +65,7 @@ grow_vertical = 2
 [node name="CharacterSprite" parent="CanvasMain/Control" instance=ExtResource("3_yyxd1")]
 
 [node name="DialogUI" parent="CanvasMain" instance=ExtResource("4_0vbqt")]
+visible = false
 
 [node name="CanvasNotification" type="CanvasLayer" parent="."]
 

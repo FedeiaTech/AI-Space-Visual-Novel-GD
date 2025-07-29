@@ -1,8 +1,8 @@
+#dialog_ui.gd
 extends Control
 
 signal text_animation_done
 signal choice_selected(choice_data: Dictionary, item_given_data: Dictionary)
-
 
 @onready var dialog_line: RichTextLabel = %DialogLine
 @onready var speaker_box: PanelContainer = %SpeakerBox
@@ -52,6 +52,7 @@ func _process(delta: float) -> void:
 func change_line(character_name: Character.Name, line : String):
 	# Obtiene los detalles del personaje
 	current_character_details = Character.CHARACTER_DETAILS[character_name]
+	var speaker_color = current_character_details.get("color", Color.WHITE)
 	
 	# Comprueba si el personaje es el narrador
 	if character_name == Character.Name.NARRATOR:
@@ -60,6 +61,8 @@ func change_line(character_name: Character.Name, line : String):
 	else:
 		speaker_box.show() # Muestra la caja del orador
 		speaker_name.text = current_character_details["name"]
+		speaker_name.add_theme_color_override("font_color", speaker_color)
+		#speaker_name_label.show()
 	
 	current_visible_characters = 0
 	dialog_line.text = line

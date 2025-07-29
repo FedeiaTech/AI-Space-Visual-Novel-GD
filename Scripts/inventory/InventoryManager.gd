@@ -1,4 +1,5 @@
 # InventoryManager.gd (Autoload / Singleton)
+# Capa de Datos: maneja los datos del inventario (qué ítems tienes, cuántos, etc.)
 extends Node
 
 # Diccionario para guardar inventarios.
@@ -17,16 +18,16 @@ func _ready():
 	# --- Ítems de prueba (puedes eliminarlos después) ---
 	# Asegúrate de que los ítems de prueba ahora sean diccionarios completos
 	add_item(Character.Name.ASTRO, {
-		"id": "llave_antigua",
-		"name": "Llave Antigua",
-		"description": "Una llave oxidada que parece abrir algo muy viejo.",
-		"quantity": 3,
-		"icon_path": "res://Assets/Inventory_icons/old_key.png"
+		"id": "safety_tether",
+		"name": "Cable de sujeción",
+		"description": "Un cable retráctil de alta resistencia diseñado para mantener al astronauta conectado a la nave o estación durante actividades extravehiculares. Fabricado con fibras compuestas y recubrimiento metálico, soporta tensión extrema y evita la deriva en el vacío. Su sistema de anclaje rápido permite asegurarlo a múltiples puntos de la nave.",
+		"quantity": 1,
+		"icon_path": "res://Assets/Inventory_icons/rope.png"
 	})
 	add_item(Character.Name.ASTRO, {
 		"id": "pocion_roja",
 		"name": "Poción Roja",
-		"description": "Un líquido burbujeante de color carmesí. Podría curar.",
+		"description": "Un líquido burbujeante de color carmesí. Cura ematomas y regenera daños leves en la piel rapidamente. ¡El poder de la biotecnología moderna!",
 		"icon_path": "res://Assets/Inventory_icons/red_potion.png"
 	})
 	add_item(Character.Name.ASTRO, {
@@ -38,7 +39,7 @@ func _ready():
 	add_item(Character.Name.ASTRO, {
 		"id": "moneda_oro",
 		"name": "Moneda de Oro",
-		"description": "Una brillante moneda de oro. Quizás tenga valor.",
+		"description": "Una brillante moneda de oro. Quizás tenga valor o no, pero es un bonito recuerdo de mi abuelo",
 		"icon_path": "res://Assets/Inventory_icons/coin.png"
 	})
 	# --- Fin de ítems de prueba ---

@@ -18,7 +18,7 @@ config/icon="res://Assets/Inventory_icons/icon.svg"
 [autoload]
 
 SceneManager="*res://Scripts/SceneManager.gd"
-InventoryManager="*res://Scripts/inventory/InventoryManager.gd"
+InventoryManager="*res://Scripts/Inventory/InventoryManager.gd"
 GameEvents="*res://Scripts/Global/GameEvents.gd"
 GameManager="*res://Scripts/Global/GameManager.gd"
 

@@ -36,4 +36,33 @@ animations = [{
 "loop": true,
 "name": &"idle",
 "speed": 3.0
+}, {
+"frames": [{
+"duration": 0.8,
+"texture": ExtResource("1_lmitd")
+}, {
+"duration": 0.8,
+"texture": ExtResource("2_beran")
+}, {
+"duration": 0.8,
+"texture": ExtResource("3_lhp51")
+}, {
+"duration": 0.8,
+"texture": ExtResource("2_beran")
+}, {
+"duration": 0.8,
+"texture": ExtResource("1_lmitd")
+}, {
+"duration": 0.8,
+"texture": ExtResource("4_tg2ev")
+}, {
+"duration": 0.8,
+"texture": ExtResource("5_mkgi1")
+}, {
+"duration": 0.8,
+"texture": ExtResource("4_tg2ev")
+}],
+"loop": true,
+"name": &"talking",
+"speed": 3.0
 }]

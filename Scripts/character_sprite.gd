@@ -1,3 +1,4 @@
+#character_sprite.gd
 extends Node2D
 
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
@@ -5,7 +6,24 @@ extends Node2D
 func _ready() -> void:
 	self.modulate.a = 0
 
+func show_sprite():
+	# Muestra el sprite con un fundido de entrada (fade-in)
+	if self.modulate.a < 1.0:
+		create_tween().tween_property(self, "modulate:a", 1.0, 0.3).set_trans(Tween.TRANS_SINE)
+
+func hide_sprite():
+	# Oculta el sprite con un fundido de salida (fade-out)
+	if self.modulate.a > 0.0:
+		create_tween().tween_property(self, "modulate:a", 0.0, 0.3).set_trans(Tween.TRANS_SINE)
+
 func change_character(character_name : Character.Name, is_talking:bool, expression: String):
+	# Obtenemos los detalles para asegurar que el personaje tiene un sprite
+	var character_details = Character.CHARACTER_DETAILS.get(character_name)
+	if not character_details or not character_details.get("sprite_frames"):
+		# Si se intenta cambiar a un personaje sin sprite (como IA o Narrador),
+		# simplemente no hacemos nada aquí.
+		return
+	
 	var sprite_frames = Character.CHARACTER_DETAILS[character_name]["sprite_frames"]
 	var stance = "talking" if is_talking else "idle"
 	var animation_name = expression + "-" + stance if expression else stance
@@ -18,12 +36,13 @@ func change_character(character_name : Character.Name, is_talking:bool, expressi
 			animated_sprite.play(animation_name)
 		else:
 			animated_sprite.play(stance)
-	else:
-		#Cambia a la animacion "idle" del personaje actual mostrado
-		play_idle_animation()
-	
-	if self.modulate.a == 0:
-		create_tween().tween_property(self, "modulate:a", 1.0, 0.3)
+""""""
+	#else:
+		##Cambia a la animacion "idle" del personaje actual mostrado
+		#play_idle_animation()
+	#
+	#if self.modulate.a == 0:
+		#create_tween().tween_property(self, "modulate:a", 1.0, 0.3)
 
 func play_idle_animation():
 	var last_animation = animated_sprite.animation
