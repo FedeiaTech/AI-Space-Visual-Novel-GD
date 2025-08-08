@@ -10,12 +10,13 @@
 > ---
 > 
 > ## 1. Comandos de **Diálogo y Personajes** <a id="seccion-dialogo"></a>
-> Estos comandos controlan el texto en pantalla y los personajes que aparecen.
+> Estos comandos controlan el texto en pantalla y los personajes que aparecen.  
+> Se usan en secuencias narrativas para contar la historia, mostrar conversaciones y expresar emociones.
 > 
 > ---
 > 
 > ### [`text`](#glosario-text) <a id="comando-text"></a>
-> **Propósito:** Muestra una línea de diálogo o una descripción.  
+> **Propósito:** Muestra una línea de diálogo o una descripción. Es el comando principal para que el jugador lea lo que ocurre.  
 > **Sintaxis:**
 > ```json
 > "text": "Tu texto aquí."
@@ -24,7 +25,10 @@
 > ```json
 > {"text": "En alguna parte del espacio..."}
 > ```
-> **Notas:** Si no se especifica un `speaker`, el texto se considera narrado.
+> **Notas y uso avanzado:**  
+> - Puede ser narrativo (sin personaje) o parte de un diálogo.  
+> - Útil para descripciones del entorno, pensamientos internos o mensajes del narrador.  
+> - Evita textos demasiado largos en una sola línea para mejorar la legibilidad.
 > 
 > ---
 > 
@@ -38,12 +42,15 @@
 > ```json
 > {"speaker": "Astro", "text": "¿Qué pasó? mi cabeza..."}
 > ```
-> **Notas:** El nombre debe coincidir con los definidos en tu sistema (`Character.Name`).
+> **Notas y uso avanzado:**  
+> - El nombre debe coincidir con el que está definido en tu sistema (`Character.Name`).  
+> - Permite diferenciar diálogos de distintos personajes incluso si usan el mismo sprite.  
+> - Se puede combinar con `expression` para dar más vida a la conversación.
 > 
 > ---
 > 
 > ### [`show_character`](#glosario-show_character) <a id="comando-show_character"></a>
-> **Propósito:** Muestra o cambia el sprite del personaje visible.  
+> **Propósito:** Muestra o cambia el sprite del personaje visible en pantalla.  
 > **Sintaxis:**
 > ```json
 > "show_character": "NombreDelPersonaje"
@@ -52,15 +59,18 @@
 > ```json
 > {"speaker": "IA", "text": "Sistema de comunicación desconectado.", "show_character": "Astro_EVA"}
 > ```
-> **Notas:** Para ocultar a todos los personajes:  
-> ```json
-> "show_character": "NARRATOR"
-> ```
+> **Notas y uso avanzado:**  
+> - Se usa para mostrar al personaje hablando o reaccionando.  
+> - Para ocultar a todos los personajes:  
+>   ```json
+>   "show_character": "NARRATOR"
+>   ```  
+> - Puede cambiar la imagen del personaje a otra variante (por ejemplo: traje diferente).
 > 
 > ---
 > 
 > ### [`expression`](#glosario-expression) <a id="comando-expression"></a>
-> **Propósito:** Cambia la expresión facial o el estado del sprite.  
+> **Propósito:** Cambia la expresión facial o el estado del sprite para reflejar emociones o reacciones.  
 > **Sintaxis:**
 > ```json
 > "expression": "nombre_expresion"
@@ -69,21 +79,25 @@
 > ```json
 > {"speaker": "Astro", "text": "Orii. estas. ey...", "expression": "scare"}
 > ```
-> **Notas:** El script `text_blip_sound.gd` buscará un sonido asociado a esta expresión.
+> **Notas y uso avanzado:**  
+> - Útil para dar dinamismo a las escenas.  
+> - El script `text_blip_sound.gd` buscará un sonido asociado a esta expresión.  
+> - Ideal para transmitir tensión, felicidad, sorpresa o enojo en diálogos.
 > 
 > ---
 > 
 > ## 2. Comandos de **Flujo de Escena y Navegación** <a id="seccion-flujo"></a>
-> Controlan el orden de lectura del diálogo y transiciones.
+> Controlan el orden de lectura del diálogo y las transiciones de una parte del guion a otra.
 > 
 > ---
 > 
 > ### [`goto`](#glosario-goto) <a id="comando-goto"></a>
-> **Propósito:** Salta la ejecución a un `anchor`.  
+> **Propósito:** Salta la ejecución a un `anchor` dentro del mismo archivo JSON.  
 > **Ejemplo:**
 > ```json
 > {"goto": "end"}
 > ```
+> **Notas:** Útil para ramificar diálogos según elecciones o condiciones previas.
 > 
 > ---
 > 
@@ -93,15 +107,17 @@
 > ```json
 > {"anchor": "comunication_problems"}
 > ```
+> **Notas:** Piensa en los `anchor` como "marcadores" o "checkpoints" dentro de tu guion.
 > 
 > ---
 > 
 > ### [`action`](#glosario-action) <a id="comando-action"></a>
-> **Propósito:** Ejecuta acciones complejas.
+> **Propósito:** Ejecuta acciones complejas o transiciones.  
+> **Sintaxis general:**
 > ```json
 > "action": {"type": "nombre_accion", "parametro1": "valor1"}
 > ```
-> **Tipo `load_scene`:**
+> **Ejemplo tipo `load_scene`:**
 > ```json
 > {
 >   "text": "Ir al corredor central",
@@ -112,7 +128,7 @@
 >   }
 > }
 > ```
-> **Tipo `goto_internal`:**
+> **Ejemplo tipo `goto_internal`:**
 > ```json
 > {
 >   "text": "Revisar los sistemas de nuevo",
@@ -122,26 +138,33 @@
 >   }
 > }
 > ```
+> **Notas:**  
+> - `load_scene` carga una escena diferente.  
+> - `goto_internal` salta dentro de la misma escena.  
+> - Se pueden crear otros tipos personalizados según la lógica del juego.
 > 
 > ---
 > 
 > ### [`next_scene`](#glosario-next_scene) <a id="comando-next_scene"></a>
-> **Propósito:** Define la escena a cargar al terminar el archivo.  
+> **Propósito:** Define la siguiente escena a cargar cuando termina el archivo.  
 > ```json
 > {"next_scene": "first_scene", "transition": "fade"}
 > ```
+> **Notas:** Ideal para una narrativa lineal, evitando el uso repetitivo de `load_scene`.
 > 
 > ---
 > 
 > ## 3. Comandos de **Ambiente y Visuales** <a id="seccion-ambiente"></a>
+> Estos comandos afectan el fondo, la música y el ambiente de la escena.
 > 
 > ---
 > 
 > ### [`location`](#glosario-location) <a id="comando-location"></a>
-> **Propósito:** Cambia el fondo.  
+> **Propósito:** Cambia el fondo de la escena.  
 > ```json
 > {"location": "scene0_spaceship", "music": "track01"}
 > ```
+> **Notas:** Puede acompañarse de `music` para sincronizar audio y visual.
 > 
 > ---
 > 
@@ -150,6 +173,7 @@
 > ```json
 > {"location": "scene0_spaceship", "music": "track01"}
 > ```
+> **Notas:** Asegúrate de que el nombre de pista exista en tu sistema de audio.
 > 
 > ---
 > 
@@ -158,7 +182,7 @@
 > ---
 > 
 > ### [`item_given`](#glosario-item_given) <a id="comando-item_given"></a>
-> **Propósito:** Añade objetos al inventario.  
+> **Propósito:** Añade objetos al inventario del jugador.  
 > ```json
 > {
 >   "item_given": [
@@ -166,23 +190,28 @@
 >   ]
 > }
 > ```
+> **Notas:**  
+> - `id` debe coincidir con un ítem válido en tu base de datos.  
+> - Se puede usar para recompensas o progresión de la historia.
 > 
 > ---
 > 
 > ### [`set_flag`](#glosario-set_flag) <a id="comando-set_flag"></a>
-> **Propósito:** Establece o modifica una bandera.  
+> **Propósito:** Activa o modifica una bandera lógica que puede condicionar eventos futuros.  
 > ```json
 > {"text": "...", "set_flag": {"id": "mision_anomalia", "value": true}}
 > ```
+> **Notas:** Ideal para controlar elecciones persistentes o desbloquear contenido.
 > 
 > ---
 > 
 > ## 5. Comandos de **Elecciones del Jugador** <a id="seccion-choices"></a>
+> Permiten al jugador decidir y ramificar la historia.
 > 
 > ---
 > 
 > ### [`choices`](#glosario-choices) <a id="comando-choices"></a>
-> **Propósito:** Presenta opciones al jugador.  
+> **Propósito:** Presenta opciones interactivas.  
 > ```json
 > {
 >   "anchor": "return_to_choices",
@@ -209,34 +238,44 @@
 >   ]
 > }
 > ```
+> **Notas:**  
+> - Puedes condicionar opciones según ítems (`requires_item`) o banderas (`requires_flag`).  
+> - Útil para crear decisiones con consecuencias reales.
 > 
 > ---
 > 
 > ## 6. Comandos de **Gestión del Tiempo** <a id="seccion-tiempo"></a>
+> Controlan el reloj interno del juego y su visibilidad.
 > 
 > ---
 > 
 > ### [`set_time_absolute`](#glosario-set_time_absolute) <a id="comando-set_time_absolute"></a>
+> **Propósito:** Fija la hora del reloj del juego.  
 > **Ejemplo:**
 > ```json
 > {"set_time_absolute": "00:45", "show_time_ui": true}
 > ```
+> **Notas:** Ideal para escenas que ocurren en momentos clave.
 > 
 > ---
 > 
 > ### [`modify_time`](#glosario-modify_time) <a id="comando-modify_time"></a>
+> **Propósito:** Suma o resta segundos al reloj interno.  
 > **Ejemplo (resta 5 minutos):**
 > ```json
 > {"speaker": "Astro", "text": "¡Reinicia rápido!", "modify_time": -300}
 > ```
+> **Notas:** Útil para mecánicas de cuenta regresiva o eventos cronometrados.
 > 
 > ---
 > 
 > ### [`show_time_ui`](#glosario-show_time_ui) <a id="comando-show_time_ui"></a>
+> **Propósito:** Muestra u oculta el reloj en pantalla.  
 > **Ejemplo:**
 > ```json
 > {"speaker": "Astro", "text": "¡Vamos!", "show_time_ui": false}
 > ```
+> **Notas:** Perfecto para ocultar el tiempo en escenas narrativas y mostrarlo en desafíos.
 > 
 > ---
 > 
