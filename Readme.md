@@ -2,6 +2,9 @@
 
 ¡Bienvenido al repositorio de **AI Space Visual Novel**! Este proyecto es un juego de novela visual en desarrollo, creado con Godot Engine, que te sumergirá en una narrativa interactiva con elementos de ciencia ficción.
 
+## Links
+[Tutorial de archivos JSON](https://github.com/FedeiaTech/AI-Space-Visual-Novel-GD/blob/main/Tutorial%20Archivos%20JSON.md)
+
 ---
 
 ## ✨ Nuevas Características y Mejoras (v0.0.5) - 08-07-2025
