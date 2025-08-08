@@ -24,8 +24,12 @@ const CHARACTER_DETAILS : Dictionary = {
 		"name" : "Astro",
 		"gender": "male",
 		"sprite_frames": preload("res://Resources/Sprites_saves/Astro_sprites.tres"),
-		"color": Color("#ff0000") # Rojo
-		#"color": Color("#FFD700") # Un amarillo dorado
+		"color": Color("#ff0000"), # Rojo
+		#"color": Color("#FFD700"), # Un amarillo dorado
+		"expression_sounds": {
+			"scare": preload("res://Assets/Sounds/Voices/male/man_scare.wav"),
+			"doubt": preload("res://Assets/Sounds/Voices/male/man_what.wav")
+		}
 	},
 	Name.ASTRO_EVA: {
 		"name" : "Astro_EVA",

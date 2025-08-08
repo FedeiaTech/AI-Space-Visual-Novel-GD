@@ -2,6 +2,7 @@
 	{"location": "scene0_spaceship", "music": "track01"},
 	
 	{"text": "En alguna parte del espacio..."},
+	{"set_time_absolute": "00:45", "show_time_ui": true},
 	{"speaker": "Astro", "text": "¿Qué paso? mi cabeza...", "show_character": "Astro_EVA"},
 	{"speaker": "Astro", "text": "Muchachos.. ¿Cómo están ahi?", "show_character": "Astro_EVA"},
 	{"speaker": "IA", "text": "Sistema de comunicación desconectado. Se sugiere reiniciar.", "show_character": "Astro_EVA"},
@@ -15,10 +16,10 @@
 	},
 	
 	{"anchor": "first_choice"},
-	{"speaker": "Astro", "text": "¡Reinicia rápido!", "show_character": "Astro_EVA"},
+	{"speaker": "Astro", "text": "¡Reinicia rápido!", "show_character": "Astro_EVA", "modify_time": -300},
 	{"speaker": "IA", "text": "...", "show_character": "Astro_EVA"},
 	{"speaker": "IA", "text": "...", "show_character": "Astro_EVA"},
-	{"speaker": "Astro", "text": "¡Vamos!", "show_character": "Astro_EVA"},
+	{"speaker": "Astro", "text": "¡Vamos!", "show_character": "Astro_EVA", "show_time_ui": false},
 	{"speaker": "IA", "text": "Sistema reiniciado Astro.", "show_character": "Astro_EVA"},
 	{"speaker": "Astro", "text": "¡¿Ori estás ahí?! Responde Ori.", "show_character": "Astro_EVA"},
 	{"text": "...", "show_character": "Astro_EVA"},
@@ -28,7 +29,7 @@
 	
 	{"anchor": "second_choice"},
 	{"speaker": "Astro", "text": "¿Hay comunicación? ¡¿Ori estás ahí?!", "show_character": "Astro_EVA"},
-	{"text": "...", "show_character": "Astro_EVA"},
+	{"text": "...", "show_character": "Astro_EVA", "set_flag": {"id": "mision_anomalia", "value": true}},
 	{"goto": "comunication_problems"},
 	
 	{"anchor": "end"},
@@ -47,17 +48,25 @@
 	
 	{"speaker": "Astro", "text": "Pues parece que voy a tener que volver", "show_character": "Astro_EVA"},
 	
+	{"anchor": "return_to_choices"},
 	{"choices": [
 			{"text": "Volver a la Nave de Origen", "action": {"type": "load_scene", "scene_file": "spaceship_interior", "anchor": "return_point_from_space"}},
-			{"text": "Explorar el Planeta", "action": {"type": "load_scene", "scene_file": "planet_surface", "anchor": "landing_site"}},
-			{"text": "Consultar el Mapa", "goto": "map_dialog_options"}
+			{"text": "Explorar el Planeta", "goto": "planet_explorer", "requires_flag": "mision_anomalia", "flag_value": true},
+			{"text": "Consultar el Mapa", "goto": "map_dialog_options", "requires_item": "map_rasgado"}
 		]
 	},
 	{"anchor": "map_dialog_options"},
 	{"speaker": "IA", "text": "No hay más lugares disponibles en el mapa ahora mismo.", "show_character": "Astro_EVA"},
+	{"choices": [
+			{"text": "Consultar el Mapa", "goto": "map_dialog_options", "requires_item": "map_rasgado"}
+		]
+	},
+	{"speaker": "Astro", "text": "Qué deberia hacer?", "show_character": "Astro_EVA"},
 	{"goto": "return_to_choices"},
-
 	
+	{"anchor": "planet_explorer"},
+	{"text": "Puedes ver el planeta..."},
+	{"goto": "return_to_choices"},
 	
 	{"speaker": "Milka", "text": "Ahora hablo yo. Me llamo Milka.", "item_given": [
 				{

@@ -8,8 +8,11 @@ extends Node2D
 @onready var character_sprite = $CanvasMain/Control/CharacterSprite
 @onready var dialog_ui: Control = $CanvasMain/DialogUI
 @onready var next_sentence_sound: AudioStreamPlayer = %NextSentenceSound
+# Notificaciones
 @onready var item_acquired_notification: Label = %ItemAcquiredNotification
 @onready var notification_timer: Timer = %NotificationTimer
+@onready var time_label: Label = $CanvasNotification/TimeLabel
+# Nodos Extra
 @onready var command_processor: Node = $CommandProcessor
 @onready var inventory_ui_manager: Node = %InventoryUIManager
 @onready var dialogue_manager: Node = %DialogueManager
@@ -36,7 +39,10 @@ func _ready() -> void:
 	dialogue_manager.dialogue_finished.connect(_on_dialogue_manager_finished)
 	notification_timer.timeout.connect(_on_notification_timer_timeout)
 	GameEvents.item_acquired_notification_requested.connect(show_item_acquired_notification_requested)
+	TimeManager.time_updated.connect(func(new_time): time_label.text = new_time)
 
+	# Ocultar etiqueta tiempo
+	time_label.hide()
 	# Carga inicial manejada por DialogManager
 	var initial_dialog_file = "res://Resources/Story/intro.json"
 	dialogue_manager.load_dialog_file(initial_dialog_file)
@@ -159,52 +165,54 @@ func _on_choice_selected(choice_data: Dictionary, _item_given_data = null):
 		command_processor._process_item_given(choice_data["item_given"])
 
 	if choice_data.has("action"):
-		command_processor._handle_action(choice_data)
+		command_processor._handle_action(choice_data, false)
 	elif choice_data.has("goto"):
-		command_processor._handle_goto(choice_data)
+		command_processor._handle_goto(choice_data, false)
 	else:
 		printerr("Error: La elección no tiene ni 'action' ni 'goto'.", choice_data)
 
 # Se ejecuta al finalizar la transición de salida. Carga el nuevo diálogo y salta a anclas si corresponde.
 func _on_transition_out_completed():
-	# 1. Carga el contenido del nuevo archivo de diálogo en el manager.
-	var pending_anchor = dialogue_manager.pending_anchor
+	# 1. Carga el contenido del nuevo archivo de diálogo.
+	pending_anchor = dialogue_manager.pending_anchor
 	dialogue_manager.load_dialog_file(dialogue_manager.dialog_file, pending_anchor)
-	dialogue_manager.pending_anchor = "" # Limpiamos el ancla pendiente
+	dialogue_manager.pending_anchor = ""
 
-	# Si el archivo no se pudo cargar, simplemente volvemos.
 	if dialogue_manager.dialog_lines.is_empty():
 		SceneManager.transition_in(transition_effect)
 		return
 
-	# 2. Bucle de pre-procesamiento: Ejecuta las líneas de configuración iniciales.
-	#    Esto sucede mientras la pantalla está en negro.
+	# 2. Bucle de pre-procesamiento.
 	while dialogue_manager.dialog_index < dialogue_manager.dialog_lines.size():
 		var current_line = dialogue_manager.dialog_lines[dialogue_manager.dialog_index]
 		
-		# Verificamos si es una línea de solo configuración (sin texto o elección)
-		var is_setup_line = (current_line.has("location") or current_line.has("music") or current_line.has("anchor")) and \
-							not (current_line.has("text") or current_line.has("choices"))
+		# Es una línea de setup si no tiene contenido para el jugador (texto/elecciones)
+		var is_setup_line = not (current_line.has("text") or current_line.has("choices"))
 		
 		if is_setup_line:
-			# Ejecutamos el comando (esto cambiará el fondo/música)
-			command_processor.execute(current_line)
-			# El command_processor ya no llama a advance_line, así que lo hacemos aquí.
-			dialogue_manager.process_current_line()
-			#dialogue_manager.advance_index()
+			# Pre-procesamiento: is_preprocessing es TRUE
+			# Esto ejecutará TODOS los comandos en la línea (location, show_character, set_flag, etc.)
+			# pero los manejadores que modificamos no intentarán avanzar el diálogo.
+			command_processor.execute(current_line, true)
+			
+			# Nosotros, el bucle, avanzamos el índice.
+			dialogue_manager.advance_index()
 		else:
-			# Si encontramos una línea con contenido, detenemos el bucle.
+			# Encontramos la primera línea con contenido visible. Detenemos el bucle.
 			break
 	
-	# 3. Ahora que todo está preparado, iniciamos la transición de entrada.
+	# 3. Iniciamos la transición de entrada.
 	SceneManager.transition_in(transition_effect)
 
 # Se ejecuta cuando finaliza la transición de entrada.
 # Procesa la línea actual y muestra la UI de diálogo.
 func _on_transition_in_completed():
+	# is_transitioning se debe poner a false *después* de procesar la línea
+	# para evitar que el jugador pueda hacer click mientras aparece el texto.
+	#character_sprite.show()
+	dialog_ui.show() 
+	
 	dialogue_manager.process_current_line()
-	dialog_ui.show()
-	character_sprite.show()
 	is_transitioning = false
 
 # Al recibir una solicitud de carga de nuevo archivo de diálogo, 

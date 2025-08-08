@@ -7,6 +7,7 @@ func _ready() -> void:
 	self.modulate.a = 0
 
 func show_sprite():
+	self.visible = true
 	# Muestra el sprite con un fundido de entrada (fade-in)
 	if self.modulate.a < 1.0:
 		create_tween().tween_property(self, "modulate:a", 1.0, 0.3).set_trans(Tween.TRANS_SINE)
@@ -16,6 +17,11 @@ func hide_sprite():
 	if self.modulate.a > 0.0:
 		create_tween().tween_property(self, "modulate:a", 0.0, 0.3).set_trans(Tween.TRANS_SINE)
 
+func hide_instantly():
+	# En lugar de usar hide(), simplemente lo hacemos 100% transparente.
+	# Así evitamos problemas con la propiedad 'visible'.
+	modulate.a = 0.0
+	
 func change_character(character_name : Character.Name, is_talking:bool, expression: String):
 	# Obtenemos los detalles para asegurar que el personaje tiene un sprite
 	var character_details = Character.CHARACTER_DETAILS.get(character_name)

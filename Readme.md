@@ -1,6 +1,41 @@
-# AI Space Visual Novel - Versión 0.0.4 Alpha
+# AI Space Visual Novel - Versión 0.0.5 Alpha
 
 ¡Bienvenido al repositorio de **AI Space Visual Novel**! Este proyecto es un juego de novela visual en desarrollo, creado con Godot Engine, que te sumergirá en una narrativa interactiva con elementos de ciencia ficción.
+
+---
+
+## ✨ Nuevas Características y Mejoras (v0.0.5) - 08-07-2025
+
+Esta versión se centra en la **implementación de sistemas narrativos dinámicos** que aumentan la rejugabilidad y la profundidad de la historia, junto con una **significativa optimización de las transiciones de escena y la gestión de personajes** para una experiencia más fluida y sin errores.
+
+### Sistema de Diálogos Condicionales y Lógica Narrativa
+
+Se ha ampliado el sistema de diálogo para que la narrativa responda de manera inteligente a las acciones del jugador, permitiendo múltiples caminos en la historia.
+
+* **Diálogos Condicionales Basados en Ítems**: Las opciones de diálogo ahora pueden requerir la posesión de un ítem específico en el inventario del jugador. El `CommandProcessor.gd` filtra automáticamente las opciones, mostrando solo las disponibles, lo que evita "callejones sin salida" en la trama y añade una capa de interacción con el entorno.
+* **Sistema de Banderas de Misión (Quest Flags)**: `GameManager.gd` ahora gestiona un sistema de banderas de misión para rastrear el progreso del jugador. Se han añadido nuevos comandos al JSON de diálogo (como **`set_flag`**) para que la historia pueda activar o desactivar estas banderas dinámicamente. Esto permite que las opciones de diálogo y los eventos de la historia cambien según el estado de las misiones.
+* **Optimización de la Ejecución de Comandos**: Se ha corregido el orden de ejecución en `CommandProcessor.gd` para asegurar que los comandos que establecen estados (`set_flag`, `item_given`) se procesen antes que los comandos que dependen de ellos (`choices`), garantizando la coherencia de la lógica de juego.
+
+### Sistema de Tiempo Regresivo
+
+Se ha implementado un sistema de temporizador que introduce presión y consecuencias en la narrativa, haciendo que el tiempo sea un recurso más del juego.
+
+* **Gestión Centralizada del Tiempo**: Un nuevo **Autoload (Singleton)**, `TimeManager.gd`, se encarga de toda la lógica del temporizador. Este sistema gestiona el conteo de segundos, formatea la visualización de la hora y emite una señal para mantener la interfaz de usuario actualizada.
+* **Control a Través del Diálogo**: Se han añadido tres nuevos comandos para manipular el tiempo directamente desde el JSON de diálogo:
+    * `set_time_absolute`: Establece un valor de tiempo inicial.
+    * `modify_time`: Suma o resta tiempo al contador actual.
+    * `show_time_ui`: Muestra u oculta el temporizador en la interfaz de usuario.
+* **Formato de Visualización**: El temporizador se muestra en la UI con el formato `HH:MM:SS`, proporcionando una visualización clara y personalizada para el jugador.
+
+### Correcciones y Mejoras en la Arquitectura de Transiciones
+
+Se han solucionado varios problemas críticos relacionados con la carga de escenas y la visualización de elementos, mejorando la estabilidad y la experiencia de usuario.
+
+* **Sincronización de Voces y Transiciones**: Se resolvió una "condición de carrera" que causaba que las voces comenzaran a sonar durante las transiciones de escena. La lógica de avance de diálogo ahora está contextualizada, permitiendo que los comandos se comporten de manera diferente durante la carga de una escena para evitar este error.
+* **Corrección de la Interfaz y Carga de Sprites**: Se solucionó un problema que requería clics adicionales para avanzar en el diálogo y que a veces impedía la carga correcta de los sprites de personajes en nuevas escenas. El sistema ahora gestiona el avance de manera más inteligente, evitando interrupciones en el flujo narrativo.
+* **Desaparición del "Fantasma" del Personaje**: Se eliminó un error que hacía que el sprite de un personaje de la escena anterior apareciera brevemente. La visibilidad de los sprites ahora es gestionada exclusivamente por los comandos de diálogo, asegurando que solo se muestren cuando corresponda.
+* **Unificación del Control de Visibilidad**: Se corrigió un conflicto de visibilidad entre la propiedad `visible` del nodo y la transparencia (`modulate.a`). Ahora, la función `show_sprite` en `character_sprite.gd` unifica el control, asegurando que los sprites aparezcan correctamente y evitando que queden invisibles por un error de lógica.
+
 
 ---
 

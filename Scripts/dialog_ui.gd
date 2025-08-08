@@ -9,7 +9,6 @@ signal choice_selected(choice_data: Dictionary, item_given_data: Dictionary)
 @onready var speaker_name: Label = %SpeakerName
 @onready var choice_list: VBoxContainer = %ChoiceList
 @onready var text_blip_sound: AudioStreamPlayer = $TextBlipSound
-@onready var text_blip_timer: Timer = $TextBlipTimer
 @onready var sentence_pause_timer: Timer = %SentencePauseTimer
 
 #precarga de escena de eleccion
@@ -29,33 +28,42 @@ func _ready() -> void:
 	speaker_name.text = ""
 	
 	#conectar señales
-	text_blip_timer.timeout.connect(_on_text_blip_timeout)
 	sentence_pause_timer.timeout.connect(_on_sentence_pause_timeout)
 
 func _process(delta: float) -> void:
+	# Si la animación está activa y el temporizador no está contando...
 	if animate_text and sentence_pause_timer.is_stopped():
 		if dialog_line.visible_ratio < 1:
 			dialog_line.visible_ratio += (1.0 / dialog_line.text.length()) * (ANIMATION_SPEED * delta)
 			if dialog_line.visible_characters > current_visible_characters:
 				current_visible_characters = dialog_line.visible_characters
 				var current_char = dialog_line.text[current_visible_characters - 1]
+				# Si el siguiente caracter es un espacio y el actual es un signo de puntuación...
 				if current_visible_characters < dialog_line.text.length():
 					var next_char = dialog_line.text[current_visible_characters]
 					if NO_SOUND_CHARS.has(current_char) and next_char == " ":
-						text_blip_timer.stop()
-						sentence_pause_timer.start()
+						if text_blip_sound.is_playing_expression_sound:
+							sentence_pause_timer.start()
+						else:
+							# Detiene el audio para la pausa y arranca el timer
+							text_blip_sound.stop_sound()
+							sentence_pause_timer.start()
 		else:
+			# Si la animación ha terminado
 			animate_text = false
-			text_blip_timer.stop()
+			text_blip_sound.stop_sound()
 			text_animation_done.emit()
 
-func change_line(character_name: Character.Name, line : String):
+func change_line(character_name: Character.Name, line : String, expression: String = ""):
 	# Obtiene los detalles del personaje
 	current_character_details = Character.CHARACTER_DETAILS[character_name]
 	var speaker_color = current_character_details.get("color", Color.WHITE)
 	
+	# Detener cualquier sonido de la línea anterior
+	text_blip_sound.stop_sound()
+	
 	# Comprueba si el personaje es el narrador
-	if character_name == Character.Name.NARRATOR:
+	if current_character_details.get("name", "") == "":
 		speaker_box.hide() # Oculta la caja del orador
 		speaker_name.text = "" # Asegúrate de que el nombre del orador esté vacío
 	else:
@@ -63,12 +71,13 @@ func change_line(character_name: Character.Name, line : String):
 		speaker_name.text = current_character_details["name"]
 		speaker_name.add_theme_color_override("font_color", speaker_color)
 		#speaker_name_label.show()
+		# Iniciar la reproducción aleatoria de sonidos si no es el narrador
+		text_blip_sound.start_dialogue_sound(current_character_details, expression)
 	
 	current_visible_characters = 0
 	dialog_line.text = line
 	dialog_line.visible_characters = 0
 	animate_text = true
-	text_blip_timer.start()
 
 func display_choices(choices: Array):
 	#primero borrar cualquier opcion existente anterior
@@ -98,18 +107,8 @@ func display_choices(choices: Array):
 
 func skip_text_animation():
 	dialog_line.visible_ratio = 1
-
-func _on_text_blip_timeout():
-	# Solo reproducir sonido si no es el narrador
-	if current_character_details.get("name", "") != "": # Asume que el narrador tiene nombre vacío
-		text_blip_sound.play_sound(current_character_details)
+	text_blip_sound.stop_sound()
 
 func _on_sentence_pause_timeout():
-	text_blip_timer.start()
-
-# Elimina o deja vacía esta función, ya no es necesaria si el botón conecta directamente.
-# El método que recibe la señal del botón de elección ahora acepta el `item_given_data`
-#func _on_choice_button_pressed(anchor: String, item_given_data: Dictionary):
-	# Emitir la señal con los datos del ítem
-	#choice_selected.emit(anchor, item_given_data) 
-	#choice_list.hide()
+	# Reanuda el audio y la animación después de la pausa
+	text_blip_sound.start_dialogue_sound(current_character_details, "")

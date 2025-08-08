@@ -19,10 +19,6 @@ unique_name_in_owner = true
 wait_time = 0.328
 one_shot = true
 
-[node name="TextBlipTimer" type="Timer" parent="."]
-unique_name_in_owner = true
-wait_time = 0.52
-
 [node name="TextBlipSound" type="AudioStreamPlayer" parent="."]
 script = ExtResource("2_dy63b")
 

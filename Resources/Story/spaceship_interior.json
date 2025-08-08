@@ -13,7 +13,7 @@
 	
 	{"anchor": "first_helmet_out"},
 	{"location": "decompression_chamber_helmet", "music": "track01"},
-	{"speaker": "Astro", "text": "..."},
+	{"text": "...", "show_character": "Astro"},
 	{"speaker": "Astro", "text": "Deberia ir ya a la sala de control.", "expression": "mad"},
 	
 	{"choices": [
@@ -24,7 +24,7 @@
 	
 	{"anchor": "ori__stuned"},
 	{"location": "ori_stuned", "music": "track01"},
-	{"speaker": "Astro", "text": "..."},
+	{"speaker": "Astro", "text": "Orii. estas. ey. ¿Te encuentras biendfs.  ds dsdf ds fs fs f . ds fdsf  ds  sfs sf. sf sf sd ?...", "expression": "scare"},
 	{"speaker": "Astro", "text": "Continuará..."},
 	{"goto": "end"},
 	
