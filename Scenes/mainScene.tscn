@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://bypw7eihxexrm"]
+[gd_scene load_steps=11 format=3 uid="uid://bypw7eihxexrm"]
 
 [ext_resource type="Script" uid="uid://cox74slg0ewob" path="res://Scripts/main_scene.gd" id="1_m8nr8"]
 [ext_resource type="Script" uid="uid://dupk7xq8ogjhp" path="res://Scripts/_command_processor/command_processor.gd" id="2_0vbqt"]
@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://t00wn4dwmk2q" path="res://Scenes/dialog_ui.tscn" id="4_0vbqt"]
 [ext_resource type="Script" uid="uid://dwycxanoffwpy" path="res://Scripts/Dialogues/DialogueManager.gd" id="4_uvydw"]
 [ext_resource type="Theme" uid="uid://c7kebt85foo2f" path="res://Resources/Text_format/opton_choice_button.tres" id="6_yyxd1"]
+[ext_resource type="PackedScene" uid="uid://b7vmdbxmok30i" path="res://Scenes/UI/journal_ui.tscn" id="10_mhr8t"]
 
 [node name="MainScene" type="Node2D" groups=["main_scene_group"]]
 process_mode = 3
@@ -28,26 +29,23 @@ script = ExtResource("4_uvydw")
 
 [node name="BackgroundMusic" type="AudioStreamPlayer" parent="."]
 unique_name_in_owner = true
+bus = &"BGM"
 
 [node name="NextSentenceSound" type="AudioStreamPlayer" parent="."]
 unique_name_in_owner = true
 stream = ExtResource("2_47rga")
+bus = &"SFX"
 
 [node name="CanvasBackground" type="CanvasLayer" parent="."]
 process_mode = 1
 
 [node name="Background" type="TextureRect" parent="CanvasBackground"]
 unique_name_in_owner = true
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
+anchors_preset = 15
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -576.0
-offset_top = -648.0
-offset_right = 576.0
 grow_horizontal = 2
-grow_vertical = 0
+grow_vertical = 2
 texture = ExtResource("3_0vbqt")
 
 [node name="CanvasMain" type="CanvasLayer" parent="."]
@@ -63,6 +61,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="CharacterSprite" parent="CanvasMain/Control" instance=ExtResource("3_yyxd1")]
+layout_mode = 1
 
 [node name="DialogUI" parent="CanvasMain" instance=ExtResource("4_0vbqt")]
 visible = false
@@ -101,3 +100,7 @@ theme_override_font_sizes/font_size = 28
 text = "12:00"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="JournalUI" parent="CanvasNotification" instance=ExtResource("10_mhr8t")]
+unique_name_in_owner = true
+visible = false

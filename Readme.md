@@ -1,4 +1,4 @@
-# AI Space Visual Novel - Versión 0.0.5 Alpha
+# AI Space Visual Novel - Versión 0.0.6 Alpha
 
 ¡Bienvenido al repositorio de **AI Space Visual Novel**! Este proyecto es un juego de novela visual en desarrollo, creado con Godot Engine, que te sumergirá en una narrativa interactiva con elementos de ciencia ficción.
 
@@ -8,7 +8,41 @@
 
 ---
 
-## ✨ Nuevas Características y Mejoras (v0.0.5) - 08-07-2025
+## ✨ Nuevas Características y Mejoras (v0.0.6) - 16-08-2025
+
+Esta versión se enfoca en una **renovación total de la interfaz de usuario**, incorporando un sistema de menú robusto y flexible. También se han realizado **mejoras críticas en el flujo de juego** y en la **estabilidad del sistema de diario (log)**.
+
+### Renovación de la Interfaz y Controles de Juego
+
+Se ha rediseñado la interfaz de usuario para mejorar la experiencia del jugador, con un enfoque en la personalización y la estabilidad.
+
+* **Aumento de la Resolución de Pantalla**: La interfaz gráfica del juego ha sido redimensionada a **1280x720 píxeles** (720p), lo que permite una mayor calidad visual y más espacio para los elementos de la interfaz.
+* **Nuevo Fondo de Título**: Se ha añadido un nuevo fondo visual para la pantalla de título, mejorando la estética del inicio del juego.
+* **Menús Principal y de Opciones Reestructurados**: Los menús ahora coexisten en la misma escena. El menú de opciones se muestra u oculta dinámicamente, lo que permite una navegación fluida sin recargar la escena principal.
+* **Controles de Volumen Personalizables**: El jugador puede ajustar de forma independiente el volumen de la música (`BGM`), las voces y los efectos de sonido (`SFX`) mediante controles deslizantes. Este sistema utiliza los buses de audio de Godot y muestra los valores en un porcentaje intuitivo (0-100%).
+* **Configuración de Resolución en Tiempo Real**: Se ha implementado un menú desplegable que permite a los jugadores cambiar la resolución del juego sobre la marcha, ajustando el viewport raíz y garantizando que la interfaz se adapte correctamente.
+* **Alternancia de Pantalla Completa**: Se ha añadido un botón para cambiar entre el modo ventana y pantalla completa, integrado con el sistema de cambio de resolución.
+* **Estabilidad Mejorada**: Se han corregido errores de inicialización y manejo de eventos, asegurando que los menús funcionen de manera estable, especialmente en las versiones exportadas del juego.
+
+### Sistema de Diario (Log) y Estabilidad
+
+Se ha implementado un sistema de registro de diálogos, junto con mejoras que aseguran su correcto funcionamiento.
+
+* **Diario de Diálogos Global**: Se ha añadido un **Autoload (Singleton)**, `JournalManager.gd`, que registra y almacena automáticamente todas las líneas de diálogo que el jugador ha visto.
+* **Registro Automático**: El `CommandProcessor` ahora envía automáticamente cada línea de diálogo con texto al `JournalManager` para su registro.
+* **Corrección de Renderizado de Texto**: Se identificó un problema de compatibilidad con el nodo `RichTextLabel` que causaba errores de renderizado en las entradas del diario. Se ha reemplazado por el nodo **`Label`**, un tipo de texto plano más simple y fiable que garantiza una visualización correcta de las entradas.
+
+### Correcciones Críticas en el Flujo de Juego
+
+Se han resuelto problemas de lógica en el procesamiento de comandos para garantizar un flujo narrativo sin interrupciones.
+
+* **Sincronización de Comandos**: Se ha eliminado la lógica de avance automático de los manejadores de comandos individuales (`_handle_location`, `_handle_anchor`). Ahora, un bucle de pre-procesamiento central en `main_scene.gd` se encarga de saltar las líneas que solo contienen comandos, evitando que el juego se quede "atascado" o salte diálogos con texto.
+* **Transiciones Optimizadas**: El manejo de las transiciones de escena y los saltos internos (`goto_internal`) ha sido optimizado para asegurar que la nueva escena se cargue correctamente y el diálogo se retome en el punto exacto.
+* **Depuración Detallada**: A través de un proceso de depuración riguroso, se confirmó que los datos se transmitían correctamente entre los gestores y que el problema de renderizado estaba localizado en la incompatibilidad del nodo de texto.
+
+---
+
+## ✨ Nuevas Características y Mejoras (v0.0.5) - 08-08-2025
 
 Esta versión se centra en la **implementación de sistemas narrativos dinámicos** que aumentan la rejugabilidad y la profundidad de la historia, junto con una **significativa optimización de las transiciones de escena y la gestión de personajes** para una experiencia más fluida y sin errores.
 

@@ -1,5 +1,5 @@
 #character_sprite.gd
-extends Node2D
+extends Control
 
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
 

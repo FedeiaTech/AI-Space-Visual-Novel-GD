@@ -38,7 +38,7 @@ const CHARACTER_DETAILS : Dictionary = {
 		"color": Color("#e61919") # Rojo desaturado
 	},
 	Name.IA: {
-		"name" : "IA",
+		"name" : "Spark (IA)",
 		"gender": "-",
 		"sprite_frames": null,
 		"color": Color("#ffffff") # blanco

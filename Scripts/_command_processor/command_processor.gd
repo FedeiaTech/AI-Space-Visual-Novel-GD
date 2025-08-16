@@ -202,34 +202,49 @@ func _handle_choices(line: Dictionary,_is_preprocessing: bool = false) -> String
 	
 	return "stop_processing" # Las elecciones detienen el procesamiento de esta línea
 
-func _handle_text(line: Dictionary,_is_preprocessing: bool = false) -> String:
-	# 1. Determinar el NOMBRE del hablante (para la UI).
+func _handle_text(line: Dictionary, _is_preprocessing: bool = false) -> String:
+	# --- 1. Determinar QUIÉN HABLA (para el diálogo y el diario) ---
 	var speaker_enum = Character.Name.NARRATOR
+	var speaker_name_for_journal = "Narrador"
+	
 	if line.has("speaker"):
-		@warning_ignore("int_as_enum_without_cast")
 		speaker_enum = Character.get_enum_from_string(line["speaker"])
-	# 2. Determinar el SPRITE que se muestra en pantalla.
+		var speaker_details = Character.CHARACTER_DETAILS.get(speaker_enum)
+		if speaker_details and not speaker_details.get("name", "").is_empty():
+			speaker_name_for_journal = speaker_details["name"]
+
+	# --- 2. Determinar QUIÉN APARECE EN PANTALLA ---
 	var character_to_show_str = line.get("show_character", line.get("speaker", "NARRATOR"))
 	var character_to_show_enum = Character.get_enum_from_string(character_to_show_str)
-	# 3. Determinar la EXPRESIÓN a usar.
+	var character_to_show_details = Character.CHARACTER_DETAILS.get(character_to_show_enum)
+	
+	# --- 3. Lógica del Sprite (basada en QUIÉN APARECE EN PANTALLA) ---
 	var expression = line.get("expression", "")
-	# 4. Determinar si el sprite está hablando o inactivo.
-	#    - Si "show_character" existe, el personaje en pantalla NO habla -> "idle".
-	#    - Si no existe, el personaje en pantalla SÍ habla -> "talking".
 	var is_talking = not line.has("show_character")
-	# 5. Obtener detalles del sprite y aplicar la lógica de visibilidad.
-	var character_details = Character.CHARACTER_DETAILS.get(character_to_show_enum)
-	var has_sprite_to_show = character_details and character_details.get("sprite_frames") != null
-
-	if not has_sprite_to_show:
+	
+	var has_sprite = character_to_show_details and character_to_show_details.get("sprite_frames") != null
+	
+	if not has_sprite:
 		main_scene.character_sprite.hide_sprite()
 	else:
-		# Pasamos la nueva variable `is_talking` a la función change_character.
 		main_scene.character_sprite.change_character(character_to_show_enum, is_talking, expression)
 		main_scene.character_sprite.show_sprite()
 	
-	# 6. Mostrar el texto en la UI con el nombre del hablante.
+	# --- 4. Mostrar el texto en la UI (con los datos de QUIÉN HABLA) ---
 	main_scene.dialog_ui.change_line(speaker_enum, line["text"], expression)
+	
+	# --- 5. Registrar la entrada en el diario ---
+	if not _is_preprocessing:
+		var dialog_text: String = ""
+		# Convertir el valor de 'text' a una cadena de texto limpia y segura
+		if line.has("text") and typeof(line["text"]) == TYPE_STRING:
+			dialog_text = str(line["text"])
+		else:
+			printerr("Error: La línea de diálogo no contiene texto o el formato es incorrecto.")
+			return "" # Salir de la función si no hay texto válido
+
+		JournalManager.add_entry(speaker_name_for_journal, dialog_text)
+		
 	return ""
 
 func _handle_set_flag(line: Dictionary,_is_preprocessing: bool = false) -> String:

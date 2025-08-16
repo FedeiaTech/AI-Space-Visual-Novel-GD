@@ -3,12 +3,17 @@
 [ext_resource type="Script" uid="uid://bhwjqhjj82fum" path="res://Scripts/character_sprite.gd" id="1_ushfy"]
 [ext_resource type="SpriteFrames" uid="uid://clw31hlnrdecy" path="res://Resources/Sprites_saves/Astro_sprites.tres" id="2_ushfy"]
 
-[node name="CharacterSprite" type="Node2D"]
+[node name="CharacterSprite" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1_ushfy")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-position = Vector2(573, 427)
-scale = Vector2(0.8, 0.8)
+position = Vector2(626, 494)
 sprite_frames = ExtResource("2_ushfy")
 animation = &"stuned-idle"
 frame_progress = 0.392482

@@ -8,6 +8,8 @@ extends Node2D
 @onready var character_sprite = $CanvasMain/Control/CharacterSprite
 @onready var dialog_ui: Control = $CanvasMain/DialogUI
 @onready var next_sentence_sound: AudioStreamPlayer = %NextSentenceSound
+@onready var journal_ui: Control = %JournalUI
+
 # Notificaciones
 @onready var item_acquired_notification: Label = %ItemAcquiredNotification
 @onready var notification_timer: Timer = %NotificationTimer
@@ -54,6 +56,19 @@ func _ready() -> void:
 func _input(event: InputEvent) -> void:
 	# Si estamos en una transición, no procesar ninguna entrada.
 	if is_transitioning: return
+	
+	if event.is_action_pressed("toggle_journal"):
+		if journal_ui.visible:
+			journal_ui.hide()
+		else:
+			journal_ui.show()
+		# Marcamos el evento como manejado para que no interfiera con el diálogo
+		get_viewport().set_input_as_handled()
+		return # Salimos para no procesar "next_line" si estamos abriendo/cerrando el diario
+	
+	# Si el diario está visible, no procesar más inputs de juego
+	if journal_ui.visible: return
+	
 	if is_dialog_input_blocked and event.is_action_pressed("next_line"): return
 
 	var current_line = {}

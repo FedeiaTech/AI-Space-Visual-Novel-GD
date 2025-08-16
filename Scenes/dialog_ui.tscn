@@ -20,6 +20,7 @@ wait_time = 0.328
 one_shot = true
 
 [node name="TextBlipSound" type="AudioStreamPlayer" parent="."]
+bus = &"Voices"
 script = ExtResource("2_dy63b")
 
 [node name="ChoicesContainer" type="CenterContainer" parent="."]
@@ -50,13 +51,20 @@ offset_top = -100.0
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="DialogLine" type="RichTextLabel" parent="DialogBox"]
+[node name="MarginContainer" type="MarginContainer" parent="DialogBox"]
+layout_mode = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 7
+
+[node name="DialogLine" type="RichTextLabel" parent="DialogBox/MarginContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("3_yqatb")
+theme_override_constants/line_separation = 0
 bbcode_enabled = true
-text = "Dialogo de texto [wave] movil [/wave]
-Ahora a [shake] bailar [/shake]"
+text = "Diálogo de texto [wave] movil [/wave] largo para ver el posicionamiento y ajuste de la línea de texto.
+Esta sería la línea final, así debajo entran los botones de[shake] \"navegación\" [/shake]"
 scroll_active = false
 
 [node name="SpeakerBox" type="PanelContainer" parent="."]
@@ -71,12 +79,16 @@ offset_right = 175.0
 offset_bottom = -200.0
 grow_vertical = 0
 
-[node name="SpeakerName" type="Label" parent="SpeakerBox"]
+[node name="MarginContainer" type="MarginContainer" parent="SpeakerBox"]
+layout_mode = 2
+theme_override_constants/margin_left = 35
+
+[node name="SpeakerName" type="Label" parent="SpeakerBox/MarginContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
 text = "Name"
-horizontal_alignment = 1
+vertical_alignment = 2
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 1

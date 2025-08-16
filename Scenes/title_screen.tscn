@@ -1,9 +1,14 @@
-[gd_scene load_steps=5 format=3 uid="uid://cy1hi75rpyb3r"]
+[gd_scene load_steps=7 format=3 uid="uid://cy1hi75rpyb3r"]
 
 [ext_resource type="Script" uid="uid://b5haw4d0whol7" path="res://Scripts/title_screen.gd" id="1_twnyg"]
-[ext_resource type="Texture2D" uid="uid://brxdi3cr30367" path="res://Assets/Scenes_images/title_screen.jpg" id="2_55kwv"]
-[ext_resource type="Theme" uid="uid://b6ifxrvymt2nj" path="res://Resources/Text_format/dialogue_text.tres" id="3_12m1t"]
+[ext_resource type="Texture2D" uid="uid://coqer5tkgvmiv" path="res://Assets/UI_assets/Backgrounds/title_screen_background.png" id="2_twnyg"]
+[ext_resource type="Theme" uid="uid://c432lv6xlywor" path="res://Resources/Text_format/Main_title_screen.tres" id="3_55kwv"]
 [ext_resource type="Theme" uid="uid://c7kebt85foo2f" path="res://Resources/Text_format/opton_choice_button.tres" id="4_6vd4x"]
+[ext_resource type="FontFile" uid="uid://8pjpsu5kgwu3" path="res://Resources/Fonts/New Space.ttf" id="4_55kwv"]
+
+[sub_resource type="Theme" id="Theme_12m1t"]
+RichTextLabel/font_sizes/normal_font_size = 43
+RichTextLabel/fonts/normal_font = ExtResource("4_55kwv")
 
 [node name="TitleScreen" type="Node2D"]
 script = ExtResource("1_twnyg")
@@ -24,43 +29,229 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("2_55kwv")
+texture = ExtResource("2_twnyg")
 
-[node name="CanvasLayer2" type="CanvasLayer" parent="."]
+[node name="CanvasMenu" type="CanvasLayer" parent="."]
 
-[node name="CenterContainer" type="CenterContainer" parent="CanvasLayer2"]
+[node name="OptionsPanel" type="Control" parent="CanvasMenu"]
+unique_name_in_owner = true
+layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer2/CenterContainer"]
+[node name="ColorRect" type="ColorRect" parent="CanvasMenu/OptionsPanel"]
+custom_minimum_size = Vector2(0, 300)
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.113725, 0.113725, 0.113725, 0.588235)
+
+[node name="CenterContainer" type="CenterContainer" parent="CanvasMenu/OptionsPanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -82.0
+offset_top = -11.5
+offset_right = 82.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer"]
 layout_mode = 2
 
-[node name="RichTextLabel" type="RichTextLabel" parent="CanvasLayer2/CenterContainer/VBoxContainer"]
-custom_minimum_size = Vector2(600, 200)
+[node name="VBoxContainerLeft" type="VBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer"]
 layout_mode = 2
-theme = ExtResource("3_12m1t")
-theme_override_constants/outline_size = 10
-theme_override_constants/shadow_offset_y = 5
-theme_override_constants/shadow_offset_x = 5
-theme_override_font_sizes/normal_font_size = 67
-text = "AI SPACE"
+
+[node name="VideoLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerLeft"]
+layout_mode = 2
+text = "Imágen"
+horizontal_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerLeft"]
+layout_mode = 2
+
+[node name="ResolutionLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerLeft/VBoxContainer"]
+layout_mode = 2
+text = "Resolución"
+
+[node name="ResolutionOptionButton" type="OptionButton" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerLeft/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="FullscreenHContainer" type="HBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerLeft"]
+layout_mode = 2
+
+[node name="FullscreenCheckButton" type="CheckButton" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerLeft/FullscreenHContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="FullscreenLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerLeft/FullscreenHContainer"]
+layout_mode = 2
+text = "Pantalla completa"
+
+[node name="VBoxContainerRight" type="VBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="SoundsLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerRight"]
+layout_mode = 2
+text = "Sonidos"
+horizontal_alignment = 1
+
+[node name="BGM_HBoxContainer" type="HBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerRight"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="MusicNameLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerRight/BGM_HBoxContainer"]
+layout_mode = 2
+text = "Música (BGM)"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer2/CenterContainer/VBoxContainer"]
+[node name="BGMSlider" type="HSlider" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerRight/BGM_HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+min_value = -45.0
+max_value = 0.0
+
+[node name="BGMValueLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerRight/BGM_HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "100%"
+
+[node name="Voices_HBoxContainer" type="HBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerRight"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="VoicesNameLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerRight/Voices_HBoxContainer"]
+layout_mode = 2
+text = "Voces"
+
+[node name="VoicesSlider" type="HSlider" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerRight/Voices_HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+min_value = -45.0
+max_value = 0.0
+
+[node name="VoicesValueLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerRight/Voices_HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "100%"
+
+[node name="SFX_HBoxContainer2" type="HBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerRight"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="SFXNameLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerRight/SFX_HBoxContainer2"]
+layout_mode = 2
+text = "Efectos"
+
+[node name="SFXSlider" type="HSlider" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerRight/SFX_HBoxContainer2"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+min_value = -45.0
+max_value = 0.0
+
+[node name="SFXValueLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerRight/SFX_HBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "100%"
+
+[node name="OptionsBackButton" type="Button" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerRight"]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("4_6vd4x")
+text = "Volver"
+
+[node name="MainMenu" type="Control" parent="CanvasMenu"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="CenterContainer" type="CenterContainer" parent="CanvasMenu/MainMenu"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -147.5
+offset_right = 300.0
+offset_bottom = 147.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasMenu/MainMenu/CenterContainer"]
+layout_mode = 2
+theme_override_constants/separation = -8
+
+[node name="RichTitleLabel" type="RichTextLabel" parent="CanvasMenu/MainMenu/CenterContainer/VBoxContainer"]
+custom_minimum_size = Vector2(600, 150)
+layout_mode = 2
+theme = ExtResource("3_55kwv")
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.784314)
+theme_override_constants/shadow_offset_y = 5
+theme_override_constants/shadow_offset_x = 5
+theme_override_font_sizes/normal_font_size = 99
+text = "A.I SPACE"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="RichSubtitleLabel" type="RichTextLabel" parent="CanvasMenu/MainMenu/CenterContainer/VBoxContainer"]
+custom_minimum_size = Vector2(600, 150)
+layout_mode = 2
+theme = SubResource("Theme_12m1t")
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.784314)
+theme_override_constants/shadow_offset_y = 5
+theme_override_constants/shadow_offset_x = 0
+text = "Spark chronicles"
+horizontal_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasMenu/MainMenu/CenterContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 11
 
-[node name="NewGameButton" type="Button" parent="CanvasLayer2/CenterContainer/VBoxContainer/VBoxContainer"]
+[node name="NewGameButton" type="Button" parent="CanvasMenu/MainMenu/CenterContainer/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("4_6vd4x")
 text = "Empezar"
 
-[node name="QuitGameButton" type="Button" parent="CanvasLayer2/CenterContainer/VBoxContainer/VBoxContainer"]
+[node name="OptionsButton" type="Button" parent="CanvasMenu/MainMenu/CenterContainer/VBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("4_6vd4x")
+text = "Opciones"
+
+[node name="QuitGameButton" type="Button" parent="CanvasMenu/MainMenu/CenterContainer/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("4_6vd4x")

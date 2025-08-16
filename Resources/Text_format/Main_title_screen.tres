@@ -1,0 +1,7 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://c432lv6xlywor"]
+
+[ext_resource type="FontFile" uid="uid://bkuiioamhvpkn" path="res://Resources/Fonts/space age.ttf" id="1_dakpn"]
+
+[resource]
+RichTextLabel/font_sizes/normal_font_size = 36
+RichTextLabel/fonts/normal_font = ExtResource("1_dakpn")
