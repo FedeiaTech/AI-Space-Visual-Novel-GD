@@ -1,5 +1,5 @@
 [
-	{"location": "scene0_spaceship", "music": "track01"},
+	{"location": "outside_starship", "music": "track01"},
 	
 	{"text": "En alguna parte del espacio..."},
 	{"set_time_absolute": "00:45", "show_time_ui": true},
@@ -60,7 +60,7 @@
 	
 	{"anchor": "first_enter_spark"},
 	{"text": "Astro se impulsa hacia la escotilla usando el cable de sujeción."}, 
-	{"action": {"type": "load_scene", "scene_file": "spaceship_interior", "anchor": "return_point_from_space"}},
+	{"action": {"type": "load_scene", "scene_file": "decompression_chamber", "anchor": "return_point_from_space"}},
 	
 	{"anchor": "map_dialog_options"},
 	{"text": "No hay más lugares disponibles en el mapa ahora mismo.", "show_character": "Astro_EVA"},

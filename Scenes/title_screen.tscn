@@ -1,14 +1,19 @@
-[gd_scene load_steps=7 format=3 uid="uid://cy1hi75rpyb3r"]
+[gd_scene load_steps=9 format=3 uid="uid://cy1hi75rpyb3r"]
 
 [ext_resource type="Script" uid="uid://b5haw4d0whol7" path="res://Scripts/title_screen.gd" id="1_twnyg"]
 [ext_resource type="Texture2D" uid="uid://coqer5tkgvmiv" path="res://Assets/UI_assets/Backgrounds/title_screen_background.png" id="2_twnyg"]
 [ext_resource type="Theme" uid="uid://c432lv6xlywor" path="res://Resources/Text_format/Main_title_screen.tres" id="3_55kwv"]
 [ext_resource type="Theme" uid="uid://c7kebt85foo2f" path="res://Resources/Text_format/opton_choice_button.tres" id="4_6vd4x"]
 [ext_resource type="FontFile" uid="uid://8pjpsu5kgwu3" path="res://Resources/Fonts/New Space.ttf" id="4_55kwv"]
+[ext_resource type="FontFile" uid="uid://bj4eqo05reeqq" path="res://Resources/Fonts/SPACE.ttf" id="6_12m1t"]
 
 [sub_resource type="Theme" id="Theme_12m1t"]
 RichTextLabel/font_sizes/normal_font_size = 43
 RichTextLabel/fonts/normal_font = ExtResource("4_55kwv")
+
+[sub_resource type="Theme" id="Theme_6vd4x"]
+Label/font_sizes/font_size = 22
+Label/fonts/font = ExtResource("6_12m1t")
 
 [node name="TitleScreen" type="Node2D"]
 script = ExtResource("1_twnyg")
@@ -35,6 +40,7 @@ texture = ExtResource("2_twnyg")
 
 [node name="OptionsPanel" type="Control" parent="CanvasMenu"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -185,7 +191,6 @@ text = "Volver"
 
 [node name="MainMenu" type="Control" parent="CanvasMenu"]
 unique_name_in_owner = true
-visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -256,3 +261,18 @@ unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("4_6vd4x")
 text = "Salir"
+
+[node name="Label" type="Label" parent="CanvasMenu"]
+custom_minimum_size = Vector2(420, 40)
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -40.0
+offset_top = -23.0
+grow_horizontal = 0
+grow_vertical = 0
+size_flags_vertical = 8
+theme = SubResource("Theme_6vd4x")
+text = "Ver 0.0.5 - Fedeiatech ©"

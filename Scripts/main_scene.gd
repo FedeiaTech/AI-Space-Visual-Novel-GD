@@ -6,18 +6,29 @@ extends Node2D
 @onready var background: TextureRect = %Background
 @onready var background_music: AudioStreamPlayer = %BackgroundMusic
 @onready var character_sprite = $CanvasMain/Control/CharacterSprite
-@onready var dialog_ui: Control = $CanvasMain/DialogUI
-@onready var next_sentence_sound: AudioStreamPlayer = %NextSentenceSound
+@onready var dialog_ui: Control = $CanvasMain/DialogUI # ¡Referencia a DialogUI!
+@onready var next_sentence_sound: AudioStreamPlayer = %NextSentenceSound # Referencia a AudioStreamPlayer
 @onready var journal_ui: Control = %JournalUI
 
 # Notificaciones
 @onready var item_acquired_notification: Label = %ItemAcquiredNotification
 @onready var notification_timer: Timer = %NotificationTimer
 @onready var time_label: Label = $CanvasNotification/TimeLabel
+
 # Nodos Extra
-@onready var command_processor: Node = $CommandProcessor
+@onready var command_processor: Node = %CommandProcessor
 @onready var inventory_ui_manager: Node = %InventoryUIManager
-@onready var dialogue_manager: Node = %DialogueManager
+@onready var dialogue_manager: Node = %DialogueManager # ¡Referencia a DialogueManager!
+
+#UI Iconos
+@onready var journal_icon_button: TextureButton = %JournalIconButton
+@onready var inventory_icon_button: TextureButton = %InventoryIconButton
+@onready var journal_icon_label: Label = %JournalIconLabel
+@onready var inventoryl_icon_label: Label = %InventorylIconLabel
+@onready var settings_icon_label: Label = %SettingsIconLabel
+
+#Interactive
+@onready var interactive_location: Control = %interactive_location
 
 # === Variables de estado ===
 var transition_effect: String = "fade"
@@ -43,60 +54,92 @@ func _ready() -> void:
 	GameEvents.item_acquired_notification_requested.connect(show_item_acquired_notification_requested)
 	TimeManager.time_updated.connect(func(new_time): time_label.text = new_time)
 
+	# Pasar las referencias necesarias a DialogUI
+	# Asegúrate de que dialog_ui sea una instancia válida y que los managers estén listos.
+	if dialog_ui and is_instance_valid(dialog_ui) and dialogue_manager and next_sentence_sound:
+		# Asumo que DialogUI tiene un método llamado set_dialog_dependencies
+		dialog_ui.set_dialog_dependencies(dialogue_manager, next_sentence_sound)
+	else:
+		printerr("Error: No se pudieron obtener todas las referencias para DialogUI o DialogUI no es válido.")
+
+
 	# Ocultar etiqueta tiempo
 	time_label.hide()
 	# Carga inicial manejada por DialogManager
-	var initial_dialog_file = "res://Resources/Story/intro.json"
+	var initial_dialog_file = "intro"
 	dialogue_manager.load_dialog_file(initial_dialog_file)
 	
 	is_transitioning = true
 	SceneManager.transition_in(transition_effect)
+	
+	#Icons_ui_labels
+	journal_icon_label.text = " "
+	inventoryl_icon_label.text = " "
+	settings_icon_label.text = " "
 
 # Captura las entradas del jugador. Permite avanzar el diálogo y alternar el inventario.
 func _input(event: InputEvent) -> void:
 	# Si estamos en una transición, no procesar ninguna entrada.
 	if is_transitioning: return
 	
+	# Si el inventario o diario está abierto, solo procesar su tecla de cierre
+	if inventory_ui_manager.current_inventory_ui != null:
+		if event.is_action_pressed("toggle_inventory"):
+			inventory_ui_manager.toggle_inventory()
+			get_viewport().set_input_as_handled()
+		return
+	
 	if event.is_action_pressed("toggle_journal"):
 		if journal_ui.visible:
 			journal_ui.hide()
 		else:
 			journal_ui.show()
-		# Marcamos el evento como manejado para que no interfiera con el diálogo
 		get_viewport().set_input_as_handled()
-		return # Salimos para no procesar "next_line" si estamos abriendo/cerrando el diario
-	
+		return
+
 	# Si el diario está visible, no procesar más inputs de juego
 	if journal_ui.visible: return
-	
-	if is_dialog_input_blocked and event.is_action_pressed("next_line"): return
 
-	var current_line = {}
-	if dialogue_manager.dialog_index < dialogue_manager.dialog_lines.size():
-		current_line = dialogue_manager.dialog_lines[dialogue_manager.dialog_index]
+	# 1. Detectar SOLO las teclas "next_line" (Enter/Barra Espaciadora)
+	# La lógica del clic del mouse ahora está en _gui_input de DialogUI.
+	if event.is_action_pressed("next_line"): # Esto cubrirá Enter y Espacio
+		# is_dialog_input_blocked debería ser manejado por el DialogUI si está activo
+		if is_dialog_input_blocked: return
+		
+		var current_line = {}
+		if dialogue_manager.dialog_index < dialogue_manager.dialog_lines.size():
+			current_line = dialogue_manager.dialog_lines[dialogue_manager.dialog_index]
+			
+		var has_choices = current_line.has("choices")
 
-	var has_choices = current_line.has("choices")
-
-	if event.is_action_pressed("next_line") and not has_choices:
-		if dialog_ui.animate_text:
-			dialog_ui.skip_text_animation()
-		else:
+		if not has_choices:
+			# Estas llamadas irán a los métodos de DialogUI y DialogueManager
+			dialog_ui.skip_text_animation() # Asumiendo que skip_text_animation es un método de DialogUI
 			next_sentence_sound.play()
 			dialogue_manager.advance_index()
 			dialogue_manager.process_current_line()
 
+	# 2. Manejar la tecla de inventario por separado
 	if event.is_action_pressed("toggle_inventory"):
 		inventory_ui_manager.toggle_inventory()
 		get_viewport().set_input_as_handled()
 
+func _on_object_clicked(action_command: Dictionary):
+	print("Paso 2: La MainScene ha recibido la señal con el comando: ", action_command)
+	
+	if not action_command.is_empty():
+		if is_instance_valid(command_processor):
+			print("Paso 2.1: Referencia a CommandProcessor es válida. Llamando a execute().")
+			command_processor.execute(action_command)
+		else:
+			printerr("Referencia nula a CommandProcessor en _on_object_clicked().")
+			
 # Se activa cada vez que el DialogueManager procesa una línea.
 func _on_dialogue_manager_line_processed(line: Dictionary):
 	# Pasamos la línea al CommandProcessor para que actúe
 	command_processor.execute(line)
 
 func _on_dialogue_manager_finished():
-	# Decide qué hacer cuando un archivo de diálogo termina.
-	# Podrías ocultar la UI, cargar otro archivo, etc.
 	print("Se ha terminado un archivo de diálogo.")
 
 
@@ -116,27 +159,6 @@ func show_item_acquired_notification_requested(item_name: String, quantity_chang
 		_display_next_notification_from_queue()
 
 """ Señales """
-
-#func _update_character_display(speaker_enum_value: Character.Name, line_text: String, expression: String):
-	## Obtiene los detalles del personaje actual
-	#var character_details = Character.CHARACTER_DETAILS.get(speaker_enum_value)
-	## Comprueba si el personaje tiene sprites definidos
-	#var has_sprite = character_details and character_details.get("sprite_frames") != null
-#
-	## Si el orador es el NARRATOR, o si no hay sprite_frames y el orador NO es un personaje con sprite
-	## (ej. si IA está hablando, pero no tiene sprite, no queremos ocultar al personaje anterior)
-	#if speaker_enum_value == Character.Name.NARRATOR:
-		## Si el narrador habla, siempre ocultamos el sprite del personaje
-		#if character_sprite.modulate.a > 0: # Solo si está visible, lo ocultamos con un tween
-			#create_tween().tween_property(character_sprite, "modulate:a", 0.0, 0.3)
-		## No llamamos a change_character aquí, solo aseguramos que se oculte.
-	#elif has_sprite: # Si NO es el narrador y TIENE sprite_frames, entonces lo mostramos y actualizamos
-		## Aseguramos que el sprite sea visible (modulate.a == 1)
-		#if character_sprite.modulate.a == 0:
-			#create_tween().tween_property(character_sprite, "modulate:a", 1.0, 0.3)
-		#character_sprite.change_character(speaker_enum_value, true, expression)
-	## Si NO es el narrador y NO tiene sprite_frames (como IA), no hacemos nada con la visibilidad del personaje actual.
-	## El personaje que estaba antes en pantalla permanecerá.
 
 # Agrega uno o más ítems al inventario del personaje actual.
 func _process_item_given(item_data) -> void:
@@ -175,7 +197,11 @@ func _on_text_animation_done():
 # Procesa acciones, ítems y transiciones.
 func _on_choice_selected(choice_data: Dictionary, _item_given_data = null):
 	next_sentence_sound.play()
-
+	
+	var choice_text = choice_data.get("text", "Opción Desconocida")
+	var journal_entry_text = "DECIDISTE " + choice_text.to_upper()
+	JournalManager.add_entry("Elección", journal_entry_text)
+	
 	if choice_data.has("item_given"):
 		command_processor._process_item_given(choice_data["item_given"])
 
@@ -224,14 +250,46 @@ func _on_transition_out_completed():
 func _on_transition_in_completed():
 	# is_transitioning se debe poner a false *después* de procesar la línea
 	# para evitar que el jugador pueda hacer click mientras aparece el texto.
-	#character_sprite.show()
-	dialog_ui.show() 
+	dialog_ui.show()
 	
 	dialogue_manager.process_current_line()
 	is_transitioning = false
 
-# Al recibir una solicitud de carga de nuevo archivo de diálogo, 
-#guarda el archivo y ancla.
+# Al recibir una solicitud de carga de nuevo archivo de diálogo,
+# guarda el archivo y ancla.
 func _on_new_dialog_file_requested(new_file_path: String, anchor: String = ""):
 	dialogue_manager.dialog_file = new_file_path
 	dialogue_manager.pending_anchor = anchor
+
+
+func _on_journal_icon_button_pressed() -> void:
+	journal_ui.show()
+
+
+func _on_inventory_icon_button_pressed() -> void:
+	inventory_ui_manager.toggle_inventory()
+	get_viewport().set_input_as_handled()
+
+"""Señales para IconsUI"""
+func _on_journal_icon_button_mouse_entered() -> void:
+	journal_icon_label.text = "Diario (J)"
+
+
+func _on_journal_icon_button_mouse_exited() -> void:
+	journal_icon_label.text = " "
+
+
+func _on_inventory_icon_button_mouse_entered() -> void:
+	inventoryl_icon_label.text = "Inventario (I)"
+
+
+func _on_inventory_icon_button_mouse_exited() -> void:
+	inventoryl_icon_label.text = " "
+
+
+func _on_setting_icon_button_mouse_entered() -> void:
+	settings_icon_label.text = "Opciones (Esc)"
+
+
+func _on_setting_icon_button_mouse_exited() -> void:
+	settings_icon_label.text = " "

@@ -7,23 +7,22 @@
 	{"speaker": "Astro", "text": "¿¿Por ahora?? ¿Qué está pasando?", "show_character": "Astro_EVA"},
 	
 	{"choices": [
-			{"text": "Quitarse el casco", "action": {"type": "load_scene", "scene_file": "spaceship_interior", "anchor": "first_helmet_out"}},
+			{"text": "Quitarse el casco", "action": {"type": "load_scene", "scene_file": "decompression_chamber", "anchor": "first_helmet_out"}},
 		],
 	},
 	
 	{"anchor": "first_helmet_out"},
-	{"location": "decompression_chamber_helmet", "music": "track01"},
+	{"location": "decompression_chamber", "music": "track01"},
 	{"text": "...", "show_character": "Astro"},
 	{"speaker": "Astro", "text": "Deberia ir ya a la sala de control.", "expression": "mad"},
 	
 	{"choices": [
-			{"text": "Ir al corredor central", "action": {"type": "load_scene", "scene_file": "spaceship_interior", "anchor": "ori__stuned"}},
+			{"text": "Ir al corredor central", "action": {"type": "load_scene", "scene_file": "decompression_chamber", "anchor": "ori__stuned"}},
 			{"text": "Volver a ponerse el casco", "goto": "not_helmet"},
 		],
 	},
 	
 	{"anchor": "ori__stuned"},
-	{"location": "ori_stuned", "music": "track01"},
 	{"speaker": "Astro", "text": "Orii. estas. ey. ¿Te encuentras biendfs.  ds dsdf ds fs fs f . ds fdsf  ds  sfs sf. sf sf sd ?...", "expression": "scare"},
 	{"speaker": "Astro", "text": "Continuará..."},
 	{"goto": "end"},

@@ -1,3 +1,4 @@
+#GameEvents.gd
 extends Node
 
 signal item_acquired_notification_requested(item_name: String, quantity_change: int, is_new_item: bool)

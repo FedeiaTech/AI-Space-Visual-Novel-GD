@@ -35,6 +35,8 @@ func execute(line: Dictionary, is_preprocessing: bool = false) -> String:
 	# Si un comando devuelve "stop_processing", se detiene la ejecución del resto.
 	for command_name in command_handlers.keys():
 		if line.has(command_name):
+			print("Paso 3: CommandProcessor.execute() ha recibido la línea: ", line)
+	
 			var result = command_handlers[command_name].call(line, is_preprocessing)
 			if result == "stop_processing":
 				return "stop_processing"
@@ -45,7 +47,7 @@ func execute(line: Dictionary, is_preprocessing: bool = false) -> String:
 """ Manejadores de comandos individuales """
 # ----------------------------------------------
 
-func _handle_action(line: Dictionary,_is_preprocessing: bool = false) -> String:
+func _handle_action(line: Dictionary, is_preprocessing: bool = false) -> String:
 	# Maneja acciones especiales como cambiar de escena o ir a un ancla interna.
 	var action_data = line["action"]
 	var action_type = action_data.get("type", "")
@@ -63,14 +65,18 @@ func _handle_action(line: Dictionary,_is_preprocessing: bool = false) -> String:
 			if target_file.is_empty():
 				printerr("Error: 'load_scene' action sin 'scene_file'.")
 				return ""
-
-			# Oculta elementos visuales y comienza transición
+			
+			# Oculta elementos visuales y comienza la transición
 			main_scene.dialog_ui.hide()
 			main_scene.character_sprite.hide_instantly()
 			main_scene.is_transitioning = true
 			SceneManager.transition_out(main_scene.transition_effect)
+			
+			# Llama a GameManager para manejar la carga de la escena
+			# El GameManager se encargará de continuar el diálogo después
 			GameManager.request_scene_load(target_file, target_anchor)
-			return "stop_processing" # Detener el procesamiento de esta línea
+
+			return "stop_processing"
 		
 		"goto_internal":
 			# Redirige internamente a un ancla del mismo archivo
@@ -96,7 +102,41 @@ func _handle_music(line: Dictionary,_is_preprocessing: bool = false) -> String:
 
 func _handle_location(line: Dictionary, is_preprocessing: bool) -> String:
 	# Cambia el fondo de la escena a una nueva ubicación
-	main_scene.background.texture = load("res://Assets/Scenes_images/" + line["location"] + ".png")
+	# 1. Obtener la referencia al nodo donde se instanciarán las ubicaciones
+	var location_container = main_scene.get_node("InteractiveLocation")
+	
+	# 2. Limpiamos el contenedor para evitar tener múltiples escenas cargadas
+	# Lo hacemos en orden inverso para evitar problemas de índices.
+	for i in range(location_container.get_child_count() - 1, -1, -1):
+		var child = location_container.get_child(i)
+		child.queue_free()
+
+	# 3. Cargar la escena de ubicación desde nuestra librería global (Autoload).
+	# La clave "location" en tu JSON debe ser uno de los nombres definidos en SceneLibrary.
+	var location_name = line["location"]
+	var location_scene = SceneLibrary.get_scene(location_name)
+	
+	# Verificar si la escena existe en nuestra librería antes de continuar.
+	if location_scene == null:
+		printerr("Error: La escena '", location_name, "' no está definida o precargada en SceneLibrary.gd.")
+		return "" # Detenemos la ejecución para evitar un crash.
+
+	# 4. Instanciar la escena y añadirla al contenedor
+	var location_instance = location_scene.instantiate()
+	location_container.add_child(location_instance)
+	
+	# Referencia al CanvasLayer que contiene los objetos clickeables
+	# Es importante que todas tus escenas de ubicación tengan esta misma estructura.
+	var interactables_layer = location_instance.get_node("CanvasLayer")
+	
+	# Asegurarse de que el CanvasLayer existe antes de buscar hijos
+	if interactables_layer:
+		# Ahora busca hijos dentro del CanvasLayer
+		for child in interactables_layer.get_children():
+			if child.has_signal("object_clicked"):
+				child.object_clicked.connect(main_scene._on_object_clicked)
+	else:
+		printerr("Error: La escena de ubicación '", location_name, "' no tiene un nodo hijo llamado 'CanvasLayer'.")
 	
 	# Si estamos en juego normal y esta es una línea de solo configuración, avanzamos.
 	if not is_preprocessing and not (line.has("text") or line.has("choices") or line.has("action")):
@@ -208,6 +248,7 @@ func _handle_text(line: Dictionary, _is_preprocessing: bool = false) -> String:
 	var speaker_name_for_journal = "Narrador"
 	
 	if line.has("speaker"):
+		@warning_ignore("int_as_enum_without_cast")
 		speaker_enum = Character.get_enum_from_string(line["speaker"])
 		var speaker_details = Character.CHARACTER_DETAILS.get(speaker_enum)
 		if speaker_details and not speaker_details.get("name", "").is_empty():

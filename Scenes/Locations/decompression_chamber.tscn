@@ -1,0 +1,55 @@
+[gd_scene load_steps=7 format=3 uid="uid://hnjnl3d37c5q"]
+
+[ext_resource type="Script" uid="uid://4mskbpmrowf1" path="res://Scripts/LocationScene/interaction_manager.gd" id="1_lhtc7"]
+[ext_resource type="Texture2D" uid="uid://bhx0ih7knkkbi" path="res://Assets/Scenes_images/decompression_chamber.png" id="2_h4kpa"]
+[ext_resource type="Texture2D" uid="uid://dbgri0kmstvf6" path="res://Assets/Inventory_icons/chip.png" id="3_fnrmn"]
+[ext_resource type="Texture2D" uid="uid://bpa3w638sex2w" path="res://Assets/Inventory_icons/coin.png" id="4_u10ra"]
+[ext_resource type="PackedScene" uid="uid://dlqdd20yxc7br" path="res://Scenes/Locations/Objects/clickable_object.tscn" id="5_vin5m"]
+[ext_resource type="Texture2D" uid="uid://bfedrlf6xv20d" path="res://Assets/Inventory_icons/scroll_map.png" id="6_fnrmn"]
+
+[node name="interactive_location" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_lhtc7")
+
+[node name="Background" type="TextureRect" parent="."]
+z_index = -2
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+texture = ExtResource("2_h4kpa")
+
+[node name="CanvasLayer" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureButton" type="TextureButton" parent="CanvasLayer"]
+visible = false
+layout_mode = 1
+offset_left = 431.0
+offset_top = 365.0
+offset_right = 631.0
+offset_bottom = 565.0
+size_flags_horizontal = 4
+texture_normal = ExtResource("3_fnrmn")
+texture_hover = ExtResource("4_u10ra")
+
+[node name="ClickableObject" parent="CanvasLayer" instance=ExtResource("5_vin5m")]
+layout_mode = 0
+offset_left = 414.0
+offset_top = 328.0
+offset_right = 614.0
+offset_bottom = 528.0
+texture_normal = ExtResource("6_fnrmn")

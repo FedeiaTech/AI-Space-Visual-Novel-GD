@@ -5,6 +5,7 @@ extends Node
 # Un array de diccionarios, donde cada diccionario es una entrada del diario.
 # Ejemplo: [{"speaker": "Astro", "text": "¿Qué fue todo eso?"}, {"speaker": "IA", "text": "Sistema..."}]
 var journal_entries: Array[Dictionary] = []
+var max_entries: int = 15
 
 # Señal que se emite cuando se añade una nueva entrada. Útil si quieres que la UI se actualice en vivo.
 signal entry_added
@@ -22,6 +23,9 @@ func add_entry(speaker_name: String, dialog_text: String):
 		"text": dialog_text
 	}
 	journal_entries.append(new_entry)
+	if journal_entries.size() > max_entries:
+		journal_entries.pop_front() # Elimina el primer elemento, que es el más antiguo
+
 	entry_added.emit()
 	print("Diario actualizado: ", new_entry) # Para depuración
 

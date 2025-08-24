@@ -38,7 +38,9 @@ func set_time(hours: int, minutes: int):
 
 func get_formatted_time() -> String:
 	# Retorna el tiempo en formato HH:MM.
+	@warning_ignore("integer_division")
 	var hours = total_seconds / 3600
+	@warning_ignore("integer_division")
 	var minutes = (total_seconds % 3600) / 60
 	var seconds = total_seconds % 60
 	
