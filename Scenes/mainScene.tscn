@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://bypw7eihxexrm"]
+[gd_scene load_steps=32 format=3 uid="uid://bypw7eihxexrm"]
 
 [ext_resource type="Script" uid="uid://cox74slg0ewob" path="res://Scripts/main_scene.gd" id="1_m8nr8"]
 [ext_resource type="Script" uid="uid://dupk7xq8ogjhp" path="res://Scripts/_command_processor/command_processor.gd" id="2_0vbqt"]
@@ -10,11 +10,15 @@
 [ext_resource type="Script" uid="uid://dwycxanoffwpy" path="res://Scripts/Dialogues/DialogueManager.gd" id="4_uvydw"]
 [ext_resource type="Theme" uid="uid://c7kebt85foo2f" path="res://Resources/Text_format/opton_choice_button.tres" id="6_yyxd1"]
 [ext_resource type="PackedScene" uid="uid://mhbb42m57i3x" path="res://Scenes/Locations/outside_starship.tscn" id="7_iypob"]
+[ext_resource type="Script" uid="uid://ctnfkifo68y7v" path="res://Scripts/MainScene/CGViewer.gd" id="8_eol8w"]
 [ext_resource type="Theme" uid="uid://bws3rt7rqr07v" path="res://Resources/Text_format/Icons_UI_labels.tres" id="9_5bsxs"]
 [ext_resource type="PackedScene" uid="uid://b7vmdbxmok30i" path="res://Scenes/UI/journal_ui.tscn" id="10_mhr8t"]
 [ext_resource type="Texture2D" uid="uid://cutks2k55huad" path="res://Assets/UI_assets/Icons/tablet2_mini_black.png" id="11_5bsxs"]
 [ext_resource type="Texture2D" uid="uid://bwrs8ogqvf3h5" path="res://Assets/UI_assets/Icons/tablet_mini_xs.png" id="11_ekaqe"]
+[ext_resource type="Shader" uid="uid://lcya0iddlgrb" path="res://Resources/Shaders/clickable_object.gdshader" id="11_l42ic"]
+[ext_resource type="Texture2D" uid="uid://cudrt88cxdo8u" path="res://Assets/UI_assets/Icons/eye_mini.png" id="11_udkkk"]
 [ext_resource type="Texture2D" uid="uid://84gtj3yhakmr" path="res://Assets/UI_assets/Icons/tablet2_mini_light.png" id="12_iypob"]
+[ext_resource type="Texture2D" uid="uid://cyshqqcwbq2rw" path="res://Assets/UI_assets/Icons/clock_mini.png" id="12_l42ic"]
 [ext_resource type="Texture2D" uid="uid://d2ud4l21aprco" path="res://Assets/UI_assets/Icons/backpack_dark_mini.png" id="13_oi7nq"]
 [ext_resource type="Texture2D" uid="uid://cdpu00ngelqpd" path="res://Assets/UI_assets/Icons/tablet2_mini_color.png" id="13_udkkk"]
 [ext_resource type="Texture2D" uid="uid://gd7wni1hcem0" path="res://Assets/UI_assets/Icons/backpack_light_mini.png" id="14_udkkk"]
@@ -22,6 +26,49 @@
 [ext_resource type="Texture2D" uid="uid://d4bc5e5e7uqrh" path="res://Assets/UI_assets/Icons/setting_dark_mini.png" id="18_eol8w"]
 [ext_resource type="Texture2D" uid="uid://bxwvtu50wm2pw" path="res://Assets/UI_assets/Icons/setting_light_mini.png" id="19_daoup"]
 [ext_resource type="Texture2D" uid="uid://crck47yj4qw2q" path="res://Assets/UI_assets/Icons/setting_contrast _mini.png" id="20_bofyi"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mrjo7"]
+resource_local_to_scene = true
+shader = ExtResource("11_l42ic")
+shader_parameter/brightness_factor = 1.0
+
+[sub_resource type="Animation" id="Animation_daoup"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:material:shader_parameter/brightness_factor")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [1.0]
+}
+
+[sub_resource type="Animation" id="Animation_eol8w"]
+resource_name = "pulse"
+length = 4.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:material:shader_parameter/brightness_factor")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 2, 4),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [1.0, 6.0, 1.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_bofyi"]
+_data = {
+&"RESET": SubResource("Animation_daoup"),
+&"pulse": SubResource("Animation_eol8w")
+}
 
 [sub_resource type="Theme" id="Theme_boirm"]
 Button/icons/icon = ExtResource("11_ekaqe")
@@ -68,7 +115,53 @@ texture = ExtResource("3_0vbqt")
 [node name="interactive_location" parent="InteractiveLocation" instance=ExtResource("7_iypob")]
 unique_name_in_owner = true
 
+[node name="CGCanvas" type="CanvasLayer" parent="."]
+
+[node name="CGSprite" type="TextureRect" parent="CGCanvas"]
+unique_name_in_owner = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+script = ExtResource("8_eol8w")
+
+[node name="ViewerCanvas" type="CanvasLayer" parent="."]
+unique_name_in_owner = true
+
+[node name="ProtectControl" type="Control" parent="ViewerCanvas"]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="LookButton" type="Button" parent="ViewerCanvas"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 30)
+offset_left = 1169.0
+offset_top = 489.0
+offset_right = 1269.0
+offset_bottom = 519.0
+theme = ExtResource("6_yyxd1")
+text = "Mirar"
+
+[node name="ReturnButton" type="Button" parent="ViewerCanvas"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(100, 30)
+offset_left = 1169.0
+offset_top = 679.0
+offset_right = 1269.0
+offset_bottom = 709.0
+theme = ExtResource("6_yyxd1")
+text = "Volver"
+
 [node name="CanvasMain" type="CanvasLayer" parent="."]
+unique_name_in_owner = true
 process_mode = 1
 
 [node name="Control" type="Control" parent="CanvasMain"]
@@ -106,17 +199,47 @@ unique_name_in_owner = true
 wait_time = 5.0
 one_shot = true
 
-[node name="TimeLabel" type="Label" parent="CanvasNotification"]
+[node name="InfoItems" type="MarginContainer" parent="CanvasNotification"]
+custom_minimum_size = Vector2(210, 80)
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -164.0
-offset_bottom = 89.0
+offset_left = -156.0
+offset_bottom = 80.0
 grow_horizontal = 0
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 50
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasNotification/InfoItems"]
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+alignment = 2
+
+[node name="ExplorerModeIcon" type="TextureRect" parent="CanvasNotification/InfoItems/HBoxContainer"]
+unique_name_in_owner = true
+visible = false
+material = SubResource("ShaderMaterial_mrjo7")
+layout_mode = 2
+texture = ExtResource("11_udkkk")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="CanvasNotification/InfoItems/HBoxContainer/ExplorerModeIcon"]
+libraries = {
+&"": SubResource("AnimationLibrary_bofyi")
+}
+autoplay = "pulse"
+
+[node name="TimeLabel" type="Label" parent="CanvasNotification/InfoItems/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
 theme_override_font_sizes/font_size = 28
-text = "12:00"
+text = "12:00:00"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="TimeIcon" type="TextureRect" parent="CanvasNotification/InfoItems/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+texture = ExtResource("12_l42ic")
 
 [node name="Icons_ui" type="Control" parent="CanvasNotification"]
 layout_mode = 3
@@ -149,14 +272,6 @@ custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 alignment = 2
 
-[node name="JournalIconLabel" type="Label" parent="CanvasNotification/Icons_ui/MarginContainer/IconContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-theme = ExtResource("9_5bsxs")
-text = " Diario (J)"
-horizontal_alignment = 1
-vertical_alignment = 1
-
 [node name="JournalIconButton" type="TextureButton" parent="CanvasNotification/Icons_ui/MarginContainer/IconContainer"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -167,12 +282,13 @@ texture_pressed = ExtResource("12_iypob")
 texture_hover = ExtResource("13_udkkk")
 stretch_mode = 3
 
-[node name="InventorylIconLabel" type="Label" parent="CanvasNotification/Icons_ui/MarginContainer/IconContainer"]
+[node name="JournalIconLabel" type="Label" parent="CanvasNotification/Icons_ui/MarginContainer/IconContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("9_5bsxs")
-text = " Inventario (I)"
+text = " Diario (J)"
 horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="InventoryIconButton" type="TextureButton" parent="CanvasNotification/Icons_ui/MarginContainer/IconContainer"]
 unique_name_in_owner = true
@@ -183,14 +299,15 @@ texture_pressed = ExtResource("14_udkkk")
 texture_hover = ExtResource("15_l42ic")
 stretch_mode = 3
 
-[node name="SettingsIconLabel" type="Label" parent="CanvasNotification/Icons_ui/MarginContainer/IconContainer"]
+[node name="InventorylIconLabel" type="Label" parent="CanvasNotification/Icons_ui/MarginContainer/IconContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("9_5bsxs")
-text = " Opciones (Esc)"
+text = " Inventario (I)"
 horizontal_alignment = 1
 
-[node name="SettingIconButton" type="TextureButton" parent="CanvasNotification/Icons_ui/MarginContainer/IconContainer"]
+[node name="SettingsIconButton" type="TextureButton" parent="CanvasNotification/Icons_ui/MarginContainer/IconContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 texture_normal = ExtResource("18_eol8w")
@@ -198,16 +315,26 @@ texture_pressed = ExtResource("19_daoup")
 texture_hover = ExtResource("20_bofyi")
 stretch_mode = 3
 
+[node name="SettingsIconLabel" type="Label" parent="CanvasNotification/Icons_ui/MarginContainer/IconContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("9_5bsxs")
+text = " Opciones (Esc)"
+horizontal_alignment = 1
+
 [node name="JournalUI" parent="CanvasNotification" instance=ExtResource("10_mhr8t")]
 unique_name_in_owner = true
 process_mode = 1
 visible = false
 
+[connection signal="pressed" from="ViewerCanvas/LookButton" to="." method="_on_look_button_pressed"]
+[connection signal="pressed" from="ViewerCanvas/ReturnButton" to="." method="_on_return_button_pressed"]
 [connection signal="mouse_entered" from="CanvasNotification/Icons_ui/MarginContainer/IconContainer/JournalIconButton" to="." method="_on_journal_icon_button_mouse_entered"]
 [connection signal="mouse_exited" from="CanvasNotification/Icons_ui/MarginContainer/IconContainer/JournalIconButton" to="." method="_on_journal_icon_button_mouse_exited"]
 [connection signal="pressed" from="CanvasNotification/Icons_ui/MarginContainer/IconContainer/JournalIconButton" to="." method="_on_journal_icon_button_pressed"]
 [connection signal="mouse_entered" from="CanvasNotification/Icons_ui/MarginContainer/IconContainer/InventoryIconButton" to="." method="_on_inventory_icon_button_mouse_entered"]
 [connection signal="mouse_exited" from="CanvasNotification/Icons_ui/MarginContainer/IconContainer/InventoryIconButton" to="." method="_on_inventory_icon_button_mouse_exited"]
 [connection signal="pressed" from="CanvasNotification/Icons_ui/MarginContainer/IconContainer/InventoryIconButton" to="." method="_on_inventory_icon_button_pressed"]
-[connection signal="mouse_entered" from="CanvasNotification/Icons_ui/MarginContainer/IconContainer/SettingIconButton" to="." method="_on_setting_icon_button_mouse_entered"]
-[connection signal="mouse_exited" from="CanvasNotification/Icons_ui/MarginContainer/IconContainer/SettingIconButton" to="." method="_on_setting_icon_button_mouse_exited"]
+[connection signal="mouse_entered" from="CanvasNotification/Icons_ui/MarginContainer/IconContainer/SettingsIconButton" to="." method="_on_setting_icon_button_mouse_entered"]
+[connection signal="mouse_exited" from="CanvasNotification/Icons_ui/MarginContainer/IconContainer/SettingsIconButton" to="." method="_on_setting_icon_button_mouse_exited"]
+[connection signal="pressed" from="CanvasNotification/Icons_ui/MarginContainer/IconContainer/SettingsIconButton" to="." method="_on_settings_icon_button_pressed"]

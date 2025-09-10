@@ -9,6 +9,7 @@ extends Node2D
 @onready var quit_game_button: Button = %QuitGameButton
 @onready var resolution_option_button: OptionButton = %ResolutionOptionButton
 @onready var fullscreen_check_button: CheckButton = %FullscreenCheckButton
+@onready var video_player: VideoStreamPlayer = %VideoStreamPlayer
 
 # Referencias para los sliders y labels
 @onready var bgm_slider: HSlider = %BGMSlider
@@ -51,6 +52,10 @@ func _ready() -> void:
 	fullscreen_check_button.toggled.connect(_on_fullscreen_toggled)
 	# Establecer el estado inicial del botón
 	_update_fullscreen_button_state()
+	
+	if video_player:
+		video_player.loop = true
+		video_player.play()
 	
 	# Ocultar el panel de opciones al inicio y mostrar menu principal
 	main_menu.show()

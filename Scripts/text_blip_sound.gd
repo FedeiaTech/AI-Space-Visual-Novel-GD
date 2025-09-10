@@ -18,8 +18,7 @@ const SOUNDS_OTHER: Array[AudioStream] = SOUNDS_MALE
 
 var current_gender_sounds: Array[AudioStream]
 var is_active: bool = false
-var is_playing_expression_sound: bool = false 
-#var audio_completed_timer: Timer = Timer.new()
+var is_playing_expression_sound: bool = false
 
 func _ready():
 	# Conectar la señal `finished` del propio AudioStreamPlayer.
@@ -103,14 +102,15 @@ func _start_next_random_sound():
 	#audio_completed_timer.start(stream.get_length() + 0.1)
 
 func _on_audio_finished():
-	if is_active:
-		# Reproduce un nuevo audio aleatorio si el sistema está activo.
-		_start_next_random_sound()
-	# Si el sonido que terminó era el de la expresión...
+	# Si el sistema ya no está activo, no hacemos nada.
+	if not is_active:
+		return
+
+ 	# Si el sonido que acaba de terminar era el de la expresión...
 	if is_playing_expression_sound:
 		is_playing_expression_sound = false
-		# ...ahora comenzamos el bucle de sonidos aleatorios.
+ 		# ...ahora comenzamos el bucle de sonidos aleatorios.
 		_start_next_random_sound()
 	else:
-		# Si era un sonido aleatorio, continuamos con el siguiente.
+ 		# Si era un sonido aleatorio, simplemente continuamos con el siguiente.
 		_start_next_random_sound()

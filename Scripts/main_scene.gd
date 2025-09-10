@@ -9,29 +9,45 @@ extends Node2D
 @onready var dialog_ui: Control = $CanvasMain/DialogUI # ¡Referencia a DialogUI!
 @onready var next_sentence_sound: AudioStreamPlayer = %NextSentenceSound # Referencia a AudioStreamPlayer
 @onready var journal_ui: Control = %JournalUI
+@onready var canvas_main: CanvasLayer = %CanvasMain
 
 # Notificaciones
 @onready var item_acquired_notification: Label = %ItemAcquiredNotification
 @onready var notification_timer: Timer = %NotificationTimer
-@onready var time_label: Label = $CanvasNotification/TimeLabel
+@onready var explorer_mode_icon: TextureRect = %ExplorerModeIcon
+@onready var time_icon: TextureRect = %TimeIcon
+@onready var time_label: Label = %TimeLabel
 
 # Nodos Extra
 @onready var command_processor: Node = %CommandProcessor
 @onready var inventory_ui_manager: Node = %InventoryUIManager
 @onready var dialogue_manager: Node = %DialogueManager # ¡Referencia a DialogueManager!
 
-#UI Iconos
+# UI Iconos
 @onready var journal_icon_button: TextureButton = %JournalIconButton
 @onready var inventory_icon_button: TextureButton = %InventoryIconButton
 @onready var journal_icon_label: Label = %JournalIconLabel
 @onready var inventoryl_icon_label: Label = %InventorylIconLabel
 @onready var settings_icon_label: Label = %SettingsIconLabel
+@onready var settings_icon_button: TextureButton = %SettingsIconButton
 
-#Interactive
+# Escena interactiva
 @onready var interactive_location: Control = %interactive_location
+@onready var viewer_canvas: CanvasLayer = %ViewerCanvas
+@onready var protect_control: Control = %ProtectControl
+@onready var look_button: Button = %LookButton
+@onready var return_button: Button = %ReturnButton
+
+#CG
+@onready var cg_viewer: TextureRect = %CGSprite
+
+
+# Precarga de escenas
+const PauseMenuScene = preload("res://Scenes/pause_menu.tscn") # ¡Ajusta la ruta si es necesario!
 
 # === Variables de estado ===
 var transition_effect: String = "fade"
+var is_in_interaction_mode: bool = false
 
 var notification_queue: Array = []
 var is_dialog_input_blocked: bool = false
@@ -53,7 +69,8 @@ func _ready() -> void:
 	notification_timer.timeout.connect(_on_notification_timer_timeout)
 	GameEvents.item_acquired_notification_requested.connect(show_item_acquired_notification_requested)
 	TimeManager.time_updated.connect(func(new_time): time_label.text = new_time)
-
+	cg_viewer.cg_clicked.connect(_on_cg_viewer_cg_clicked)
+	
 	# Pasar las referencias necesarias a DialogUI
 	# Asegúrate de que dialog_ui sea una instancia válida y que los managers estén listos.
 	if dialog_ui and is_instance_valid(dialog_ui) and dialogue_manager and next_sentence_sound:
@@ -62,21 +79,24 @@ func _ready() -> void:
 	else:
 		printerr("Error: No se pudieron obtener todas las referencias para DialogUI o DialogUI no es válido.")
 
-
+	# Oculta algunos iconos que no son necesarios
+	explorer_mode_icon.hide()
 	# Ocultar etiqueta tiempo
 	time_label.hide()
+	time_icon.texture = SceneLibrary.get_ui_icon("time_inactive_icon")
 	# Carga inicial manejada por DialogManager
 	var initial_dialog_file = "intro"
 	dialogue_manager.load_dialog_file(initial_dialog_file)
 	
 	is_transitioning = true
+	look_button.hide()
 	SceneManager.transition_in(transition_effect)
 	
 	#Icons_ui_labels
 	journal_icon_label.text = " "
 	inventoryl_icon_label.text = " "
 	settings_icon_label.text = " "
-
+	
 # Captura las entradas del jugador. Permite avanzar el diálogo y alternar el inventario.
 func _input(event: InputEvent) -> void:
 	# Si estamos en una transición, no procesar ninguna entrada.
@@ -124,6 +144,32 @@ func _input(event: InputEvent) -> void:
 		inventory_ui_manager.toggle_inventory()
 		get_viewport().set_input_as_handled()
 
+func enter_interaction_mode():
+	"""Pausa el diálogo y oculta la UI para permitir la exploración."""
+	print("MainScene: Entrando en modo de interacción.")
+	is_in_interaction_mode = true
+	is_dialog_input_blocked = true # Bloquea el avance con Enter/clic
+	canvas_main.hide()
+	viewer_canvas.hide()
+	
+	# Muestra el icono de exploración y reproduce su animación.
+	explorer_mode_icon.show()
+	explorer_mode_icon.get_node("AnimationPlayer").play("pulse")
+
+func exit_interaction_mode():
+	"""Restaura la UI de diálogo y los estados para salir del modo de exploración."""
+	if not is_in_interaction_mode: return # Si ya estamos en modo diálogo, no hace nada.
+
+	print("MainScene: Saliendo del modo de interacción.")
+	is_in_interaction_mode = false
+	is_dialog_input_blocked = false
+	canvas_main.show()
+	viewer_canvas.show()
+	
+	# Oculta el icono de exploración y detiene su animación para ahorrar recursos.
+	explorer_mode_icon.hide()
+	explorer_mode_icon.get_node("AnimationPlayer").stop()
+	
 func _on_object_clicked(action_command: Dictionary):
 	print("Paso 2: La MainScene ha recibido la señal con el comando: ", action_command)
 	
@@ -158,6 +204,32 @@ func show_item_acquired_notification_requested(item_name: String, quantity_chang
 	if notification_timer.is_stopped() and notification_queue.size() == 1:
 		_display_next_notification_from_queue()
 
+func load_new_scene_content_instantly(file_path: String, anchor: String):
+	# Ocultamos la UI para evitar parpadeos
+	dialog_ui.hide()
+
+	# 1. Carga el contenido del nuevo archivo de diálogo (lógica de _on_transition_out_completed)
+	dialogue_manager.load_dialog_file(file_path, anchor)
+	
+	if dialogue_manager.dialog_lines.is_empty():
+		printerr("MainScene: No hay líneas de diálogo para mostrar en '", file_path, "'.")
+		return
+
+	# 2. Bucle de pre-procesamiento para saltar líneas de configuración
+	while dialogue_manager.dialog_index < dialogue_manager.dialog_lines.size():
+		var current_line = dialogue_manager.dialog_lines[dialogue_manager.dialog_index]
+		var is_setup_line = not (current_line.has("text") or current_line.has("choices"))
+		
+		if is_setup_line:
+			command_processor.execute(current_line, true)
+			dialogue_manager.advance_index()
+		else:
+			break
+	
+	# 3. Muestra la UI y procesa la primera línea visible (lógica de _on_transition_in_completed)
+	dialog_ui.show()
+	dialogue_manager.process_current_line()
+	
 """ Señales """
 
 # Agrega uno o más ítems al inventario del personaje actual.
@@ -254,6 +326,7 @@ func _on_transition_in_completed():
 	
 	dialogue_manager.process_current_line()
 	is_transitioning = false
+	look_button.show()
 
 # Al recibir una solicitud de carga de nuevo archivo de diálogo,
 # guarda el archivo y ancla.
@@ -293,3 +366,45 @@ func _on_setting_icon_button_mouse_entered() -> void:
 
 func _on_setting_icon_button_mouse_exited() -> void:
 	settings_icon_label.text = " "
+
+
+func _on_settings_icon_button_pressed() -> void:
+	# Crea una instancia del menú de pausa.
+	var menu = PauseMenuScene.instantiate()
+	
+	# Conecta la señal del menú a una función en esta escena.
+	menu.main_menu_requested.connect(_on_main_menu_requested)
+	
+	# Añade el menú a la escena actual.
+	add_child(menu)
+	
+	# Pausa el juego.
+	get_tree().paused = true
+
+# Esta función se ejecutará cuando el menú emita la señal.
+func _on_main_menu_requested():
+	# Aquí pones la lógica para volver a tu menú principal.
+	# Asegúrate de que la ruta a tu escena de menú principal sea correcta.
+	get_tree().change_scene_to_file("res://Scenes/title_screen.tscn")
+
+func _on_cg_viewer_cg_clicked():
+	# Esta lógica es la misma que para avanzar un diálogo normal.
+	next_sentence_sound.play()
+	dialogue_manager.advance_index()
+	dialogue_manager.process_current_line()
+	canvas_main.show()
+	viewer_canvas.show()
+
+func _on_look_button_pressed() -> void:
+	protect_control.show()
+	look_button.hide()
+	return_button.show()
+	canvas_main.hide()
+	is_dialog_input_blocked = true
+
+func _on_return_button_pressed() -> void:
+	protect_control.show()
+	look_button.show()
+	return_button.hide()
+	canvas_main.show()
+	is_dialog_input_blocked = false

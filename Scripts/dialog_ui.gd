@@ -12,6 +12,7 @@ signal choice_selected(choice_data: Dictionary, item_given_data: Dictionary)
 @onready var sentence_pause_timer: Timer = %SentencePauseTimer
 @onready var dialog_box: PanelContainer = %DialogBox
 @onready var triangle_next: Polygon2D = %triangleNext
+@onready var triangle_particles: CPUParticles2D = %triangleParticles
 
 #precarga de escena de eleccion
 const ChoiceButtonScene = preload("res://Scenes/player_choice.tscn")
@@ -23,7 +24,7 @@ var animate_text : bool = false
 var current_visible_characters : int = 0
 var current_character_details : Dictionary
 
-# === NUEVAS VARIABLES: Serán asignadas por main_scene ===
+# Variables asignadas por main_scene ===
 var dialogue_manager_ref: Node = null
 var next_sentence_sound_ref: AudioStreamPlayer = null
 
@@ -33,11 +34,12 @@ func _ready() -> void:
 	dialog_line.text = ""
 	speaker_name.text = ""
 	triangle_next.hide()
+	triangle_particles.hide()
 	
 	#conectar señales
 	dialog_box.dialog_clicked.connect(_handle_mouse_click)
 	sentence_pause_timer.timeout.connect(_on_sentence_pause_timeout)
-
+	
 func _handle_mouse_click():
 	if dialogue_manager_ref == null or next_sentence_sound_ref == null:
 		printerr("Error: Dependencias del diálogo no asignadas en DialogUI.")
@@ -85,9 +87,10 @@ func _process(delta: float) -> void:
 			# Si la animación ha terminado
 			animate_text = false
 			if text_blip_sound: # Asegurarse de que no es null antes de llamar stop
-				text_blip_sound.stop()
+				text_blip_sound.stop_sound()
 			text_animation_done.emit()
 			triangle_next.show()
+			triangle_particles.show()
 
 func change_line(character_name: Character.Name, line : String, expression: String = ""):
 	# Obtiene los detalles del personaje
@@ -96,7 +99,7 @@ func change_line(character_name: Character.Name, line : String, expression: Stri
 	
 	# Detener cualquier sonido de la línea anterior
 	if text_blip_sound: # Asegurarse de que no es null antes de llamar stop
-		text_blip_sound.stop()
+		text_blip_sound.stop_sound()
 	
 	# Comprueba si el personaje es el narrador
 	if current_character_details.get("name", "") == "":
@@ -116,6 +119,7 @@ func change_line(character_name: Character.Name, line : String, expression: Stri
 	dialog_line.visible_characters = 0
 	animate_text = true
 	triangle_next.hide()
+	triangle_particles.hide()
 
 func display_choices(choices: Array):
 	#primero borrar cualquier opcion existente anterior
@@ -146,8 +150,9 @@ func display_choices(choices: Array):
 func skip_text_animation():
 	dialog_line.visible_ratio = 1
 	if text_blip_sound: # Asegurarse de que no es null antes de llamar stop
-		text_blip_sound.stop()
+		text_blip_sound.stop_sound()
 	triangle_next.show()
+	triangle_particles.show()
 
 func _on_sentence_pause_timeout():
 	# Reanuda el audio y la animación después de la pausa

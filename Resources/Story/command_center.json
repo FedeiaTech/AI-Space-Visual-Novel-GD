@@ -1,0 +1,12 @@
+[
+	{"anchor": "ori_stunned"},
+	{"location": "command_center", "music": "track01"},
+	{"object": { "id": "ori_stunned", "visible": true } },
+	{"speaker": "Astro", "text": "ORIII, niñaa dasdsadsa sad. No me asustes asi chica.", "expression": "scare"},
+	{"show_cg": "ori_stunned", "instant": true}, 
+	{"speaker": "Ori", "text": "Mierdaa. Esto pasa cuando no tienes el cinturón bien abrochado.", "expression": "stunned"},
+	{"speaker": "Astro", "text": "Dime que esta todo bien."},
+	{"speaker": "Astro", "text": "La transicion contnua"},
+	{"hide_cg": true, "instant": false},
+	{"speaker": "Astro", "text": "Ahora la transicion se fue."},
+]

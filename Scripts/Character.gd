@@ -49,6 +49,12 @@ const CHARACTER_DETAILS : Dictionary = {
 		"sprite_frames": preload("res://Resources/Sprites_saves/Milka_sprites.tres"),
 		"color": Color("#fcd1c6") # rosa claro
 	},
+	Name.ORI: {
+		"name" : "Ori",
+		"gender": "female",
+		"sprite_frames": preload("res://Resources/Sprites_saves/Ori_sprites.tres"),
+		"color": Color("#FFD700"), # Un amarillo dorado
+	},
 	Name.NARRATOR: {
 		"name" : "",
 		"gender": "-",

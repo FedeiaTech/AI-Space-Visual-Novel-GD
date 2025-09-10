@@ -25,10 +25,10 @@ func _ready():
 		"icon_path": "res://Assets/Inventory_icons/rope.png"
 	})
 	add_item(Character.Name.ASTRO, {
-		"id": "pocion_roja",
-		"name": "Poción Roja",
-		"description": "Un líquido burbujeante de color carmesí. Cura ematomas y regenera daños leves en la piel rapidamente. ¡El poder de la biotecnología moderna!",
-		"icon_path": "res://Assets/Inventory_icons/red_potion.png"
+		"id": "pocket_watch",
+		"name": "Reloj Antiguo",
+		"description": "Un Un reloj que me ayuda a concentrarme_ me lo dió mi abuelo y significa mucho para mí",
+		"icon_path": "res://Assets/Inventory_icons/pocket_watch.png"
 	})
 	add_item(Character.Name.ASTRO, {
 		"id": "mapa_rasgado",

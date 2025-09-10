@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://t00wn4dwmk2q"]
+[gd_scene load_steps=7 format=3 uid="uid://t00wn4dwmk2q"]
 
 [ext_resource type="Script" uid="uid://b84251mbmxnt0" path="res://Scripts/dialog_ui.gd" id="1_oixmp"]
 [ext_resource type="Script" uid="uid://c1mxqje3axf07" path="res://Scripts/text_blip_sound.gd" id="2_dy63b"]
 [ext_resource type="PackedScene" uid="uid://bsqoddjcxp3nn" path="res://Scenes/player_choice.tscn" id="3_kymi5"]
 [ext_resource type="Theme" uid="uid://b6ifxrvymt2nj" path="res://Resources/Text_format/dialogue_text.tres" id="3_yqatb"]
 [ext_resource type="Script" uid="uid://d0on4nk64kn4n" path="res://Scripts/Dialogues/dialog_box.gd" id="4_5t5tq"]
+[ext_resource type="Texture2D" uid="uid://riwn27cnf4lp" path="res://Assets/UI_assets/_Resources/fog_spaceship.png" id="6_t33e6"]
 
 [node name="DialogUI" type="Control"]
 layout_mode = 3
@@ -109,7 +110,24 @@ offset_top = -40.0
 grow_horizontal = 0
 grow_vertical = 0
 
+[node name="triangleParticles" type="CPUParticles2D" parent="Control"]
+unique_name_in_owner = true
+position = Vector2(-14, -2)
+amount = 5
+texture = ExtResource("6_t33e6")
+lifetime = 0.67
+lifetime_randomness = 0.26
+emission_shape = 2
+emission_sphere_radius = 1.0
+direction = Vector2(-1, 0)
+spread = 71.11
+gravity = Vector2(-200, 0)
+initial_velocity_max = 50.0
+linear_accel_min = -100.0
+linear_accel_max = -100.0
+scale_amount_min = 0.5
+
 [node name="triangleNext" type="Polygon2D" parent="Control"]
 unique_name_in_owner = true
 position = Vector2(-24, -22)
-polygon = PackedVector2Array(0, 0, 40, 20, 0, 40)
+polygon = PackedVector2Array(0, 0, 35, 20, 0, 40, -10, 20)

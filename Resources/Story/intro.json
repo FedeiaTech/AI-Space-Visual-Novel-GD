@@ -2,6 +2,7 @@
 	{"location": "outside_starship", "music": "track01"},
 	
 	{"text": "En alguna parte del espacio..."},
+	{ "object": { "id": "chip", "visible": false } },
 	{"set_time_absolute": "00:45", "show_time_ui": true},
 	{"speaker": "Astro", "text": "¿Qué fue todo eso? mi cabeza...", "show_character": "Astro_EVA"},
 	{"speaker": "Astro", "text": "Muchachos.. ¿Cómo están ahi? ¿Ori? ¿Viktor?", "show_character": "Astro_EVA"},
@@ -54,7 +55,7 @@
 	{"choices": [
 			{"text": "Volver a la Nave Spark N3", "goto": "first_enter_spark"},
 			{"text": "Contemplar el espacio", "goto": "planet_explorer", "requires_flag": "mision_anomalia", "flag_value": true},
-			{"text": "Consultar el Mapa", "goto": "map_dialog_options", "requires_item": "mapa_rasgado"}
+			{"text": "Consultar el Mapa", "goto": "map_dialog_options", "requires_item": "pocion"}
 		]
 	},
 	

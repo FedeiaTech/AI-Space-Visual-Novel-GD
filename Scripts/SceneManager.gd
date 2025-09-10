@@ -1,3 +1,4 @@
+#SceneManager(autoload)
 extends Node2D
 
 #Señales

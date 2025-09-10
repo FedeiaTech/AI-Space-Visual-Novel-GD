@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://bx718nuvws00d"]
 
 [ext_resource type="Script" uid="uid://bhwjqhjj82fum" path="res://Scripts/character_sprite.gd" id="1_ushfy"]
-[ext_resource type="SpriteFrames" uid="uid://dqwvo4vp6ttya" path="res://Resources/Sprites_saves/Milka_sprites.tres" id="2_ushfy"]
+[ext_resource type="SpriteFrames" uid="uid://bd1amg6df0t10" path="res://Resources/Sprites_saves/Ori_sprites.tres" id="2_ushfy"]
 
 [node name="CharacterSprite" type="Control"]
 layout_mode = 3
@@ -16,4 +16,4 @@ script = ExtResource("1_ushfy")
 position = Vector2(626, 494)
 sprite_frames = ExtResource("2_ushfy")
 animation = &"idle"
-frame_progress = 0.15278
+frame_progress = 0.858388

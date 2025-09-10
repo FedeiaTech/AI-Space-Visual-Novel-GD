@@ -1,10 +1,10 @@
 [gd_resource type="SpriteFrames" load_steps=6 format=3 uid="uid://dqwvo4vp6ttya"]
 
-[ext_resource type="Texture2D" uid="uid://cfhnsustcy312" path="res://Assets/Milka/idle-talking/milka_idle.png" id="1_hvkw2"]
-[ext_resource type="Texture2D" uid="uid://b12vmxaa4my7c" path="res://Assets/Milka/idle-talking/milka_idle_blink.png" id="2_scibj"]
-[ext_resource type="Texture2D" uid="uid://tmfiurjfjj32" path="res://Assets/Milka/idle-talking/milka_talking1.png" id="3_2kqmk"]
-[ext_resource type="Texture2D" uid="uid://cov27tdqli3ic" path="res://Assets/Milka/idle-talking/milka_talking2.png" id="4_h7yyl"]
-[ext_resource type="Texture2D" uid="uid://v7pxn5ng6135" path="res://Assets/Milka/idle-talking/milka_talking2_blink.png" id="5_6y23a"]
+[ext_resource type="Texture2D" uid="uid://cfhnsustcy312" path="res://Assets/Character_Sprites/Milka/idle-talking/milka_idle.png" id="1_hvkw2"]
+[ext_resource type="Texture2D" uid="uid://b12vmxaa4my7c" path="res://Assets/Character_Sprites/Milka/idle-talking/milka_idle_blink.png" id="2_scibj"]
+[ext_resource type="Texture2D" uid="uid://tmfiurjfjj32" path="res://Assets/Character_Sprites/Milka/idle-talking/milka_talking1.png" id="3_2kqmk"]
+[ext_resource type="Texture2D" uid="uid://cov27tdqli3ic" path="res://Assets/Character_Sprites/Milka/idle-talking/milka_talking2.png" id="4_h7yyl"]
+[ext_resource type="Texture2D" uid="uid://v7pxn5ng6135" path="res://Assets/Character_Sprites/Milka/idle-talking/milka_talking2_blink.png" id="5_6y23a"]
 
 [resource]
 animations = [{

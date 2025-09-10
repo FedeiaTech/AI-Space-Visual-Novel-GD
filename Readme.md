@@ -8,6 +8,31 @@
 
 ---
 
+## ✨ Nuevas Características y Mejoras (v0.0.8) 10-09-2025
+
+Esta versión se centra en la **implementación de funciones de control visual y mejoras de la experiencia del usuario**, con nuevos elementos gráficos y de interacción.
+
+### Control Visual y de Escenas
+
+* **Implementación de CGs**: Se pueden cargar imágenes CG durante el diálogo a través de comandos JSON, con transiciones de entrada y salida personalizables (tipo `slide` o `instantáneo`).
+* **Gestión de Visibilidad**: Se añadieron comandos para **inhabilitar interacciones durante el diálogo** y para ocultar la caja de diálogo y los personajes para ver la escena (`modo exploración` y `modo diálogo`).
+
+### Mejoras en la Interacción y la UI
+
+* **Modo de Exploración**: Nuevo comando `"flow": "explore"` que oculta la UI de diálogo y permite al jugador interactuar con el entorno. Un **ícono animado de parpadeo (`ExplorerModeIcon`)** indica al jugador que está en este modo.
+* **Shaders para Clickeables**: Los objetos interactivos ahora tienen **efectos de brillo** al pasar el cursor sobre ellos (`hover`) y al presionarlos (`pressed`), mejorando la retroalimentación visual.
+* **Partículas para el Puntero**: El puntero de avance del diálogo ahora usa un **sistema de partículas** para una animación más dinámica.
+* **Ícono de Tiempo Animado**: Se implementó un nuevo icono de tiempo que, además de ser un contador, puede indicar la hora del día.
+* **Menú de Pausa**: Se añadió un menú de pausa funcional que se activa al presionar un botón, congela el juego y ofrece opciones para reanudar o salir.
+
+### Correcciones y Estabilidad
+
+* **Solución de Errores de Teclas**: Se corrigió un error que causaba una selección de botones incorrecta debido a pulsaciones de teclas por defecto.
+* **Control de Transiciones de Escena**: La carga de escenas (`load_scene`) ahora puede ser con o sin transición, controlable con una opción booleana y dos tipos de transición: `fade` y `side`.
+* **Continuación de la Historia**: Se han añadido nuevos elementos narrativos, diálogos y escenarios que dan forma a la historia principal.
+
+---
+
 ## ✨ Nuevas Características y Mejoras (v0.0.7) 23-08-2025
 
 Esta versión transforma la experiencia de juego al pasar de escenarios estáticos a **entornos interactivos explorables**. Se introduce un sistema de **objetos clickeables** que se integra con una arquitectura de eventos robusta, permitiendo una narrativa más dinámica y no lineal.

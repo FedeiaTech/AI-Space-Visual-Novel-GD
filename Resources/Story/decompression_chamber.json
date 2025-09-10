@@ -1,6 +1,7 @@
 [
 	{"anchor": "return_point_from_space"},
 	{"location": "decompression_chamber", "music": "track01"},
+	{ "object": { "id": "helmet", "visible": false } },
 	{"speaker": "Astro", "text": "Esto está demasiado tranquilo y oscuro.", "show_character": "Astro_EVA"},
 	{"speaker": "Astro", "text": "Espero que todos esten bien.", "show_character": "Astro_EVA"},
 	{"speaker": "IA", "text": "Presurización iniciada. Nivel de oxígeno interno en parámetros nominales... por ahora.", "show_character": "Astro_EVA"},
@@ -13,11 +14,13 @@
 	
 	{"anchor": "first_helmet_out"},
 	{"location": "decompression_chamber", "music": "track01"},
+	{ "object": { "id": "helmet", "visible": true } },
 	{"text": "...", "show_character": "Astro"},
-	{"speaker": "Astro", "text": "Deberia ir ya a la sala de control.", "expression": "mad"},
+	{"speaker": "Astro", "text": "Debería ir ya a la sala de control.", "expression": "mad"},
+	{ "flow": "explore" },
 	
 	{"choices": [
-			{"text": "Ir al corredor central", "action": {"type": "load_scene", "scene_file": "decompression_chamber", "anchor": "ori__stuned"}},
+			{"text": "Ir al corredor central", "action": {"type": "load_scene", "scene_file": "command_center", "anchor": "ori_stunned"}},
 			{"text": "Volver a ponerse el casco", "goto": "not_helmet"},
 		],
 	},
@@ -29,8 +32,10 @@
 	
 	{"anchor": "not_helmet"},
 	{"speaker": "Astro", "text": "No tengo tiempo para esto."},
+	{ "flow": "explore" },
+	
 	{"choices": [
-			{"text": "Ir al corredor central", "action": {"type": "load_scene", "scene_file": "spaceship_interior", "anchor": "ori__stuned"}},
+			{"text": "Ir al corredor central", "action": {"type": "load_scene", "scene_file": "command_center", "anchor": "ori_stunned"}},
 			{"text": "Insistir en ponerse el casco", "goto": "not_helmet"},
 		],
 	},
