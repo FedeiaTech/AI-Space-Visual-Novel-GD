@@ -2,10 +2,7 @@
 > # **Guía Completa de Comandos JSON para tu Juego**
 > 
 > Esta guía documenta todos los comandos que puedes usar en tus archivos de diálogo `.json` para controlar:
-> - **Narrativa**  
-> - **Elementos visuales**  
-> - **Lógica del juego**  
-> - **Flujo de las escenas**
+> - **Narrativa** > - **Elementos visuales** > - **Lógica del juego** > - **Flujo de las escenas**
 > 
 > ---
 > 
@@ -25,8 +22,7 @@
 > ```json
 > {"text": "En alguna parte del espacio..."}
 > ```
-> **Notas y uso avanzado:**  
-> - Puede ser narrativo (sin personaje) o parte de un diálogo.  
+> **Notas y uso avanzado:** > - Puede ser narrativo (sin personaje) o parte de un diálogo.  
 > - Útil para descripciones del entorno, pensamientos internos o mensajes del narrador.  
 > - Evita textos demasiado largos en una sola línea para mejorar la legibilidad.
 > 
@@ -42,8 +38,7 @@
 > ```json
 > {"speaker": "Astro", "text": "¿Qué pasó? mi cabeza..."}
 > ```
-> **Notas y uso avanzado:**  
-> - El nombre debe coincidir con el que está definido en tu sistema (`Character.Name`).  
+> **Notas y uso avanzado:** > - El nombre debe coincidir con el que está definido en tu sistema (`Character.Name`).  
 > - Permite diferenciar diálogos de distintos personajes incluso si usan el mismo sprite.  
 > - Se puede combinar con `expression` para dar más vida a la conversación.
 > 
@@ -59,12 +54,11 @@
 > ```json
 > {"speaker": "IA", "text": "Sistema de comunicación desconectado.", "show_character": "Astro_EVA"}
 > ```
-> **Notas y uso avanzado:**  
-> - Se usa para mostrar al personaje hablando o reaccionando.  
+> **Notas y uso avanzado:** > - Se usa para mostrar al personaje hablando o reaccionando.  
 > - Para ocultar a todos los personajes:  
->   ```json
->   "show_character": "NARRATOR"
->   ```  
+>  ```json
+>  "show_character": "NARRATOR"
+>  ```  
 > - Puede cambiar la imagen del personaje a otra variante (por ejemplo: traje diferente).
 > 
 > ---
@@ -79,8 +73,7 @@
 > ```json
 > {"speaker": "Astro", "text": "Orii. estas. ey...", "expression": "scare"}
 > ```
-> **Notas y uso avanzado:**  
-> - Útil para dar dinamismo a las escenas.  
+> **Notas y uso avanzado:** > - Útil para dar dinamismo a las escenas.  
 > - El script `text_blip_sound.gd` buscará un sonido asociado a esta expresión.  
 > - Ideal para transmitir tensión, felicidad, sorpresa o enojo en diálogos.
 > 
@@ -138,19 +131,29 @@
 >   }
 > }
 > ```
-> **Notas:**  
-> - `load_scene` carga una escena diferente.  
+> **Notas:** > - `load_scene` carga una escena diferente.  
 > - `goto_internal` salta dentro de la misma escena.  
 > - Se pueden crear otros tipos personalizados según la lógica del juego.
 > 
 > ---
 > 
 > ### [`next_scene`](#glosario-next_scene) <a id="comando-next_scene"></a>
-> **Propósito:** Define la siguiente escena a cargar cuando termina el archivo.  
+> **Propósito:** Define la siguiente escena a cargar cuando el archivo de diálogo actual llega a su fin.  
+> **Ejemplo:**
 > ```json
 > {"next_scene": "first_scene", "transition": "fade"}
 > ```
 > **Notas:** Ideal para una narrativa lineal, evitando el uso repetitivo de `load_scene`.
+> 
+> ---
+> 
+> ### [`flow`](#glosario-flow) <a id="comando-flow"></a>
+> **Propósito:** Transiciona el juego a un modo de interacción específico, como el modo de exploración.  
+> **Ejemplo:**
+> ```json
+> { "flow": "explore" }
+> ```
+> **Notas:** Este comando detiene el flujo del diálogo y le da el control al jugador para interactuar con la escena, por lo que es ideal para usar con las elecciones.
 > 
 > ---
 > 
@@ -177,6 +180,50 @@
 > 
 > ---
 > 
+> ### [`object`](#glosario-object) <a id="comando-object"></a>
+> **Propósito:** Controla la visibilidad de objetos interactivos dentro de una escena.  
+> **Sintaxis:**
+> ```json
+> "object": { "id": "nombre_del_objeto", "visible": true/false }
+> ```
+> **Ejemplo:**
+> ```json
+> { "object": { "id": "chip", "visible": false } }
+> ```
+> **Notas:** > - El `id` debe coincidir con el `object_id` del nodo del objeto en tu escena.  
+> - Muy útil para revelar o esconder objetos a medida que la historia avanza.
+> 
+> ---
+> 
+> ### [`show_cg`](#glosario-show_cg) <a id="comando-show_cg"></a>
+> **Propósito:** Muestra una imagen de CG (Computer Graphics) en pantalla completa.  
+> **Sintaxis:**
+> ```json
+> "show_cg": "nombre_de_archivo", "instant": true/false
+> ```
+> **Ejemplo:**
+> ```json
+> {"show_cg": "ori_stunned", "instant": true}
+> ```
+> **Notas:** > - El valor `instant` (booleano) permite una transición inmediata o animada.  
+> - El nombre de archivo debe existir en la carpeta `Assets/CGs/` (sin la extensión).
+> 
+> ---
+> 
+> ### [`hide_cg`](#glosario-hide_cg) <a id="comando-hide_cg"></a>
+> **Propósito:** Oculta una imagen de CG que está siendo mostrada.  
+> **Sintaxis:**
+> ```json
+> "hide_cg": true, "instant": true/false
+> ```
+> **Ejemplo:**
+> ```json
+> {"hide_cg": true, "instant": false}
+> ```
+> **Notas:** > - El valor `instant` (booleano) permite ocultar la imagen de forma inmediata o con una transición animada.
+> 
+> ---
+> 
 > ## 4. Comandos de **Lógica de Juego e Inventario** <a id="seccion-logica"></a>
 > 
 > ---
@@ -190,8 +237,7 @@
 >   ]
 > }
 > ```
-> **Notas:**  
-> - `id` debe coincidir con un ítem válido en tu base de datos.  
+> **Notas:** > - `id` debe coincidir con un ítem válido en tu base de datos.  
 > - Se puede usar para recompensas o progresión de la historia.
 > 
 > ---
@@ -238,8 +284,7 @@
 >   ]
 > }
 > ```
-> **Notas:**  
-> - Puedes condicionar opciones según ítems (`requires_item`) o banderas (`requires_flag`).  
+> **Notas:** > - Puedes condicionar opciones según ítems (`requires_item`) o banderas (`requires_flag`).  
 > - Útil para crear decisiones con consecuencias reales.
 > 
 > ---
@@ -282,8 +327,8 @@
 > ## **Glosario Rápido** <a id="glosario"></a>
 > 
 > **Diálogo y Personajes:** [`text`](#comando-text) · [`speaker`](#comando-speaker) · [`show_character`](#comando-show_character) · [`expression`](#comando-expression)  
-> **Flujo y Navegación:** [`goto`](#comando-goto) · [`anchor`](#comando-anchor) · [`action`](#comando-action) · [`next_scene`](#comando-next_scene)  
-> **Ambiente y Visuales:** [`location`](#comando-location) · [`music`](#comando-music)  
+> **Flujo y Navegación:** [`goto`](#comando-goto) · [`anchor`](#comando-anchor) · [`action`](#comando-action) · [`next_scene`](#comando-next_scene) · [`flow`](#comando-flow)  
+> **Ambiente y Visuales:** [`location`](#comando-location) · [`music`](#comando-music) · [`object`](#comando-object) · [`show_cg`](#comando-show_cg) · [`hide_cg`](#comando-hide_cg)  
 > **Lógica e Inventario:** [`item_given`](#comando-item_given) · [`set_flag`](#comando-set_flag)  
 > **Elecciones:** [`choices`](#comando-choices)  
 > **Tiempo:** [`set_time_absolute`](#comando-set_time_absolute) · [`modify_time`](#comando-modify_time) · [`show_time_ui`](#comando-show_time_ui)
