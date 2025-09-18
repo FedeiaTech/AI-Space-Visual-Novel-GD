@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=3 uid="uid://bypw7eihxexrm"]
+[gd_scene load_steps=33 format=3 uid="uid://bypw7eihxexrm"]
 
 [ext_resource type="Script" uid="uid://cox74slg0ewob" path="res://Scripts/main_scene.gd" id="1_m8nr8"]
 [ext_resource type="Script" uid="uid://dupk7xq8ogjhp" path="res://Scripts/_command_processor/command_processor.gd" id="2_0vbqt"]
@@ -15,6 +15,7 @@
 [ext_resource type="PackedScene" uid="uid://b7vmdbxmok30i" path="res://Scenes/UI/journal_ui.tscn" id="10_mhr8t"]
 [ext_resource type="Texture2D" uid="uid://cutks2k55huad" path="res://Assets/UI_assets/Icons/tablet2_mini_black.png" id="11_5bsxs"]
 [ext_resource type="Texture2D" uid="uid://bwrs8ogqvf3h5" path="res://Assets/UI_assets/Icons/tablet_mini_xs.png" id="11_ekaqe"]
+[ext_resource type="PackedScene" uid="uid://bt5atvhvlh3rc" path="res://Scenes/character_listener.tscn" id="11_eol8w"]
 [ext_resource type="Shader" uid="uid://lcya0iddlgrb" path="res://Resources/Shaders/clickable_object.gdshader" id="11_l42ic"]
 [ext_resource type="Texture2D" uid="uid://cudrt88cxdo8u" path="res://Assets/UI_assets/Icons/eye_mini.png" id="11_udkkk"]
 [ext_resource type="Texture2D" uid="uid://84gtj3yhakmr" path="res://Assets/UI_assets/Icons/tablet2_mini_light.png" id="12_iypob"]
@@ -170,8 +171,48 @@ layout_mode = 3
 anchors_preset = 0
 offset_bottom = 100.0
 
-[node name="CharacterSprite" parent="CanvasMain/Control" instance=ExtResource("3_yyxd1")]
+[node name="CharacterSprite2" parent="CanvasMain/Control" instance=ExtResource("3_yyxd1")]
+unique_name_in_owner = true
 layout_mode = 1
+offset_left = -150.0
+offset_top = 100.0
+offset_right = -150.0
+offset_bottom = 100.0
+
+[node name="CharacterSprite3" parent="CanvasMain/Control" instance=ExtResource("3_yyxd1")]
+unique_name_in_owner = true
+layout_mode = 1
+offset_left = 100.0
+offset_top = 100.0
+offset_right = 100.0
+offset_bottom = 100.0
+
+[node name="CharacterSprite4" parent="CanvasMain/Control" instance=ExtResource("3_yyxd1")]
+unique_name_in_owner = true
+layout_mode = 1
+offset_left = 350.0
+offset_top = 100.0
+offset_right = 350.0
+offset_bottom = 100.0
+
+[node name="CharacterSprite" parent="CanvasMain/Control" instance=ExtResource("3_yyxd1")]
+unique_name_in_owner = true
+layout_mode = 1
+offset_left = -350.0
+offset_top = 100.0
+offset_right = -350.0
+offset_bottom = 100.0
+
+[node name="CharacterSpriteListener" parent="CanvasMain/Control" instance=ExtResource("11_eol8w")]
+visible = false
+layout_mode = 1
+offset_left = 250.0
+offset_right = 250.0
+
+[node name="CharacterContainer" type="Control" parent="CanvasMain/Control"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
 
 [node name="DialogUI" parent="CanvasMain" instance=ExtResource("4_0vbqt")]
 visible = false
@@ -324,7 +365,7 @@ horizontal_alignment = 1
 
 [node name="JournalUI" parent="CanvasNotification" instance=ExtResource("10_mhr8t")]
 unique_name_in_owner = true
-process_mode = 1
+process_mode = 3
 visible = false
 
 [connection signal="pressed" from="ViewerCanvas/LookButton" to="." method="_on_look_button_pressed"]

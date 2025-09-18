@@ -1,4 +1,4 @@
-#text_blip_sound.gd
+# text_blip_sound.gd
 extends AudioStreamPlayer
 
 # Diccionario de audios por género.
@@ -23,9 +23,12 @@ var is_playing_expression_sound: bool = false
 func _ready():
 	# Conectar la señal `finished` del propio AudioStreamPlayer.
 	finished.connect(_on_audio_finished)
-	# Conectar una señal del Timer para gestionar la reproducción.
-	##add_child(audio_completed_timer)
-	##audio_completed_timer.timeout.connect(_on_audio_finished)
+
+# Esta función se encargará de iniciar el bucle de sonidos de diálogo.
+func play_sound():
+	if not is_active:
+		is_active = true
+		_start_next_random_sound()
 
 func start_dialogue_sound(character_details: Dictionary, expression: String):
 	if is_active:
@@ -36,6 +39,8 @@ func start_dialogue_sound(character_details: Dictionary, expression: String):
 	
 	# 1. Configurar los sonidos aleatorios para más tarde
 	var character_gender = character_details.get("gender", "-")
+	
+	# Asegura que current_gender_sounds siempre tenga un valor.
 	match character_gender:
 		"male":
 			current_gender_sounds = SOUNDS_MALE
@@ -60,57 +65,26 @@ func start_dialogue_sound(character_details: Dictionary, expression: String):
 	# 3. Si no hay sonido de expresión, empezar directamente con los aleatorios
 	_start_next_random_sound()
 
-#func play_random_sound(character_details: Dictionary):
-	## Si ya está activo, no hacemos nada para evitar superposiciones.
-	#if is_active:
-		#return
-	#
-	#is_active = true
-	#var character_gender = character_details["gender"]
-	#
-	## Seleccionar el array de audios según el género.
-	#match character_gender:
-		#"male":
-			#current_gender_sounds = SOUNDS_MALE
-			#pitch_scale = 1.0
-		#"female":
-			#current_gender_sounds = SOUNDS_FEMALE
-			#pitch_scale = 1.5
-		#_: # Para cualquier otro caso (p. ej. "-")
-			#current_gender_sounds = SOUNDS_OTHER
-			#pitch_scale = 0.5
-#
-	#_start_next_random_sound()
-
 func stop_sound():
 	is_active = false
 	is_playing_expression_sound = false
 	stop()
-	#audio_completed_timer.stop()
 
 func _start_next_random_sound():
-	# Si no está activo, no reproducir nada.
-	if not is_active:
+	# Verifica si la matriz no está vacía antes de llamar a pick_random()
+	if not is_active or current_gender_sounds.is_empty():
 		return
 	
 	var random_sound = current_gender_sounds.pick_random()
 	stream = random_sound
 	play()
-	
-	# El timer actúa como un fallback si la señal `finished` falla.
-	# Le damos un poco más de tiempo para asegurarnos de que la reproducción ha finalizado.
-	#audio_completed_timer.start(stream.get_length() + 0.1)
 
 func _on_audio_finished():
-	# Si el sistema ya no está activo, no hacemos nada.
 	if not is_active:
 		return
 
- 	# Si el sonido que acaba de terminar era el de la expresión...
 	if is_playing_expression_sound:
 		is_playing_expression_sound = false
- 		# ...ahora comenzamos el bucle de sonidos aleatorios.
 		_start_next_random_sound()
 	else:
- 		# Si era un sonido aleatorio, simplemente continuamos con el siguiente.
 		_start_next_random_sound()

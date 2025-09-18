@@ -8,7 +8,7 @@ signal choice_selected(choice_data: Dictionary, item_given_data: Dictionary)
 @onready var speaker_box: PanelContainer = %SpeakerBox
 @onready var speaker_name: Label = %SpeakerName
 @onready var choice_list: VBoxContainer = %ChoiceList
-@onready var text_blip_sound: AudioStreamPlayer = $TextBlipSound # Asumiendo que es un AudioStreamPlayer
+@onready var text_blip_sound: AudioStreamPlayer = $TextBlipSound
 @onready var sentence_pause_timer: Timer = %SentencePauseTimer
 @onready var dialog_box: PanelContainer = %DialogBox
 @onready var triangle_next: Polygon2D = %triangleNext
@@ -18,6 +18,7 @@ signal choice_selected(choice_data: Dictionary, item_given_data: Dictionary)
 const ChoiceButtonScene = preload("res://Scenes/player_choice.tscn")
 
 const ANIMATION_SPEED : int = 30
+const SENTENCE_PAUSE : float = 0.5
 const NO_SOUND_CHARS : Array = [".", "!", "?"]
 
 var animate_text : bool = false
@@ -62,57 +63,63 @@ func _handle_mouse_click():
 func set_dialog_dependencies(dm: Node, nss: AudioStreamPlayer):
 	dialogue_manager_ref = dm
 	next_sentence_sound_ref = nss
-	#print("DialogUI: Dependencias asignadas correctamente.") # Para depuración
 
 func _process(delta: float) -> void:
-	# Si la animación está activa y el temporizador no está contando...
 	if animate_text and sentence_pause_timer.is_stopped():
 		if dialog_line.visible_ratio < 1:
 			dialog_line.visible_ratio += (1.0 / dialog_line.text.length()) * (ANIMATION_SPEED * delta)
 			if dialog_line.visible_characters > current_visible_characters:
 				current_visible_characters = dialog_line.visible_characters
 				var current_char = dialog_line.text[current_visible_characters - 1]
-				# Si el siguiente caracter es un espacio y el actual es un signo de puntuación...
-				if current_visible_characters < dialog_line.text.length():
-					var next_char = dialog_line.text[current_visible_characters]
-					if NO_SOUND_CHARS.has(current_char) and next_char == " ":
-						# Asegurarse de que text_blip_sound tiene una propiedad is_playing_expression_sound
-						# o ajusta a text_blip_sound.playing si es un AudioStreamPlayer normal
-						if text_blip_sound and text_blip_sound.is_playing(): # Usar is_playing() para AudioStreamPlayer
-							sentence_pause_timer.start()
-						else:
-							text_blip_sound.stop() # Usar stop() para AudioStreamPlayer
-							sentence_pause_timer.start()
+				
+				# Verifica si el caracter actual es un signo de puntuación
+				if NO_SOUND_CHARS.has(current_char):
+					# Detiene el sonido y la animación, y espera
+					if text_blip_sound and text_blip_sound.is_playing():
+						text_blip_sound.stop_sound()
+					
+					if current_visible_characters < dialog_line.text.length():
+						sentence_pause_timer.start(SENTENCE_PAUSE)
+				else:
+					# Si no es un signo de puntuación, asegúrate de que el sonido se esté reproduciendo
+					if text_blip_sound and not text_blip_sound.is_playing():
+						text_blip_sound.play_sound()
 		else:
-			# Si la animación ha terminado
 			animate_text = false
-			if text_blip_sound: # Asegurarse de que no es null antes de llamar stop
+			if text_blip_sound:
 				text_blip_sound.stop_sound()
 			text_animation_done.emit()
 			triangle_next.show()
 			triangle_particles.show()
 
-func change_line(character_name: Character.Name, line : String, expression: String = ""):
-	# Obtiene los detalles del personaje
-	current_character_details = Character.CHARACTER_DETAILS[character_name]
-	var speaker_color = current_character_details.get("color", Color.WHITE)
-	
+# CORRECCIÓN 1: Cambia la firma para que reciba el nombre como String
+func change_line(speaker_name_for_ui: String, line: String, expression: String = ""):
 	# Detener cualquier sonido de la línea anterior
-	if text_blip_sound: # Asegurarse de que no es null antes de llamar stop
+	if text_blip_sound:
 		text_blip_sound.stop_sound()
 	
-	# Comprueba si el personaje es el narrador
-	if current_character_details.get("name", "") == "":
-		speaker_box.hide() # Oculta la caja del orador
-		speaker_name.text = "" # Asegúrate de que el nombre del orador esté vacío
+	if speaker_name_for_ui == "Narrador" or speaker_name_for_ui.is_empty():
+		speaker_box.hide()
+		speaker_name.text = ""
+		current_character_details = {} 
 	else:
-		speaker_box.show() # Muestra la caja del orador
-		speaker_name.text = current_character_details["name"]
-		speaker_name.add_theme_color_override("font_color", speaker_color)
+		speaker_box.show()
+		speaker_name.text = speaker_name_for_ui
 		
-		# Asegurarse de que text_blip_sound tiene un método start_dialogue_sound
-		if text_blip_sound:
-			text_blip_sound.start_dialogue_sound(current_character_details, expression)
+		# Obtener el enum del personaje a partir del nombre de la cadena
+		var speaker_enum = Character.get_enum_from_string(speaker_name_for_ui)
+		
+		if speaker_enum != -1: # Verificar que el enum sea válido
+			current_character_details = Character.CHARACTER_DETAILS.get(speaker_enum, {})
+			var speaker_color = current_character_details.get("color", Color.WHITE)
+			speaker_name.add_theme_color_override("font_color", speaker_color)
+			
+			if text_blip_sound:
+				text_blip_sound.start_dialogue_sound(current_character_details, expression)
+		else:
+			printerr("Error en DialogUI: Nombre de personaje no válido para obtener detalles: ", speaker_name_for_ui)
+			speaker_name.text = "Desconocido"
+			speaker_box.show()
 	
 	current_visible_characters = 0
 	dialog_line.text = line
@@ -122,39 +129,34 @@ func change_line(character_name: Character.Name, line : String, expression: Stri
 	triangle_particles.hide()
 
 func display_choices(choices: Array):
-	#primero borrar cualquier opcion existente anterior
 	for child in choice_list.get_children():
 		child.queue_free()
 		
-	#Crear un nuevo boton por cada opcion
 	for choice in choices:
 		var choice_button = ChoiceButtonScene.instantiate()
 		choice_button.text = choice["text"]
 		
-		# Obtener los datos del ítem, si existen
 		var item_given_data = null
 		if choice.has("item_given"):
 			item_given_data = choice["item_given"]
 			
-		# Adjuntar señal al botón, pasando el 'item_given_data'
 		choice_button.pressed.connect(func():
-			# Emitir el diccionario 'choice' completo(MainScene decide si es 'goto' o 'action')
 			choice_selected.emit(choice, item_given_data)
 			choice_list.hide()
 			)
-		#agregar boton al la lista de opciones
 		choice_list.add_child(choice_button)
-	#mostrar la lista de opciones (visible)
+		
 	choice_list.show()
 
 func skip_text_animation():
 	dialog_line.visible_ratio = 1
-	if text_blip_sound: # Asegurarse de que no es null antes de llamar stop
+	if text_blip_sound:
 		text_blip_sound.stop_sound()
 	triangle_next.show()
 	triangle_particles.show()
 
 func _on_sentence_pause_timeout():
-	# Reanuda el audio y la animación después de la pausa
-	if text_blip_sound: # Asegurarse de que no es null antes de llamar
-		text_blip_sound.start_dialogue_sound(current_character_details, "")
+	# Reanuda la animación y el sonido de diálogo
+	animate_text = true
+	if text_blip_sound:
+		text_blip_sound.play_sound()

@@ -9,6 +9,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
 script = ExtResource("1_aog7u")
 
 [node name="ColorRect" type="ColorRect" parent="."]
@@ -54,26 +55,26 @@ horizontal_alignment = 2
 [node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer"]
-custom_minimum_size = Vector2(100, 300)
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 3
 theme_override_constants/margin_top = 9
 
-[node name="EntriesList" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/MarginContainer"]
+custom_minimum_size = Vector2(100, 300)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="EntriesList" type="VBoxContainer" parent="MarginContainer/VBoxContainer/MarginContainer/ScrollContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(300, 300)
 layout_mode = 2
 size_flags_vertical = 4
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/EntriesList"]
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/EntriesList"]
 layout_mode = 2
 text = "dialogo 1"
 
-[node name="Label2" type="Label" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/EntriesList"]
+[node name="Label2" type="Label" parent="MarginContainer/VBoxContainer/MarginContainer/ScrollContainer/EntriesList"]
 layout_mode = 2
 text = "dialogo 1"

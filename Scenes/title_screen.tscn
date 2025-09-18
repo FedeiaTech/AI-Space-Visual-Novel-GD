@@ -290,4 +290,4 @@ grow_horizontal = 0
 grow_vertical = 0
 size_flags_vertical = 8
 theme = SubResource("Theme_6vd4x")
-text = "Ver 0.0.7 - Fedeiatech ©"
+text = "Ver 0.0.8 - Fedeiatech ©"

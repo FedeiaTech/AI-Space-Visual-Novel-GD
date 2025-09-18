@@ -19,7 +19,7 @@ func _gui_input(event: InputEvent):
 		cg_clicked.emit()
 
 # Muestra el CG con una transición de "slide" desde la derecha.
-func show_cg_transition(image_path: String):
+func show_cg_transition(image_path: String, full_screen: bool = false):
 	var loaded_texture = load(image_path)
 	if not loaded_texture:
 		printerr("No se pudo cargar la textura del CG en la ruta: ", image_path)
@@ -31,15 +31,15 @@ func show_cg_transition(image_path: String):
 	self.position.x = get_viewport_rect().size.x
 	# Nos hacemos visibles MIENTRAS estamos fuera de la pantalla.
 	self.show()
-	main_scene.get_node("CanvasMain").hide()
-	main_scene.get_node("ViewerCanvas").hide()
+	
+	show_full_screen(not full_screen)
 	
 	# Creamos el tween para la animación de entrada.
 	var tween = create_tween()
 	tween.tween_property(self, "position:x", 0, 0.7).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 
 # Muestra el CG instantáneamente.
-func show_cg_instant(image_path: String):
+func show_cg_instant(image_path: String, full_screen: bool = false):
 	var loaded_texture = load(image_path)
 	if not loaded_texture:
 		printerr("No se pudo cargar la textura del CG en la ruta: ", image_path)
@@ -48,14 +48,16 @@ func show_cg_instant(image_path: String):
 	self.texture = loaded_texture
 	self.position.x = 0
 	self.show()
-	main_scene.get_node("CanvasMain").hide()
-	main_scene.get_node("ViewerCanvas").hide()
+	
+	show_full_screen(not full_screen)
 
 # Oculta el CG con una transición de "slide" hacia la izquierda.
 func hide_cg_transition():
 	if not self.visible:
 		return
-
+	
+	show_full_screen(true)
+	
 	var tween = create_tween()
 	# Lo movemos hacia la izquierda hasta que salga de la pantalla.
 	tween.tween_property(self, "position:x", -get_viewport_rect().size.x, 0.7).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
@@ -70,3 +72,12 @@ func hide_cg_instant():
 		return
 	self.hide()
 	self.position.x = 0 # Reiniciamos la posición para la próxima vez que se muestre.
+	show_full_screen(true)
+	
+func show_full_screen(show_main_canvas: bool):
+	if show_main_canvas:
+		main_scene.get_node("CanvasMain").show()
+		main_scene.get_node("ViewerCanvas").show()
+	else:
+		main_scene.get_node("CanvasMain").hide()
+		main_scene.get_node("ViewerCanvas").hide()

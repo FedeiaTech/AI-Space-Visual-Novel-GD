@@ -1,100 +1,400 @@
 [
 	{"location": "outside_starship", "music": "track01"},
 	
-	{"text": "En alguna parte del espacio..."},
+	{"text": "En alguna parte del espacio.", 
+	"set_flag": {
+			"id": "mision_anomalia",
+			"value": true},
+	},
+	{
+		"characters": {
+			"left": "Milka",
+			"center": "Ori",
+			"right": "Astro",
+			"far_right": "Viktor"
+		},
+		"expressions": {
+			"left": "idle",
+			"center": "idle",
+			"right": "happy"
+		},
+		"facing": {
+		"left": "left",
+		"center": "right",
+		"right": "left",
+		},
+		"speaker": "Astro",
+		"text": "¡Es genial que estén todos aquí!"
+	},
+	{
+		"move_character": {
+			"position": "center",
+			"offset": -50,
+			"duration": 0.8
+		}
+	},
+	{
+		"expressions": {
+			"right": "idle"
+		},
+		"speaker": "Astro",
+		"text": "¡Pero qué vista más increíble!"
+	},
+	{
+		"speaker": "Ori",
+		"text": "A quien estas viendo?"
+	},
+	{
+		"move_character": {
+			"position": "left",
+			"offset": -200,
+			"duration": 0.8
+		}
+	},
+	{
+		"characters": {
+			"left": "Milka",
+			"center": "Ori",
+			"right": "Astro",
+			"far_right": "Viktor"
+		},
+		"expressions": {
+			"left": "talking",
+			"center": "idle",
+			"right": "happy"
+		},
+		"facing": {
+		"left": "right",
+		"center": "right",
+		"right": "center",
+		"far_right": "left",
+		},
+		"speaker": "Milka",
+		"text": "Milka se mueve por el espacio sideral."
+	},
+	{
+		"expressions": {
+			"left": "idle",
+			"center": "idle",
+			"right": "talking"
+		},
+		"speaker": "Viktor",
+		"text": "Si si, Milka se mueve"
+	},
+	
+	
+	
 	{ "object": { "id": "chip", "visible": false } },
 	{"set_time_absolute": "00:45", "show_time_ui": true},
-	{"speaker": "Astro", "text": "¿Qué fue todo eso? mi cabeza...", "show_character": "Astro_EVA"},
-	{"speaker": "Astro", "text": "Muchachos.. ¿Cómo están ahi? ¿Ori? ¿Viktor?", "show_character": "Astro_EVA"},
-	{"speaker": "IA", "text": "Sistema de comunicación desconectado. Se sugiere reiniciar.", "show_character": "Astro_EVA"},
-	
-	{"anchor": "comunication_problems"},
-	{"choices":
-		[
+	{
+	"character_visuals": {
+		"speaker": "Astro",
+		"listener": "none",
+		"speaker_position": "center",
+		"expression": "shocked"
+	},
+	"text": "¿Qué fue todo eso? mi cabeza..."
+},
+{
+	"character_visuals": {
+		"speaker": "Astro",
+		"listener": "none",
+		"speaker_position": "center",
+		"expression": "anxious"
+	},
+	"text": "Muchachos.. ¿Cómo están ahi? ¿Ori? ¿Viktor?"
+},
+{
+		"character_visuals": {
+			"speaker": "Astro_EVA",
+			"listener": "none",
+			"speaker_position": "center",
+			"expression": "anxious"
+		},
+		"text": "Sistema de comunicación desconectado. Se sugiere reiniciar."
+	},
+	{
+		"anchor": "comunication_problems"
+	},
+	{
+		"choices": [
 			{"text": "Reiniciar IA", "goto": "first_choice"},
 			{"text": "Seguir intentando comunicarse", "goto": "second_choice"}
 		]
 	},
-	
-	{"anchor": "first_choice"},
-	{"speaker": "Astro", "text": "Spark, ¡Reinicia ahora!", "show_character": "Astro_EVA", "modify_time": -300},
-	{"speaker": "IA", "text": "Reiniciando...", "show_character": "Astro_EVA"},
-	{"speaker": "IA", "text": "...", "show_character": "Astro_EVA"},
-	{"speaker": "IA", "text": "...", "show_character": "Astro_EVA"},
-	{"speaker": "Astro", "text": "¡Vamos Spark!", "show_character": "Astro_EVA", "show_time_ui": false},
-	{"speaker": "IA", "text": "Reinicio completado, Astro.", "show_character": "Astro_EVA"},
-	{"speaker": "Astro", "text": "¡¿Ori estás ahí?! Responde Ori.", "show_character": "Astro_EVA"},
-	{"text": "...", "show_character": "Astro_EVA"},
-	{"speaker": "IA", "text": " La conexión con la Central de Comunicaciones está activa, pero no se detecta respuesta humana.", "show_character": "Astro_EVA"},
-	{"speaker": "IA", "text": "Astro, sugiero que regreses a la nave para una inspección visual. Las constantes vitales de la tripulación son... ambiguas.", "show_character": "Astro_EVA"},
-	{"speaker": "Astro", "text": "\"Ambiguas\" no es un término técnico, Spark.", "show_character": "Astro_EVA"},
-	{"goto": "end"},
-	
-	{"anchor": "second_choice"},
-	{"speaker": "Astro", "text": "¿Hay comunicación? ¡¿Ori puedes oírme?!", "show_character": "Astro_EVA"},
-	{"text": "...", "show_character": "Astro_EVA", "set_flag": {"id": "mision_anomalia", "value": true}},
-	{"goto": "comunication_problems"},
-	
-	{"anchor": "end"},
-	
-	{"goto": "post_choice"},
-	{"anchor": "third_choice", "item_given":[
-		{"id": "llave_antigua",
-		"name": "Llave Antigua",
-		"description": "Una llave oxidada que parece abrir algo muy viejo.",
-		"quantity": 3,
-		"icon_path": "res://Assets/Inventory_icons/old_key.png"},
-		]
+	{
+		"anchor": "first_choice"
+	},
+	{
+		"character_visuals": {
+			"speaker": "Astro",
+			"listener": "none",
+			"speaker_position": "center"
 		},
-	{"speaker": "Astro", "text": "Pues no la encendere..."},
-	{"anchor": "post_choice"},
-	
-	{"speaker": "Astro", "text": "(Parece que tendré que volver)", "show_character": "Astro_EVA"},
-	
-	{"anchor": "return_to_choices"},
-	{"choices": [
+		"text": "Spark, ¡Reinicia ahora!",
+		"modify_time": -300
+	},
+	{
+		"character_visuals": {
+			"speaker": "IA",
+			"listener": "none",
+			"speaker_position": "center"
+		},
+		"text": "Reiniciando..."
+	},
+	{
+		"character_visuals": {
+			"speaker": "IA",
+			"listener": "none",
+			"speaker_position": "center"
+		},
+		"text": "..."
+	},
+	{
+		"character_visuals": {
+			"speaker": "IA",
+			"listener": "none",
+			"speaker_position": "center"
+		},
+		"text": "..."
+	},
+	{
+		"character_visuals": {
+			"speaker": "Astro",
+			"listener": "none",
+			"speaker_position": "center"
+		},
+		"text": "¡Vamos Spark!",
+		"show_time_ui": false
+	},
+	{
+		"character_visuals": {
+			"speaker": "IA",
+			"listener": "none",
+			"speaker_position": "center"
+		},
+		"text": "Reinicio completado, Astro."
+	},
+	{
+		"character_visuals": {
+			"speaker": "Astro",
+			"listener": "none",
+			"speaker_position": "center"
+		},
+		"text": "¡¿Ori estás ahí?! Responde Ori."
+	},
+	{
+		"character_visuals": {
+			"speaker": "none",
+			"listener": "none"
+		},
+		"text": "..."
+	},
+	{
+		"character_visuals": {
+			"speaker": "IA",
+			"listener": "none",
+			"speaker_position": "center"
+		},
+		"text": "La conexión con la Central de Comunicaciones está activa, pero no se detecta respuesta humana."
+	},
+	{
+		"character_visuals": {
+			"speaker": "IA",
+			"listener": "none",
+			"speaker_position": "center"
+		},
+		"text": "Astro, sugiero que regreses a la nave para una inspección visual. Las constantes vitales de la tripulación son... ambiguas."
+	},
+	{
+		"character_visuals": {
+			"speaker": "Astro",
+			"listener": "none",
+			"speaker_position": "center"
+		},
+		"text": "\"Ambiguas\" no es un término técnico, Spark."
+	},
+	{
+		"goto": "end"
+	},
+	{
+		"anchor": "second_choice"
+	},
+	{
+		"character_visuals": {
+			"speaker": "Astro",
+			"listener": "none",
+			"speaker_position": "center"
+		},
+		"text": "¿Hay comunicación? ¡¿Ori puedes oírme?!"
+	},
+	{
+		"character_visuals": {
+			"speaker": "none",
+			"listener": "none"
+		},
+		"text": "...",
+		"set_flag": {
+			"id": "mision_anomalia",
+			"value": true
+		}
+	},
+	{
+		"goto": "comunication_problems"
+	},
+	{
+		"anchor": "end"
+	},
+	{
+		"goto": "post_choice"
+	},
+	{
+		"anchor": "third_choice",
+		"item_given": [
+			{
+				"id": "llave_antigua",
+				"name": "Llave Antigua",
+				"description": "Una llave oxidada que parece abrir algo muy viejo.",
+				"quantity": 3,
+				"icon_path": "res://Assets/Inventory_icons/old_key.png"
+			}
+		]
+	},
+	{
+		"character_visuals": {
+			"speaker": "Astro",
+			"listener": "none",
+			"speaker_position": "center"
+		},
+		"text": "Pues no la encenderé..."
+	},
+	{
+		"anchor": "post_choice"
+	},
+	{
+		"character_visuals": {
+			"speaker": "Astro",
+			"listener": "none",
+			"speaker_position": "center"
+		},
+		"text": "(Parece que tendré que volver)"
+	},
+	{
+		"anchor": "return_to_choices"
+	},
+	{
+		"choices": [
 			{"text": "Volver a la Nave Spark N3", "goto": "first_enter_spark"},
 			{"text": "Contemplar el espacio", "goto": "planet_explorer", "requires_flag": "mision_anomalia", "flag_value": true},
 			{"text": "Consultar el Mapa", "goto": "map_dialog_options", "requires_item": "pocion"}
 		]
 	},
-	
-	{"anchor": "first_enter_spark"},
-	{"text": "Astro se impulsa hacia la escotilla usando el cable de sujeción."}, 
-	{"action": {"type": "load_scene", "scene_file": "decompression_chamber", "anchor": "return_point_from_space"}},
-	
-	{"anchor": "map_dialog_options"},
-	{"text": "No hay más lugares disponibles en el mapa ahora mismo.", "show_character": "Astro_EVA"},
-	{"choices": [
+	{
+		"anchor": "first_enter_spark"
+	},
+	{
+		"action": {
+			"type": "load_scene",
+			"scene_file": "entering_ship",
+			"anchor": "first_entering"
+		}
+	},
+	{
+		"anchor": "map_dialog_options"
+	},
+	{
+		"character_visuals": {
+			"speaker": "none",
+			"listener": "none"
+		},
+		"text": "No hay más lugares disponibles en el mapa ahora mismo."
+	},
+	{
+		"choices": [
 			{"text": "Consultar el Mapa", "goto": "map_dialog_options", "requires_item": "map_rasgado"}
 		]
 	},
-	{"speaker": "Astro", "text": "Qué deberia hacer?", "show_character": "Astro_EVA"},
-	{"goto": "return_to_choices"},
-	
-	{"anchor": "planet_explorer"},
-	{"text": "Puedes ver el espacio en todo su esplendor..."},
-	{"speaker": "Astro", "text": "No tengo tiempo para esto", "show_character": "Astro_EVA"},
-	{"goto": "return_to_choices"},
-	
-	{"speaker": "Milka", "text": "Ahora hablo yo. Me llamo Milka.", "item_given": [
-				{
+	{
+		"character_visuals": {
+			"speaker": "Astro",
+			"listener": "none",
+			"speaker_position": "center"
+		},
+		"text": "Qué debería hacer?"
+	},
+	{
+		"goto": "return_to_choices"
+	},
+	{
+		"anchor": "planet_explorer"
+	},
+	{
+		"character_visuals": {
+			"speaker": "none",
+			"listener": "none"
+		},
+		"text": "Puedes ver el espacio en todo su esplendor..."
+	},
+	{
+		"character_visuals": {
+			"speaker": "Astro",
+			"listener": "none",
+			"speaker_position": "center"
+		},
+		"text": "No tengo tiempo para esto"
+	},
+	{
+		"goto": "return_to_choices"
+	},
+	{
+		"character_visuals": {
+			"speaker": "Milka",
+			"listener": "none",
+			"speaker_position": "center"
+		},
+		"text": "Ahora hablo yo. Me llamo Milka.",
+		"item_given": [
+			{
 				"id": "ia_chip_alpha",
 				"name": "Chip de IA (Alpha)",
 				"description": "Un prototipo inicial de un chip para la IA de la nave. Etiquetado como 'Alpha'.",
 				"quantity": 2,
-				"icon_path": "res://Assets/Inventory_icons/chip.png" },
-				{
+				"icon_path": "res://Assets/Inventory_icons/chip.png"
+			},
+			{
 				"id": "lalala",
 				"name": "lalala",
 				"description": "Un prototipo inicial de un chip para la IA de la nave. Etiquetado como 'Alpha'.",
-				"quantity": 3,}
-				]
+				"quantity": 3
+			}
+		]
 	},
-	{"speaker": "Astro", "text": "Miren quien volvio!"},
-	{"speaker": "Milka", "text": "Hey! yo tambien quiero moverme!"},
-	{"speaker": "Astro", "text": "JAJAJA. Se vienen cositas..."},
-	
-	{"next_scene": "first_scene", "transition": "fade"},
-
+	{
+		"character_visuals": {
+			"speaker": "Astro",
+			"listener": "none",
+			"speaker_position": "center"
+		},
+		"text": "Miren quien volvió!"
+	},
+	{
+		"character_visuals": {
+			"speaker": "Milka",
+			"listener": "none",
+			"speaker_position": "center"
+		},
+		"text": "Hey! yo tambien quiero moverme!"
+	},
+	{
+		"character_visuals": {
+			"speaker": "Astro",
+			"listener": "none",
+			"speaker_position": "center"
+		},
+		"text": "JAJAJA. Se vienen cositas..."
+	},
+	{
+		"next_scene": "first_scene",
+		"transition": "fade"
+	}
 ]

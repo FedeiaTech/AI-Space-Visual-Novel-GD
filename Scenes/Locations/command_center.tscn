@@ -1,11 +1,15 @@
-[gd_scene load_steps=7 format=3 uid="uid://y4xge1d3oef"]
+[gd_scene load_steps=11 format=3 uid="uid://y4xge1d3oef"]
 
 [ext_resource type="Script" uid="uid://4mskbpmrowf1" path="res://Scripts/LocationScene/interaction_manager.gd" id="1_vucvq"]
 [ext_resource type="Texture2D" uid="uid://dblxxgl5aaim5" path="res://Assets/Scenes_images/central_access_room.png" id="2_vucvq"]
-[ext_resource type="Texture2D" uid="uid://dbgri0kmstvf6" path="res://Assets/Inventory_icons/chip.png" id="3_m7u5a"]
-[ext_resource type="Texture2D" uid="uid://bpa3w638sex2w" path="res://Assets/Inventory_icons/coin.png" id="4_oyyg3"]
+[ext_resource type="Texture2D" uid="uid://buwvww6k2451q" path="res://Assets/Clickables_images/command_center/d_right.png" id="4_oyyg3"]
+[ext_resource type="Texture2D" uid="uid://dfd8jf046kb80" path="res://Assets/Clickables_images/command_center/ori_stunned.png" id="4_p5lt0"]
 [ext_resource type="PackedScene" uid="uid://dlqdd20yxc7br" path="res://Scenes/Locations/Objects/clickable_object.tscn" id="5_je5py"]
-[ext_resource type="Texture2D" uid="uid://gg6drx61tdpu" path="res://Assets/Clickables_images/ori_stunned.png" id="6_vucvq"]
+[ext_resource type="Texture2D" uid="uid://cmmkvtvnmffe1" path="res://Assets/Clickables_images/command_center/d_left.png" id="5_xil1k"]
+[ext_resource type="Texture2D" uid="uid://ddbcyfv8d8uhx" path="res://Assets/Clickables_images/command_center/d_down.png" id="6_ixpli"]
+[ext_resource type="Texture2D" uid="uid://bxax3oian0hva" path="res://Assets/Clickables_images/command_center/d_up.png" id="7_5cc8r"]
+[ext_resource type="Texture2D" uid="uid://ni4djamdk5sh" path="res://Assets/Clickables_images/command_center/fallen_chair.png" id="8_pag7r"]
+[ext_resource type="Texture2D" uid="uid://h6vkn5he7tij" path="res://Assets/Clickables_images/command_center/ori_stunned2.png" id="10_je5py"]
 
 [node name="interactive_location" type="Control"]
 layout_mode = 3
@@ -35,24 +39,76 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="TextureButton" type="TextureButton" parent="CanvasLayer"]
-visible = false
-layout_mode = 1
-offset_left = 431.0
-offset_top = 365.0
-offset_right = 631.0
-offset_bottom = 565.0
-size_flags_horizontal = 4
-texture_normal = ExtResource("3_m7u5a")
-texture_hover = ExtResource("4_oyyg3")
+[node name="ClickableObject6" parent="CanvasLayer" instance=ExtResource("5_je5py")]
+layout_mode = 0
+offset_left = 998.0
+offset_top = 216.0
+offset_right = 1100.0
+offset_bottom = 522.0
+scale = Vector2(1.11, 1.11)
+texture_normal = ExtResource("4_oyyg3")
+object_id = "right_door"
+has_transition = false
+
+[node name="ClickableObject5" parent="CanvasLayer" instance=ExtResource("5_je5py")]
+layout_mode = 0
+offset_left = 147.0
+offset_top = 196.0
+offset_right = 282.0
+offset_bottom = 531.0
+scale = Vector2(1.11, 1.11)
+texture_normal = ExtResource("5_xil1k")
+object_id = "left_door"
+has_transition = false
+
+[node name="ClickableObject4" parent="CanvasLayer" instance=ExtResource("5_je5py")]
+layout_mode = 0
+offset_left = 481.0
+offset_top = 561.0
+offset_right = 773.0
+offset_bottom = 618.0
+scale = Vector2(1.11, 1.11)
+texture_normal = ExtResource("6_ixpli")
+object_id = "down_door"
+has_transition = false
+
+[node name="ClickableObject3" parent="CanvasLayer" instance=ExtResource("5_je5py")]
+layout_mode = 0
+offset_left = 450.0
+offset_top = 38.0
+offset_right = 799.0
+offset_bottom = 95.0
+scale = Vector2(1.11, 1.11)
+texture_normal = ExtResource("7_5cc8r")
+object_id = "up_door"
+has_transition = false
+
+[node name="ClickableObject2" parent="CanvasLayer" instance=ExtResource("5_je5py")]
+layout_mode = 0
+offset_left = 530.0
+offset_top = 477.0
+offset_right = 679.0
+offset_bottom = 568.0
+scale = Vector2(1.11, 1.11)
+texture_normal = ExtResource("8_pag7r")
+object_id = "fallen_chair"
+has_transition = false
 
 [node name="ClickableObject" parent="CanvasLayer" instance=ExtResource("5_je5py")]
 layout_mode = 0
 offset_left = 310.0
-offset_top = 361.0
-offset_right = 696.0
-offset_bottom = 875.0
-scale = Vector2(0.4, 0.4)
-texture_normal = ExtResource("6_vucvq")
+offset_top = 372.0
+offset_right = 441.0
+offset_bottom = 544.0
+scale = Vector2(1.11, 1.11)
+texture_normal = ExtResource("4_p5lt0")
+texture_hover = ExtResource("10_je5py")
 object_id = "ori_stunned"
+action_command = "{
+    \"action\": {
+        \"type\": \"load_scene\",
+        \"scene_file\": \"command_center\",
+        \"anchor\": \"ori_on_the_floor\"
+    }
+}"
 has_transition = false

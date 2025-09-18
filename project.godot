@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="AI Space -  Visual Novel 0.0.7"
+config/name="AI Space -  Visual Novel 0.0.8"
 run/main_scene="uid://cy1hi75rpyb3r"
 config/features=PackedStringArray("4.4", "Forward Plus")
 run/max_fps=60

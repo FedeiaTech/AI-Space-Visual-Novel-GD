@@ -5,7 +5,13 @@ extends Node2D
 # === Referencias a nodos ===
 @onready var background: TextureRect = %Background
 @onready var background_music: AudioStreamPlayer = %BackgroundMusic
-@onready var character_sprite = $CanvasMain/Control/CharacterSprite
+@onready var character_sprite_1: Control = %CharacterSprite
+@onready var character_sprite_2: Control = %CharacterSprite2
+@onready var character_sprite_3: Control = %CharacterSprite3
+@onready var character_sprite_4: Control = %CharacterSprite4
+
+@onready var character_sprite_listener: Control = $CanvasMain/Control/CharacterSpriteListener
+
 @onready var dialog_ui: Control = $CanvasMain/DialogUI # ¡Referencia a DialogUI!
 @onready var next_sentence_sound: AudioStreamPlayer = %NextSentenceSound # Referencia a AudioStreamPlayer
 @onready var journal_ui: Control = %JournalUI
@@ -46,6 +52,7 @@ extends Node2D
 const PauseMenuScene = preload("res://Scenes/pause_menu.tscn") # ¡Ajusta la ruta si es necesario!
 
 # === Variables de estado ===
+var current_speaking_character: Control = null # Variable para recordar quién habla
 var transition_effect: String = "fade"
 var is_in_interaction_mode: bool = false
 
@@ -97,6 +104,17 @@ func _ready() -> void:
 	inventoryl_icon_label.text = " "
 	settings_icon_label.text = " "
 	
+	# Crea el diccionario con los nodos ya listos y se lo pasa al procesador
+	var character_nodes_dict = {
+		"left": character_sprite_1,
+		"center": character_sprite_2,
+		"right": character_sprite_3,
+		"far_right": character_sprite_4
+	}
+	command_processor.set_character_nodes(character_nodes_dict)
+	
+	# Aquí le decimos al CommandProcessor quiénes somos.
+	command_processor.set_main_scene_reference(self)
 # Captura las entradas del jugador. Permite avanzar el diálogo y alternar el inventario.
 func _input(event: InputEvent) -> void:
 	# Si estamos en una transición, no procesar ninguna entrada.
@@ -123,6 +141,10 @@ func _input(event: InputEvent) -> void:
 	# 1. Detectar SOLO las teclas "next_line" (Enter/Barra Espaciadora)
 	# La lógica del clic del mouse ahora está en _gui_input de DialogUI.
 	if event.is_action_pressed("next_line"): # Esto cubrirá Enter y Espacio
+		# 1. Si el CG está visible, avanza el diálogo directamente.
+		if cg_viewer.is_visible():
+			_on_cg_viewer_cg_clicked()
+			return
 		# is_dialog_input_blocked debería ser manejado por el DialogUI si está activo
 		if is_dialog_input_blocked: return
 		
@@ -229,6 +251,10 @@ func load_new_scene_content_instantly(file_path: String, anchor: String):
 	# 3. Muestra la UI y procesa la primera línea visible (lógica de _on_transition_in_completed)
 	dialog_ui.show()
 	dialogue_manager.process_current_line()
+
+# Esta función será llamada por CommandProcessor para actualizar quién está hablando
+func set_current_speaker(speaker_node: Control):
+	current_speaking_character = speaker_node
 	
 """ Señales """
 
@@ -259,11 +285,16 @@ func _on_notification_timer_timeout():
 # Se ejecuta cuando termina la animación del texto del diálogo.
 # Activa la animación "idle" del personaje si corresponde.
 func _on_text_animation_done():
-	if dialog_ui.current_character_details.has("name") and \
-	   dialog_ui.current_character_details["name"] != "" and \
-	   dialog_ui.current_character_details.has("sprite_frames") and \
-	   dialog_ui.current_character_details["sprite_frames"] != null:
-		character_sprite.play_idle_animation()
+	# Anima al personaje que habla para que vuelva a 'idle'
+	if is_instance_valid(current_speaking_character):
+		# Asumimos que tus nodos de personaje tienen una función llamada 'play_idle_animation'
+		current_speaking_character.play_idle_animation()
+
+	# NOTA: La lógica de 'character_sprite_listener' ahora es redundante,
+	# ya que _handle_character_visuals gestiona a todos los personajes visibles.
+	# Podrías eliminar estas líneas o adaptarlas si tienes un listener específico.
+	if is_instance_valid(character_sprite_listener) and character_sprite_listener.is_visible():
+		character_sprite_listener.play_idle_animation()
 
 # Se ejecuta cuando el jugador elige una opción de diálogo.
 # Procesa acciones, ítems y transiciones.

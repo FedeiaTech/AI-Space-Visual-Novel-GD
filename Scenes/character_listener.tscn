@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://bt5atvhvlh3rc"]
+
+[ext_resource type="Script" uid="uid://bhwjqhjj82fum" path="res://Scripts/character_sprite.gd" id="1_drbt0"]
+[ext_resource type="SpriteFrames" uid="uid://bd1amg6df0t10" path="res://Resources/Sprites_saves/Ori_sprites.tres" id="2_kyig6"]
+
+[node name="CharacterSpriteListener" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_drbt0")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(626, 494)
+sprite_frames = ExtResource("2_kyig6")
+animation = &"idle"
+frame_progress = 0.858388

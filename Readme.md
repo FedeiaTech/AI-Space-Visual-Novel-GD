@@ -1,4 +1,4 @@
-# AI Space Visual Novel - Versión 0.0.7 Alpha
+# AI Space Visual Novel - Versión 0.0.8 Alpha
 
 ¡Bienvenido al repositorio de **AI Space Visual Novel**! Este proyecto es un juego de novela visual en desarrollo, creado con Godot Engine, que te sumergirá en una narrativa interactiva con elementos de ciencia ficción.
 
@@ -142,7 +142,7 @@ Esta versión integra funcionalidades previas con optimizaciones en transiciones
 
 ---
 
-## ✨ Nuevas Características y Mejoras (v0.0.2 Alpha) 20-07-2025
+## ✨ Nuevas Características y Mejoras (v0.0.2) 20-07-2025
 
 Esta versión introduce mejoras en la interactividad y la gestión de ítems:
 

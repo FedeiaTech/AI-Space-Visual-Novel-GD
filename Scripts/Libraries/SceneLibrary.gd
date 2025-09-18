@@ -4,6 +4,7 @@ extends Node
 # Este diccionario contendrá las referencias a todas tus escenas de locación.
 const SCENES = {
 	"outside_starship": preload("res://Scenes/Locations/outside_starship.tscn"),
+	"entering_ship": preload("res://Scenes/Locations/entering_ship.tscn"),
 	"decompression_chamber": preload("res://Scenes/Locations/decompression_chamber.tscn"),
 	"command_center": preload("res://Scenes/Locations/command_center.tscn"),
 	

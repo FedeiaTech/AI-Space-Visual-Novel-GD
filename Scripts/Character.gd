@@ -17,6 +17,22 @@ enum Name {
 	VIKTOR
 }
 
+#Enum con las posiciones de los personajes en pantalla.
+enum Position {
+	LEFT,
+	CENTER,
+	RIGHT,
+	FAR_RIGHT
+}
+
+# Diccionario que define la posición en píxeles para cada valor del enum Position.
+const POSITIONS = {
+	Position.LEFT: Vector2(-400,0), # Posición de la izquierda
+	Position.CENTER:  Vector2(-200,0), # Posición central
+	Position.RIGHT:  Vector2(100,0), # Posición de la derecha
+	Position.FAR_RIGHT:  Vector2(350,0) # Agrega esta línea con un valor apropiado.
+}
+
 # Diccionario constante que almacena los detalles de cada personaje.
 # Usa el enum como clave y un diccionario
 const CHARACTER_DETAILS : Dictionary = {
@@ -55,6 +71,12 @@ const CHARACTER_DETAILS : Dictionary = {
 		"sprite_frames": preload("res://Resources/Sprites_saves/Ori_sprites.tres"),
 		"color": Color("#FFD700"), # Un amarillo dorado
 	},
+	Name.VIKTOR: {
+		"name" : "Viktor",
+		"gender": "male",
+		"sprite_frames": preload("res://Resources/Sprites_saves/Viktor_sprites.tres"),
+		"color": Color("#3b83bd")
+	},
 	Name.NARRATOR: {
 		"name" : "",
 		"gender": "-",
@@ -73,3 +95,24 @@ static func get_enum_from_string(string_value: String) -> int:
 	else:
 		push_error("Invalid character name: " + string_value)
 		return -1 #o cualquier otro valor para indicar un error
+	
+static func get_position_enum_from_vector(vector_position: Vector2) -> int:
+	for pos_enum in POSITIONS:
+		# Comparamos solo la coordenada X, ya que la Y puede variar.
+		if is_equal_approx(POSITIONS[pos_enum].x, vector_position.x):
+			return pos_enum
+	return -1 # No se encontró una posición coincidente
+
+static func get_position_enum_from_string(string_value: String) -> int:
+	match string_value.to_lower():
+		"left":
+			return Position.LEFT
+		"center":
+			return Position.CENTER
+		"right":
+			return Position.RIGHT
+		"far_right":
+			return Position.FAR_RIGHT
+		_:
+			push_error("Invalid position name: " + string_value)
+			return -1
