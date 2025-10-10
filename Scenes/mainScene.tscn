@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=3 uid="uid://bypw7eihxexrm"]
+[gd_scene load_steps=32 format=3 uid="uid://bypw7eihxexrm"]
 
 [ext_resource type="Script" uid="uid://cox74slg0ewob" path="res://Scripts/main_scene.gd" id="1_m8nr8"]
 [ext_resource type="Script" uid="uid://dupk7xq8ogjhp" path="res://Scripts/_command_processor/command_processor.gd" id="2_0vbqt"]
@@ -15,7 +15,6 @@
 [ext_resource type="PackedScene" uid="uid://b7vmdbxmok30i" path="res://Scenes/UI/journal_ui.tscn" id="10_mhr8t"]
 [ext_resource type="Texture2D" uid="uid://cutks2k55huad" path="res://Assets/UI_assets/Icons/tablet2_mini_black.png" id="11_5bsxs"]
 [ext_resource type="Texture2D" uid="uid://bwrs8ogqvf3h5" path="res://Assets/UI_assets/Icons/tablet_mini_xs.png" id="11_ekaqe"]
-[ext_resource type="PackedScene" uid="uid://bt5atvhvlh3rc" path="res://Scenes/character_listener.tscn" id="11_eol8w"]
 [ext_resource type="Shader" uid="uid://lcya0iddlgrb" path="res://Resources/Shaders/clickable_object.gdshader" id="11_l42ic"]
 [ext_resource type="Texture2D" uid="uid://cudrt88cxdo8u" path="res://Assets/UI_assets/Icons/eye_mini.png" id="11_udkkk"]
 [ext_resource type="Texture2D" uid="uid://84gtj3yhakmr" path="res://Assets/UI_assets/Icons/tablet2_mini_light.png" id="12_iypob"]
@@ -99,11 +98,18 @@ unique_name_in_owner = true
 stream = ExtResource("2_47rga")
 bus = &"SFX"
 
-[node name="InteractiveLocation" type="CanvasLayer" parent="."]
+[node name="InteractiveControl" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="InteractiveLocation" type="CanvasLayer" parent="InteractiveControl"]
 unique_name_in_owner = true
 process_mode = 1
 
-[node name="Background" type="TextureRect" parent="InteractiveLocation"]
+[node name="Background" type="TextureRect" parent="InteractiveControl/InteractiveLocation"]
 unique_name_in_owner = true
 visible = false
 anchors_preset = 15
@@ -113,12 +119,12 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("3_0vbqt")
 
-[node name="interactive_location" parent="InteractiveLocation" instance=ExtResource("7_iypob")]
+[node name="interactive_location" parent="InteractiveControl/InteractiveLocation" instance=ExtResource("7_iypob")]
 unique_name_in_owner = true
 
-[node name="CGCanvas" type="CanvasLayer" parent="."]
+[node name="CGCanvas" type="CanvasLayer" parent="InteractiveControl"]
 
-[node name="CGSprite" type="TextureRect" parent="CGCanvas"]
+[node name="CGSprite" type="TextureRect" parent="InteractiveControl/CGCanvas"]
 unique_name_in_owner = true
 anchors_preset = 15
 anchor_right = 1.0
@@ -128,10 +134,10 @@ grow_vertical = 2
 mouse_filter = 0
 script = ExtResource("8_eol8w")
 
-[node name="ViewerCanvas" type="CanvasLayer" parent="."]
+[node name="ViewerCanvas" type="CanvasLayer" parent="InteractiveControl"]
 unique_name_in_owner = true
 
-[node name="ProtectControl" type="Control" parent="ViewerCanvas"]
+[node name="ProtectControl" type="Control" parent="InteractiveControl/ViewerCanvas"]
 unique_name_in_owner = true
 layout_mode = 3
 anchors_preset = 15
@@ -140,7 +146,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="LookButton" type="Button" parent="ViewerCanvas"]
+[node name="LookButton" type="Button" parent="InteractiveControl/ViewerCanvas"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 30)
 offset_left = 1169.0
@@ -150,7 +156,7 @@ offset_bottom = 519.0
 theme = ExtResource("6_yyxd1")
 text = "Mirar"
 
-[node name="ReturnButton" type="Button" parent="ViewerCanvas"]
+[node name="ReturnButton" type="Button" parent="InteractiveControl/ViewerCanvas"]
 unique_name_in_owner = true
 visible = false
 custom_minimum_size = Vector2(100, 30)
@@ -161,60 +167,44 @@ offset_bottom = 709.0
 theme = ExtResource("6_yyxd1")
 text = "Volver"
 
-[node name="CanvasMain" type="CanvasLayer" parent="."]
+[node name="CanvasMain" type="CanvasLayer" parent="InteractiveControl"]
 unique_name_in_owner = true
 process_mode = 1
 
-[node name="Control" type="Control" parent="CanvasMain"]
+[node name="MainCanvasControl" type="Control" parent="InteractiveControl/CanvasMain"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 3
 anchors_preset = 0
 offset_bottom = 100.0
 
-[node name="CharacterSprite2" parent="CanvasMain/Control" instance=ExtResource("3_yyxd1")]
+[node name="CharacterSprite2" parent="InteractiveControl/CanvasMain/MainCanvasControl" instance=ExtResource("3_yyxd1")]
 unique_name_in_owner = true
 layout_mode = 1
-offset_left = -150.0
-offset_top = 100.0
-offset_right = -150.0
-offset_bottom = 100.0
+offset_left = -250.0
+offset_right = -250.0
 
-[node name="CharacterSprite3" parent="CanvasMain/Control" instance=ExtResource("3_yyxd1")]
+[node name="CharacterSprite3" parent="InteractiveControl/CanvasMain/MainCanvasControl" instance=ExtResource("3_yyxd1")]
 unique_name_in_owner = true
 layout_mode = 1
-offset_left = 100.0
-offset_top = 100.0
-offset_right = 100.0
-offset_bottom = 100.0
+offset_left = 150.0
+offset_right = 150.0
 
-[node name="CharacterSprite4" parent="CanvasMain/Control" instance=ExtResource("3_yyxd1")]
+[node name="CharacterSprite4" parent="InteractiveControl/CanvasMain/MainCanvasControl" instance=ExtResource("3_yyxd1")]
 unique_name_in_owner = true
 layout_mode = 1
-offset_left = 350.0
-offset_top = 100.0
-offset_right = 350.0
-offset_bottom = 100.0
+offset_left = 400.0
+offset_right = 400.0
+offset_bottom = 0.0550003
 
-[node name="CharacterSprite" parent="CanvasMain/Control" instance=ExtResource("3_yyxd1")]
+[node name="CharacterSprite" parent="InteractiveControl/CanvasMain/MainCanvasControl" instance=ExtResource("3_yyxd1")]
 unique_name_in_owner = true
 layout_mode = 1
-offset_left = -350.0
-offset_top = 100.0
-offset_right = -350.0
-offset_bottom = 100.0
+offset_left = -450.0
+offset_right = -450.0
 
-[node name="CharacterSpriteListener" parent="CanvasMain/Control" instance=ExtResource("11_eol8w")]
-visible = false
-layout_mode = 1
-offset_left = 250.0
-offset_right = 250.0
-
-[node name="CharacterContainer" type="Control" parent="CanvasMain/Control"]
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="DialogUI" parent="CanvasMain" instance=ExtResource("4_0vbqt")]
+[node name="DialogUI" parent="InteractiveControl/CanvasMain" instance=ExtResource("4_0vbqt")]
+unique_name_in_owner = true
 visible = false
 
 [node name="CanvasNotification" type="CanvasLayer" parent="."]
@@ -368,8 +358,8 @@ unique_name_in_owner = true
 process_mode = 3
 visible = false
 
-[connection signal="pressed" from="ViewerCanvas/LookButton" to="." method="_on_look_button_pressed"]
-[connection signal="pressed" from="ViewerCanvas/ReturnButton" to="." method="_on_return_button_pressed"]
+[connection signal="pressed" from="InteractiveControl/ViewerCanvas/LookButton" to="." method="_on_look_button_pressed"]
+[connection signal="pressed" from="InteractiveControl/ViewerCanvas/ReturnButton" to="." method="_on_return_button_pressed"]
 [connection signal="mouse_entered" from="CanvasNotification/Icons_ui/MarginContainer/IconContainer/JournalIconButton" to="." method="_on_journal_icon_button_mouse_entered"]
 [connection signal="mouse_exited" from="CanvasNotification/Icons_ui/MarginContainer/IconContainer/JournalIconButton" to="." method="_on_journal_icon_button_mouse_exited"]
 [connection signal="pressed" from="CanvasNotification/Icons_ui/MarginContainer/IconContainer/JournalIconButton" to="." method="_on_journal_icon_button_pressed"]

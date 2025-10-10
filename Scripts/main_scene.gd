@@ -9,13 +9,11 @@ extends Node2D
 @onready var character_sprite_2: Control = %CharacterSprite2
 @onready var character_sprite_3: Control = %CharacterSprite3
 @onready var character_sprite_4: Control = %CharacterSprite4
-
-@onready var character_sprite_listener: Control = $CanvasMain/Control/CharacterSpriteListener
-
-@onready var dialog_ui: Control = $CanvasMain/DialogUI # ¡Referencia a DialogUI!
+@onready var dialog_ui: Control = %DialogUI
 @onready var next_sentence_sound: AudioStreamPlayer = %NextSentenceSound # Referencia a AudioStreamPlayer
 @onready var journal_ui: Control = %JournalUI
 @onready var canvas_main: CanvasLayer = %CanvasMain
+@onready var main_canvas_control: Control = %MainCanvasControl
 
 # Notificaciones
 @onready var item_acquired_notification: Label = %ItemAcquiredNotification
@@ -33,7 +31,7 @@ extends Node2D
 @onready var journal_icon_button: TextureButton = %JournalIconButton
 @onready var inventory_icon_button: TextureButton = %InventoryIconButton
 @onready var journal_icon_label: Label = %JournalIconLabel
-@onready var inventoryl_icon_label: Label = %InventorylIconLabel
+@onready var inventory_icon_label: Label = %InventorylIconLabel
 @onready var settings_icon_label: Label = %SettingsIconLabel
 @onready var settings_icon_button: TextureButton = %SettingsIconButton
 
@@ -55,12 +53,22 @@ const PauseMenuScene = preload("res://Scenes/pause_menu.tscn") # ¡Ajusta la rut
 var current_speaking_character: Control = null # Variable para recordar quién habla
 var transition_effect: String = "fade"
 var is_in_interaction_mode: bool = false
+var is_dialogue_blocked: bool = false #le dira a toda la escena si se puede avanzar o no
 
 var notification_queue: Array = []
 var is_dialog_input_blocked: bool = false
 var pending_anchor: String = ""
 var is_initial_load_complete: bool = true
 var is_transitioning: bool = false
+
+# Variables para el efecto de sacudida
+var original_positions: Dictionary = {}
+var _shake_duration: float = 0.0
+var _shake_magnitude: float = 0.0
+var nodes_to_shake: Array = []
+
+# Guardar la referencia a la escena de localización actual
+var _current_location_node: Node = null
 
 # Carga los datos iniciales del diálogo,
 # conecta señales necesarias y lanza la transición de entrada.
@@ -78,14 +86,18 @@ func _ready() -> void:
 	TimeManager.time_updated.connect(func(new_time): time_label.text = new_time)
 	cg_viewer.cg_clicked.connect(_on_cg_viewer_cg_clicked)
 	
+	# Guarda la posición inicial del CanvasLayer al comienzo.
+	original_positions[main_canvas_control] = main_canvas_control.position
+	original_positions[dialog_ui] = dialog_ui.position
+	original_positions[interactive_location] = interactive_location.position
+	
 	# Pasar las referencias necesarias a DialogUI
-	# Asegúrate de que dialog_ui sea una instancia válida y que los managers estén listos.
-	if dialog_ui and is_instance_valid(dialog_ui) and dialogue_manager and next_sentence_sound:
-		# Asumo que DialogUI tiene un método llamado set_dialog_dependencies
-		dialog_ui.set_dialog_dependencies(dialogue_manager, next_sentence_sound)
+	if dialog_ui and dialogue_manager and next_sentence_sound:
+		# Esta es la única llamada que necesitas
+		dialog_ui.set_dialog_dependencies(dialogue_manager, next_sentence_sound, self)
 	else:
 		printerr("Error: No se pudieron obtener todas las referencias para DialogUI o DialogUI no es válido.")
-
+	
 	# Oculta algunos iconos que no son necesarios
 	explorer_mode_icon.hide()
 	# Ocultar etiqueta tiempo
@@ -101,7 +113,7 @@ func _ready() -> void:
 	
 	#Icons_ui_labels
 	journal_icon_label.text = " "
-	inventoryl_icon_label.text = " "
+	inventory_icon_label.text = " "
 	settings_icon_label.text = " "
 	
 	# Crea el diccionario con los nodos ya listos y se lo pasa al procesador
@@ -115,6 +127,37 @@ func _ready() -> void:
 	
 	# Aquí le decimos al CommandProcessor quiénes somos.
 	command_processor.set_main_scene_reference(self)
+
+func _process(delta: float) -> void:
+	# Verificamos si el efecto de sacudida está activo
+	if _shake_duration > 0:
+		# Reducimos el tiempo restante
+		_shake_duration -= delta
+		
+		# Si el tiempo se acabó en este mismo frame...
+		if _shake_duration <= 0:
+			# Reseteamos la posición de todos los nodos que estaban en la lista.
+			for node in nodes_to_shake:
+				if is_instance_valid(node) and original_positions.has(node):
+					node.position = original_positions[node]
+			# Limpiamos la lista para detener el efecto en el próximo frame.
+			nodes_to_shake.clear()
+		else:
+			# Si todavía queda tiempo, aplicamos la sacudida a cada nodo.
+			var offset = Vector2(randf_range(-_shake_magnitude, _shake_magnitude), randf_range(-_shake_magnitude, _shake_magnitude))
+			for node in nodes_to_shake:
+				if is_instance_valid(node) and original_positions.has(node):
+					node.position = original_positions[node] + offset
+
+# Funcion para que el CommandProcessor nos informe de la nueva localización
+func register_new_location(new_location_node: Node):
+	print("MainScene: Registrando nueva localización -> ", new_location_node.name)
+	_current_location_node = new_location_node
+
+# Funcion para que el CommandProcessor pueda pedir la localización actual
+func get_current_location_node() -> Node:
+	return _current_location_node
+
 # Captura las entradas del jugador. Permite avanzar el diálogo y alternar el inventario.
 func _input(event: InputEvent) -> void:
 	# Si estamos en una transición, no procesar ninguna entrada.
@@ -255,7 +298,22 @@ func load_new_scene_content_instantly(file_path: String, anchor: String):
 # Esta función será llamada por CommandProcessor para actualizar quién está hablando
 func set_current_speaker(speaker_node: Control):
 	current_speaking_character = speaker_node
+
+# Función que será llamada desde el CommandProcessor
+func start_shake(duration: float, magnitude: float, nodes: Array):
+	# Antes de empezar, nos aseguramos de tener la posición original de cada nodo.
+	for node in nodes:
+		if is_instance_valid(node) and not original_positions.has(node):
+			# Si es un nodo nuevo (como una escena recién cargada), guardamos su posición actual.
+			print("Registrando nueva posición original para el nodo: ", node.name)
+			original_positions[node] = node.position
 	
+	# "Armamos" el efecto con la lista de nodos a sacudir.
+	_shake_duration = duration
+	_shake_magnitude = magnitude
+	nodes_to_shake = nodes # Esta es la lista que usará _process
+
+
 """ Señales """
 
 # Agrega uno o más ítems al inventario del personaje actual.
@@ -287,14 +345,7 @@ func _on_notification_timer_timeout():
 func _on_text_animation_done():
 	# Anima al personaje que habla para que vuelva a 'idle'
 	if is_instance_valid(current_speaking_character):
-		# Asumimos que tus nodos de personaje tienen una función llamada 'play_idle_animation'
 		current_speaking_character.play_idle_animation()
-
-	# NOTA: La lógica de 'character_sprite_listener' ahora es redundante,
-	# ya que _handle_character_visuals gestiona a todos los personajes visibles.
-	# Podrías eliminar estas líneas o adaptarlas si tienes un listener específico.
-	if is_instance_valid(character_sprite_listener) and character_sprite_listener.is_visible():
-		character_sprite_listener.play_idle_animation()
 
 # Se ejecuta cuando el jugador elige una opción de diálogo.
 # Procesa acciones, ítems y transiciones.
@@ -384,11 +435,11 @@ func _on_journal_icon_button_mouse_exited() -> void:
 
 
 func _on_inventory_icon_button_mouse_entered() -> void:
-	inventoryl_icon_label.text = "Inventario (I)"
+	inventory_icon_label.text = "Inventario (I)"
 
 
 func _on_inventory_icon_button_mouse_exited() -> void:
-	inventoryl_icon_label.text = " "
+	inventory_icon_label.text = " "
 
 
 func _on_setting_icon_button_mouse_entered() -> void:

@@ -9,7 +9,7 @@ signal cg_clicked
 func _ready():
 	# El nodo empieza oculto.
 	hide()
-	main_scene = get_parent().get_parent()
+	main_scene = get_parent().get_parent().get_parent()
 
 # Esta función se activa cuando hay un input SOBRE ESTE NODO.
 func _gui_input(event: InputEvent):

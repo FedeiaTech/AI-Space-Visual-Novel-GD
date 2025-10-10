@@ -191,7 +191,9 @@ func slide_offset(pixel_offset: float, duration: float = 0.5):
 	tween.tween_property(self, "position:x", target_x, duration).set_trans(Tween.TRANS_SINE)
 
 # Función modificada para recibir la posición de destino
-func slide_to_position(target_position: Vector2, duration: float = 0.5):
-	""" Mueve el sprite a la posición deseada de forma suave. """
+func slide_to_position(target_position: Vector2, duration: float = 0.5) -> Tween:
+	""" Mueve el sprite a la posición deseada de forma suave y devuelve el Tween. """
 	var tween = create_tween()
 	tween.tween_property(self, "position", target_position, duration).set_trans(Tween.TRANS_SINE)
+	# Devuelve la instancia del tween para poder monitorearla
+	return tween

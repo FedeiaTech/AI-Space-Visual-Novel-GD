@@ -18,13 +18,6 @@ func _ready():
 	# --- Ítems de prueba (puedes eliminarlos después) ---
 	# Asegúrate de que los ítems de prueba ahora sean diccionarios completos
 	add_item(Character.Name.ASTRO, {
-		"id": "safety_tether",
-		"name": "Cable de sujeción",
-		"description": "Un cable retráctil de alta resistencia diseñado para mantener al astronauta conectado a la nave o estación durante actividades extravehiculares. Fabricado con fibras compuestas y recubrimiento metálico, soporta tensión extrema y evita la deriva en el vacío. Su sistema de anclaje rápido permite asegurarlo a múltiples puntos de la nave.",
-		"quantity": 1,
-		"icon_path": "res://Assets/Inventory_icons/rope.png"
-	})
-	add_item(Character.Name.ASTRO, {
 		"id": "pocket_watch",
 		"name": "Reloj Antiguo",
 		"description": "Un Un reloj que me ayuda a concentrarme_ me lo dió mi abuelo y significa mucho para mí",

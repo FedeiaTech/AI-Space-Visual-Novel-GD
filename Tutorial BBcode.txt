@@ -1,0 +1,26 @@
+Color:
+[color=blue]Este texto es azul[/color]
+[color=#codigo_hexadecimal]Texto a colorear[/color]
+
+Negrita
+[b]¡Atención![/b]
+
+Itálica
+[i]Susurró algo...[/i]
+
+Subrayado
+[u]Es la única pista.[/u]	 
+
+Tachado	
+[s]Creí que era fácil.[/s]
+
+
+Tamaño de fuente
+[size=VALOR]texto[/size]
+
+Efectos:
+Sacudida	[shake rate=10 level=10]¡No puedo moverme![/shake]
+
+Ola	[wave amp=5 freq=2]Sintiendo las olas.[/wave]
+
+Rayo	[rainbow freq=0.2]Mira todos los colores.[/rainbow]

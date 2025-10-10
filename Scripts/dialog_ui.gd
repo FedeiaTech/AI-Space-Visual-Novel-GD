@@ -24,10 +24,12 @@ const NO_SOUND_CHARS : Array = [".", "!", "?"]
 var animate_text : bool = false
 var current_visible_characters : int = 0
 var current_character_details : Dictionary
+var can_advance_dialogue: bool = true
 
 # Variables asignadas por main_scene ===
 var dialogue_manager_ref: Node = null
 var next_sentence_sound_ref: AudioStreamPlayer = null
+var main_scene_ref: Node = null
 
 func _ready() -> void:
 	#Resetear display
@@ -41,7 +43,20 @@ func _ready() -> void:
 	dialog_box.dialog_clicked.connect(_handle_mouse_click)
 	sentence_pause_timer.timeout.connect(_on_sentence_pause_timeout)
 	
+func set_click_to_continue_enabled(enabled: bool):
+	can_advance_dialogue = enabled
+	if not enabled:
+		triangle_next.hide()
+		triangle_particles.hide()
+	else:
+		if not animate_text:
+			triangle_next.show()
+			triangle_particles.show()
+
 func _handle_mouse_click():
+	if main_scene_ref.is_dialogue_blocked:
+		return
+		
 	if dialogue_manager_ref == null or next_sentence_sound_ref == null:
 		printerr("Error: Dependencias del diálogo no asignadas en DialogUI.")
 		return
@@ -60,9 +75,11 @@ func _handle_mouse_click():
 			dialogue_manager_ref.advance_index()
 			dialogue_manager_ref.process_current_line()
 
-func set_dialog_dependencies(dm: Node, nss: AudioStreamPlayer):
+# Recibir referencia de la escena principal
+func set_dialog_dependencies(dm: Node, nss: AudioStreamPlayer, ms: Node):
 	dialogue_manager_ref = dm
 	next_sentence_sound_ref = nss
+	main_scene_ref = ms # Guardamos la referencia
 
 func _process(delta: float) -> void:
 	if animate_text and sentence_pause_timer.is_stopped():
@@ -93,36 +110,41 @@ func _process(delta: float) -> void:
 			triangle_particles.show()
 
 # CORRECCIÓN 1: Cambia la firma para que reciba el nombre como String
-func change_line(speaker_name_for_ui: String, line: String, expression: String = ""):
+func change_line(speaker_key: String, text: String, character_details: Dictionary, expression: String = ""):
 	# Detener cualquier sonido de la línea anterior
 	if text_blip_sound:
 		text_blip_sound.stop_sound()
 	
-	if speaker_name_for_ui == "Narrador" or speaker_name_for_ui.is_empty():
+	# Si la clave es Narrador o está vacía...
+	if speaker_key.to_upper() == "NARRATOR" or speaker_key.is_empty():
 		speaker_box.hide()
 		speaker_name.text = ""
-		current_character_details = {} 
+		current_character_details = {}
+		
+		# --- COLOR DEL NARRADOR ---
+		# Usa el color definido en Character.gd para el texto del diálogo.
+		var narrator_text_color = character_details.get("color", Color.GRAY) # Gris como color de respaldo
+		dialog_line.add_theme_color_override("default_color", narrator_text_color)
 	else:
-		speaker_box.show()
-		speaker_name.text = speaker_name_for_ui
-		
-		# Obtener el enum del personaje a partir del nombre de la cadena
-		var speaker_enum = Character.get_enum_from_string(speaker_name_for_ui)
-		
-		if speaker_enum != -1: # Verificar que el enum sea válido
-			current_character_details = Character.CHARACTER_DETAILS.get(speaker_enum, {})
-			var speaker_color = current_character_details.get("color", Color.WHITE)
+		# Lógica existente para otros personajes
+		if not character_details.is_empty():
+			speaker_box.show()
+			speaker_name.text = character_details.get("name", speaker_key)
+			var speaker_color = character_details.get("color", Color.WHITE)
 			speaker_name.add_theme_color_override("font_color", speaker_color)
 			
 			if text_blip_sound:
-				text_blip_sound.start_dialogue_sound(current_character_details, expression)
+				text_blip_sound.start_dialogue_sound(character_details, expression)
 		else:
-			printerr("Error en DialogUI: Nombre de personaje no válido para obtener detalles: ", speaker_name_for_ui)
-			speaker_name.text = "Desconocido"
+			printerr("Error en DialogUI: No se recibieron detalles para el personaje: ", speaker_key)
 			speaker_box.show()
-	
+			speaker_name.text = speaker_key
+		
+		# Para cualquier otro personaje, nos aseguramos de que el texto sea blanco.
+		dialog_line.add_theme_color_override("default_color", Color.WHITE)
+
 	current_visible_characters = 0
-	dialog_line.text = line
+	dialog_line.text = text
 	dialog_line.visible_characters = 0
 	animate_text = true
 	triangle_next.hide()

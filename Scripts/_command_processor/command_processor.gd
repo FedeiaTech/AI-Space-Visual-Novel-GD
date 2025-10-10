@@ -47,6 +47,7 @@ var command_handlers: Dictionary = {
 	"show_cg": _handle_show_cg,
 	"hide_cg": _handle_hide_cg,
 	"move_character": _handle_move_character,
+	"shake": _handle_shake,
 }
 
 func execute(line: Dictionary, is_preprocessing: bool = false) -> String:
@@ -158,7 +159,7 @@ func _handle_music(line: Dictionary,_is_preprocessing: bool = false) -> String:
 	return ""
 
 func _handle_location(line: Dictionary, is_preprocessing: bool) -> String:
-	var location_container = main_scene.get_node("InteractiveLocation")
+	var location_container = main_scene.get_node("InteractiveControl").get_node("InteractiveLocation")
 	for i in range(location_container.get_child_count() - 1, -1, -1):
 		var child = location_container.get_child(i)
 		child.queue_free()
@@ -169,6 +170,8 @@ func _handle_location(line: Dictionary, is_preprocessing: bool) -> String:
 		return ""
 	var location_instance = location_scene.instantiate()
 	location_container.add_child(location_instance)
+	# Informamos a MainScene sobre la nueva instancia de la localización.
+	main_scene.register_new_location(location_instance)
 	print("-- DEBUG: hijos de InteractiveLocation --")
 	for i in range(location_container.get_child_count()):
 		var c = location_container.get_child(i)
@@ -209,76 +212,67 @@ func _handle_anchor(_line: Dictionary, is_preprocessing: bool) -> String:
 func _handle_character_visuals(line: Dictionary, _is_preprocessing: bool = false) -> String:
 	var characters_data = line.get("characters", {})
 	var expressions_data = line.get("expressions", {})
-	var facing_data = line.get("facing", {}) # Leemos el diccionario facing, puede estar vacío
-	var speaker_name = line.get("speaker", "")
+	var facing_data = line.get("facing", {})
+	var speaker_key = line.get("speaker", "")
 	var text_data = line.get("text", "")
 	var positions_data = line.get("positions", {})
 	
+	var is_ia_speaking = (speaker_key.to_upper() == "IA")
 	main_scene.set_current_speaker(null)
 
-	# Si la línea contiene una clave "characters", SIEMPRE actualizamos
-	# la lista de personajes activos en la escena.
 	if not characters_data.is_empty():
 		active_characters = characters_data.duplicate()
 		if positions_data.is_empty():
 			for pos_str in active_characters.keys():
 				var pos_enum = Character.get_position_enum_from_string(pos_str)
-				if pos_enum != -1:
-					character_positions[pos_str] = Character.POSITIONS[pos_enum]
+				if pos_enum != -1: character_positions[pos_str] = Character.POSITIONS[pos_enum]
 		else:
 			character_positions = positions_data.duplicate()
 
 	var speaker_position_str = ""
 	for position_str in character_nodes.keys():
 		var character_node = character_nodes[position_str]
-
 		if active_characters.has(position_str) and is_instance_valid(character_node):
-			var character_name = active_characters[position_str]
+			var character_key = active_characters[position_str]
 			var expression = expressions_data.get(position_str, "idle")
-			var is_talking = (character_name.to_lower() == speaker_name.to_lower())
+			var is_talking = (character_key.to_lower() == speaker_key.to_lower())
 
-			if is_talking:
+			if is_talking and not is_ia_speaking:
 				main_scene.set_current_speaker(character_node)
 				speaker_position_str = position_str
+			elif is_ia_speaking and previous_speaker.to_lower() == character_key.to_lower():
+				main_scene.set_current_speaker(character_node)
 
-			var character_enum = Character.get_enum_from_string(character_name)
+			var character_enum = Character.get_enum_from_string(character_key)
 			if character_enum != -1:
 				var target_pos = character_positions.get(position_str, Vector2.ZERO)
-				
-				# --- NUEVA LÓGICA DE DECISIÓN DE ORIENTACIÓN ---
 				var final_facing_direction: String
-
-				# 1. ¿Hay una orden explícita en el JSON para esta posición?
 				if facing_data.has(position_str):
 					final_facing_direction = facing_data[position_str]
-				
-				# 2. Si no, ¿tenemos un estado guardado para esta posición?
 				elif character_facing_state.has(position_str):
 					final_facing_direction = character_facing_state[position_str]
-				
-				# 3. Si no, es la primera vez. Usamos la lógica por defecto.
 				else:
 					var pos_enum_default = Character.get_position_enum_from_string(position_str)
-					if pos_enum_default == Character.Position.RIGHT or pos_enum_default == Character.Position.FAR_RIGHT:
-						final_facing_direction = "left"
-					else:
-						final_facing_direction = "right"
+					final_facing_direction = "left" if pos_enum_default == Character.Position.RIGHT or pos_enum_default == Character.Position.FAR_RIGHT else "right"
 				
-				# ¡Guardamos el estado para la próxima vez!
 				character_facing_state[position_str] = final_facing_direction
-				# --- FIN DE LA NUEVA LÓGICA ---
-				
-				# Pasamos la dirección final al nodo del personaje
-				character_node.change_character_with_position(character_enum, is_talking, expression, target_pos, final_facing_direction)
+				character_node.change_character_with_position(character_enum, is_talking and not is_ia_speaking, expression, target_pos, final_facing_direction)
 		else:
-			if is_instance_valid(character_node):
-				character_node.hide_instantly()
+			if is_instance_valid(character_node): character_node.hide_instantly()
 	
 	self.character_expression_state = expressions_data.duplicate()
 
-	main_scene.dialog_ui.change_line(speaker_name, text_data, expressions_data.get(speaker_position_str, "idle"))
+	# Obtenemos los detalles del hablante UNA SOLA VEZ.
+	var speaker_details = Character.get_details_from_string(speaker_key)
+	
+	# --- LLAMADA CORREGIDA ---
+	# Pasamos la clave, el texto, y el diccionario de detalles completo.
+	main_scene.dialog_ui.change_line(speaker_key, text_data, speaker_details, expressions_data.get(speaker_position_str, "idle"))
 
-	return "stop_processing"
+	if not is_ia_speaking and not speaker_key.is_empty():
+		previous_speaker = speaker_key
+
+	return ""
 
 func _handle_choices(line: Dictionary,_is_preprocessing: bool = false) -> String:
 	var all_choices = line["choices"]
@@ -308,62 +302,60 @@ func _handle_choices(line: Dictionary,_is_preprocessing: bool = false) -> String
 	return "stop_processing"
 
 func _handle_text(line: Dictionary, _is_preprocessing: bool = false) -> String:
-	# Si la línea ya tiene un comando "characters", no hagas nada,
-	# ya que _handle_character_visuals se encargará de todo.
-	if line.has("characters"):
-		return ""
+	if line.has("characters"): return ""
 
-	var speaker_name_str = line.get("speaker", "NARRATOR")
+	var speaker_key = line.get("speaker", "NARRATOR")
 
 	# --- CASO 1: HAY UN ORADOR (NO ES EL NARRADOR) ---
-	if not speaker_name_str.is_empty() and speaker_name_str.to_upper() != "NARRATOR":
-		# Si no hay personajes activos en escena, no hacemos nada.
+	if not speaker_key.is_empty() and speaker_key.to_upper() != "NARRATOR":
 		if active_characters.is_empty():
-			printerr("Error: Se intentó una línea de diálogo para '", speaker_name_str, "' pero no hay personajes en escena.")
-			# Avanzamos para no quedarnos atascados
+			printerr("Error: Diálogo para '", speaker_key, "' pero no hay personajes en escena.")
 			main_scene.dialogue_manager.advance_index()
 			main_scene.dialogue_manager.process_current_line.call_deferred()
 			return "stop_processing"
 
-		# Preparamos los datos para renderizar, usando el estado guardado como base.
 		var visuals_data = {
 			"characters": active_characters.duplicate(),
-			"speaker": speaker_name_str,
+			"speaker": speaker_key,
 			"text": line.get("text", ""),
 			"positions": character_positions.duplicate(),
-			"facing": character_facing_state.duplicate() # Mantenemos la orientación
+			"facing": character_facing_state.duplicate()
 		}
-		
-		# Decidimos qué expresiones usar
-		if line.has("expressions"):
-			# Si la línea define nuevas expresiones, las usamos.
-			visuals_data["expressions"] = line.get("expressions")
-		else:
-			# Si no, usamos las últimas expresiones guardadas.
-			visuals_data["expressions"] = character_expression_state.duplicate()
-		
-		# Llamamos a la función principal de renderizado con los datos completos.
+		visuals_data["expressions"] = line.get("expressions", character_expression_state.duplicate())
 		_handle_character_visuals(visuals_data, _is_preprocessing)
 
-	# --- CASO 2: ES UNA LÍNEA DEL NARRADOR ---
+	# --- CASO 2: ES UNA LÍNEA DEL NARRADOR (LÓGICA MEJORADA) ---
 	else:
-		# El narrador OCULTA a todos los personajes y limpia el estado.
-		if not active_characters.is_empty():
-			for position_str in character_nodes.keys():
-				var character_node = character_nodes[position_str]
+		# Buscamos la nueva clave. Por defecto, ocultará a los personajes para
+		# mantener la compatibilidad con tus JSONs antiguos.
+		var should_hide = line.get("hide_characters", true)
+
+		if should_hide:
+			# Si debemos ocultar, ejecutamos la lógica de limpieza anterior.
+			if not active_characters.is_empty():
+				for character_node in character_nodes.values():
+					if is_instance_valid(character_node):
+						character_node.hide_instantly()
+				
+				# Limpiamos el estado POR COMPLETO.
+				active_characters.clear()
+				character_expression_state.clear()
+				character_facing_state.clear()
+		else:
+			# Si NO debemos ocultar, simplemente ponemos a todos en modo 'idle'.
+			# NO limpiamos el estado.
+			main_scene.set_current_speaker(null) # Quitamos el foco del hablante anterior
+			for position in active_characters.keys():
+				var character_node = character_nodes[position]
 				if is_instance_valid(character_node):
-					character_node.hide_instantly()
-			
-			# Limpiamos los diccionarios de estado para un inicio limpio la próxima vez
-			active_characters.clear()
-			character_expression_state.clear()
-			character_facing_state.clear()
+					character_node.play_idle_animation()
 		
-		# Mostramos el texto del narrador
+		# Esta parte se ejecuta en ambos casos (ocultando o no).
+		var narrator_details = Character.get_details_from_string("NARRATOR")
 		main_scene.set_current_speaker(null)
-		main_scene.dialog_ui.change_line("Narrador", line.get("text", ""), "idle")
+		main_scene.dialog_ui.change_line("NARRATOR", line.get("text", ""), narrator_details, "idle")
 		
-	return "stop_processing"
+	return ""
 
 ## Funcion auxiliar para buscar la posición de un personaje que ya está en pantalla
 func _find_character_position(character_name: String) -> String:
@@ -452,31 +444,80 @@ func _handle_hide_cg(line: Dictionary, _is_preprocessing: bool) -> String:
 	return ""
 
 func _handle_move_character(line: Dictionary, _is_preprocessing: bool = false) -> String:
-	var move_data = line.get("move_character", {})
-	var target_pos_str = move_data.get("position", "") # Ej: "center"
-	var offset = move_data.get("offset", 0)
-	var duration = float(move_data.get("duration", 0.5))
-	
-	# Asegurarnos de que hay un personaje activo en esa posición
-	if active_characters.has(target_pos_str):
-		# Obtenemos el nodo de control de esa posición
-		var character_node = character_nodes[target_pos_str]
-		
-		# Calculamos la nueva posición sumando el offset
-		var current_pos = character_positions[target_pos_str]
-		var new_pos = Vector2(current_pos.x + offset, current_pos.y)
-		
-		# Actualizamos el estado en nuestro diccionario
-		character_positions[target_pos_str] = new_pos
-		
-		# Le decimos al nodo del personaje que se mueva
-		if is_instance_valid(character_node):
-			character_node.slide_to_position(new_pos, duration)
-			return "stop_processing" # Importante para que no siga procesando
-			
-	printerr("Error en move_character: No se encontró un personaje en la posición '", target_pos_str, "'")
-	return ""
+	var move_data = line.get("move_character")
+	if move_data == null: return ""
 
+	var moves_to_execute = []
+	if typeof(move_data) == TYPE_ARRAY:
+		moves_to_execute = move_data
+	elif typeof(move_data) == TYPE_DICTIONARY:
+		moves_to_execute.append(move_data)
+
+	if moves_to_execute.is_empty():
+		return ""
+
+	var should_wait_for_click = line.has("text") and not line.get("text", "").is_empty()
+
+	# Llamamos a la nueva función que inicia todo el proceso
+	_start_character_moves_and_timer(moves_to_execute, should_wait_for_click)
+	
+	return "stop_processing"
+
+# Inicia los movimientos y el temporizador.
+func _start_character_moves_and_timer(moves: Array, wait_for_click: bool):
+	# 1. Bloqueamos el diálogo inmediatamente
+	main_scene.is_dialogue_blocked = true
+	main_scene.dialog_ui.set_click_to_continue_enabled(false)
+	
+	var max_duration = 0.0
+
+	# 2. Iniciamos todas las animaciones de movimiento (tweens)
+	for move in moves:
+		var duration = float(move.get("duration", 0.5))
+		# Buscamos la duración más larga para saber cuánto esperar
+		if duration > max_duration:
+			max_duration = duration
+			
+		var target_pos_str = move.get("position", "")
+		var offset = move.get("offset", 0)
+		
+		if active_characters.has(target_pos_str):
+			var character_node = character_nodes[target_pos_str]
+			var current_pos = character_positions[target_pos_str]
+			var new_pos = Vector2(current_pos.x + offset, current_pos.y)
+			
+			character_positions[target_pos_str] = new_pos
+			
+			if is_instance_valid(character_node):
+				# Simplemente iniciamos el tween, no lo esperamos.
+				character_node.slide_to_position(new_pos, duration)
+
+	# 3. Si hubo movimiento, creamos un Timer para que nos avise cuando termine
+	if max_duration > 0:
+		# get_tree().create_timer() es una forma segura de crear un timer temporal.
+		# Se destruirá solo después de activarse.
+		var timer = get_tree().create_timer(max_duration)
+		
+		# Conectamos la señal 'timeout' del timer a nuestra función de finalización.
+		# Usamos .bind() para pasarle el parámetro 'wait_for_click'.
+		timer.timeout.connect(_on_movement_finished.bind(wait_for_click))
+	else:
+		# Si por alguna razón no hubo movimiento, nos desbloqueamos inmediatamente
+		_on_movement_finished(wait_for_click)
+
+
+# Se ejecuta CUANDO EL TIMER TERMINA.
+func _on_movement_finished(wait_for_click: bool):
+	# Esta función se llama de forma segura después de que el tiempo ha pasado.
+	main_scene.is_dialogue_blocked = false
+	
+	if wait_for_click:
+		# Permitimos que el usuario haga clic para avanzar.
+		main_scene.dialog_ui.set_click_to_continue_enabled(true)
+	else:
+		# Avanzamos automáticamente (para movimientos sin texto).
+		main_scene.dialogue_manager.advance_index()
+		main_scene.dialogue_manager.process_current_line.call_deferred()
 # Función para recibir las referencias de los nodos
 func set_character_nodes(nodes: Dictionary):
 	self.character_nodes = nodes
@@ -485,3 +526,24 @@ func set_character_nodes(nodes: Dictionary):
 		var pos_enum = Character.get_position_enum_from_string(pos_str)
 		if pos_enum != -1:
 			character_positions[pos_str] = Character.POSITIONS[pos_enum]
+
+func _handle_shake(line: Dictionary, _is_preprocessing: bool = false) -> String:
+	var shake_data = line["shake"]
+	var duration = float(shake_data.get("duration", 0.5))
+	var magnitude = float(shake_data.get("magnitude", 10.0))
+	
+	if main_scene:
+		var nodes_to_pass = [main_scene.main_canvas_control, main_scene.dialog_ui]
+		
+		# Le pedimos a MainScene la referencia a la localización activa
+		var current_location = main_scene.get_current_location_node()
+		
+		# Comprobamos si es válida antes de añadirla
+		if is_instance_valid(current_location):
+			nodes_to_pass.append(current_location)
+		
+		main_scene.start_shake(duration, magnitude, nodes_to_pass)
+	else:
+		printerr("Error: No se ha asignado la referencia a la main_scene.")
+	
+	return ""

@@ -30,7 +30,7 @@ const POSITIONS = {
 	Position.LEFT: Vector2(-400,0), # Posición de la izquierda
 	Position.CENTER:  Vector2(-200,0), # Posición central
 	Position.RIGHT:  Vector2(100,0), # Posición de la derecha
-	Position.FAR_RIGHT:  Vector2(350,0) # Agrega esta línea con un valor apropiado.
+	Position.FAR_RIGHT:  Vector2(300,0) # Agrega esta línea con un valor apropiado.
 }
 
 # Diccionario constante que almacena los detalles de cada personaje.
@@ -48,7 +48,7 @@ const CHARACTER_DETAILS : Dictionary = {
 		}
 	},
 	Name.ASTRO_EVA: {
-		"name" : "Astro_EVA",
+		"name" : "Astro",
 		"gender": "male",
 		"sprite_frames": preload("res://Resources/Sprites_saves/Astro_eva_sprites.tres"),
 		"color": Color("#e61919") # Rojo desaturado
@@ -81,8 +81,19 @@ const CHARACTER_DETAILS : Dictionary = {
 		"name" : "",
 		"gender": "-",
 		"sprite_frames": null,
+		"color": Color("#B5B5B5") # Un gris oscuro (DarkGray)
 	},
 }
+
+## Devuelve el diccionario de detalles de un personaje a partir de su string.
+static func get_details_from_string(string_value: String) -> Dictionary:
+	var upper_string = string_value.to_upper()
+	if Name.has(upper_string):
+		var character_enum = Name[upper_string]
+		return CHARACTER_DETAILS.get(character_enum, {})
+	if string_value != "":
+		push_error("Nombre de personaje inválido: " + string_value)
+	return {}
 
 # Función estática que convierte un string (nombre) a su valor en el enum Name.
 # Retorna el valor correspondiente si existe, o -1 si el nombre no es válido.

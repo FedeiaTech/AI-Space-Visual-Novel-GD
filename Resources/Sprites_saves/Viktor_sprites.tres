@@ -1,49 +1,18 @@
-[gd_resource type="SpriteFrames" load_steps=9 format=3 uid="uid://f1kow4pfi8i3"]
+[gd_resource type="SpriteFrames" load_steps=5 format=3 uid="uid://f1kow4pfi8i3"]
 
-[ext_resource type="Texture2D" uid="uid://cj136rcdqqltl" path="res://Assets/Character_Sprites/Ori/stunned/ori_stunned_idle.png" id="3_du67k"]
-[ext_resource type="Texture2D" uid="uid://byjwyte262em0" path="res://Assets/Character_Sprites/Ori/stunned/ori_stunned_idle_blink.png" id="4_pti5j"]
 [ext_resource type="Texture2D" uid="uid://cjbu6vahlhxb3" path="res://Assets/Character_Sprites/Viktor/idle - talking/victor_idle.png" id="5_7cogk"]
-[ext_resource type="Texture2D" uid="uid://qcjya40mjn34" path="res://Assets/Character_Sprites/Ori/stunned/ori_stunned_talking2.png" id="5_ecqtd"]
 [ext_resource type="Texture2D" uid="uid://d37aaq06kqrch" path="res://Assets/Character_Sprites/Viktor/idle - talking/victor_idle_blink.png" id="6_4xxeh"]
-[ext_resource type="Texture2D" uid="uid://i3jkvjrgukd2" path="res://Assets/Character_Sprites/Ori/stunned/ori_stunned_talking1.png" id="6_tjq83"]
 [ext_resource type="Texture2D" uid="uid://4iihl1x7adro" path="res://Assets/Character_Sprites/Viktor/idle - talking/victor_idle_talking.png" id="7_du67k"]
 [ext_resource type="Texture2D" uid="uid://duhahl000qgrk" path="res://Assets/Character_Sprites/Viktor/idle - talking/victor_idle_talking2.png" id="8_pti5j"]
 
 [resource]
 animations = [{
-"frames": [{
-"duration": 5.0,
-"texture": ExtResource("3_du67k")
-}, {
-"duration": 1.0,
-"texture": ExtResource("4_pti5j")
-}],
+"frames": [],
 "loop": true,
 "name": &"hurt-idle",
 "speed": 5.0
 }, {
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("3_du67k")
-}, {
-"duration": 0.8,
-"texture": ExtResource("5_ecqtd")
-}, {
-"duration": 1.0,
-"texture": ExtResource("3_du67k")
-}, {
-"duration": 1.1,
-"texture": ExtResource("6_tjq83")
-}, {
-"duration": 1.0,
-"texture": ExtResource("4_pti5j")
-}, {
-"duration": 1.0,
-"texture": ExtResource("6_tjq83")
-}, {
-"duration": 1.0,
-"texture": ExtResource("3_du67k")
-}],
+"frames": [],
 "loop": true,
 "name": &"hurt-talking",
 "speed": 5.0
