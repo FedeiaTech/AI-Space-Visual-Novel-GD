@@ -18,15 +18,14 @@ config/icon="res://Assets/Inventory_icons/icon.svg"
 
 [autoload]
 
-SceneManager="*res://Scripts/SceneManager.gd"
-InventoryManager="*res://Scripts/Inventory/InventoryManager.gd"
-GameEvents="*res://Scripts/Global/GameEvents.gd"
-GameManager="*res://Scripts/Global/GameManager.gd"
-TimeManager="*res://Scripts/Time/TimeManager.gd"
-JournalManager="*res://Scripts/Log/JournalManager.gd"
-SceneLibrary="*res://Scripts/Libraries/SceneLibrary.gd"
-StoryLibrary="*res://Scripts/Libraries/StoryLibrary.gd"
-InteractionManager="res://Scripts/LocationScene/interaction_manager.gd"
+SceneManager="*res://Scripts/Singletons/SceneManager.gd"
+InventoryManager="*res://Scripts/Singletons/InventoryManager.gd"
+GameEvents="*res://Scripts/Singletons/GameEvents.gd"
+GameManager="*res://Scripts/Singletons/GameManager.gd"
+TimeManager="*res://Scripts/Singletons/TimeManager.gd"
+JournalManager="*res://Scripts/Singletons/JournalManager.gd"
+SceneLibrary="*res://Scripts/Singletons/SceneLibrary.gd"
+StoryLibrary="*res://Scripts/Singletons/StoryLibrary.gd"
 
 [display]
 
@@ -83,7 +82,7 @@ toggle_journal={
 
 lights_and_shadows/directional_shadow/soft_shadow_filter_quality=0
 lights_and_shadows/positional_shadow/soft_shadow_filter_quality=0
-anti_aliasing/quality/msaa_2d=3
+anti_aliasing/quality/msaa_2d=1
 anti_aliasing/quality/use_taa=true
 anti_aliasing/quality/use_debanding=true
 lights_and_shadows/positional_shadow/atlas_quadrant_0_subdiv=0

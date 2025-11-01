@@ -1,6 +1,6 @@
 [gd_scene load_steps=11 format=3 uid="uid://y4xge1d3oef"]
 
-[ext_resource type="Script" uid="uid://4mskbpmrowf1" path="res://Scripts/LocationScene/interaction_manager.gd" id="1_vucvq"]
+[ext_resource type="Script" uid="uid://4mskbpmrowf1" path="res://Scripts/Core/interaction_manager.gd" id="1_vucvq"]
 [ext_resource type="Texture2D" uid="uid://dblxxgl5aaim5" path="res://Assets/Scenes_images/central_access_room.png" id="2_vucvq"]
 [ext_resource type="Texture2D" uid="uid://buwvww6k2451q" path="res://Assets/Clickables_images/command_center/d_right.png" id="4_oyyg3"]
 [ext_resource type="Texture2D" uid="uid://dfd8jf046kb80" path="res://Assets/Clickables_images/command_center/ori_stunned.png" id="4_p5lt0"]

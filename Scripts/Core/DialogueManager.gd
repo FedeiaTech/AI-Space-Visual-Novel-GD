@@ -9,6 +9,7 @@ var dialog_file: String
 var dialog_index: int = 0
 var dialog_lines: Array = []
 var pending_anchor: String = ""
+var anchor_map: Dictionary = {}
 
 # Carga un nuevo archivo de diálogo.
 func load_dialog_file(file_name: String, anchor: String = ""):
@@ -27,9 +28,18 @@ func load_dialog_file(file_name: String, anchor: String = ""):
 	
 	dialog_lines = loaded_lines	
 	dialog_index = 0
+	
+	# Limpia el mapa de anclas anterior
+	anchor_map.clear()
+	# Construye el nuevo mapa de anclas
+	for i in range(dialog_lines.size()):
+		var line = dialog_lines[i]
+		if line.has("anchor"):
+			anchor_map[line["anchor"]] = i
+			
 	if not anchor.is_empty():
 		var anchor_pos = get_anchor_position(anchor)
-		if anchor_pos != null:
+		if anchor_pos != -1:
 			dialog_index = anchor_pos
 
 func process_current_line():
@@ -49,16 +59,16 @@ func advance_index():
 
 # Busca la posición de un ancla en el diálogo actual.
 func get_anchor_position(anchor: String) -> int:
-	for i in range(dialog_lines.size()):
-		if dialog_lines[i].has("anchor") and dialog_lines[i]["anchor"] == anchor:
-			return i
+	if anchor_map.has(anchor):
+		return anchor_map[anchor]
+	
 	printerr("Error: No se encontró el ancla '", anchor, "'")
 	return -1
 
 # Manejar los saltos "goto"
 func jump_to_anchor(anchor: String):
 	var new_index = get_anchor_position(anchor)
-	if new_index != null:
+	if new_index != -1:
 		dialog_index = new_index
 		# Después de saltar, procesamos inmediatamente la nueva línea
 		process_current_line()

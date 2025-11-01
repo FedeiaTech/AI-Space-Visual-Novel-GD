@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://bx718nuvws00d"]
 
-[ext_resource type="Script" uid="uid://bhwjqhjj82fum" path="res://Scripts/character_sprite.gd" id="1_ushfy"]
+[ext_resource type="Script" uid="uid://bhwjqhjj82fum" path="res://Scripts/Game/character_sprite.gd" id="1_ushfy"]
 [ext_resource type="SpriteFrames" uid="uid://clw31hlnrdecy" path="res://Resources/Sprites_saves/Astro_sprites.tres" id="2_ushfy"]
 
 [node name="CharacterSprite" type="Control"]

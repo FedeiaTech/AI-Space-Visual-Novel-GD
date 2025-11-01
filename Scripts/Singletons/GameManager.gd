@@ -5,6 +5,9 @@ extends Node
 # Variables para la carga de escena diferida
 var next_scene_path: String = ""
 var next_anchor: String = ""
+
+var start_in_debug_mode: bool = false
+
 # Señal para notificar a otras partes (como MainScene) que se debe cargar un nuevo archivo JSON de diálogo.
 signal new_dialog_file_requested(file_path: String, anchor: String)
 

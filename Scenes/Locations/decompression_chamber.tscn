@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://hnjnl3d37c5q"]
 
-[ext_resource type="Script" uid="uid://4mskbpmrowf1" path="res://Scripts/LocationScene/interaction_manager.gd" id="1_lhtc7"]
+[ext_resource type="Script" uid="uid://4mskbpmrowf1" path="res://Scripts/Core/interaction_manager.gd" id="1_lhtc7"]
 [ext_resource type="Texture2D" uid="uid://bhx0ih7knkkbi" path="res://Assets/Scenes_images/decompression_chamber.png" id="2_h4kpa"]
 [ext_resource type="Texture2D" uid="uid://tm3u86u7o1fx" path="res://Assets/Clickables_images/decompression_chamber/helmet.png" id="4_lhtc7"]
 [ext_resource type="PackedScene" uid="uid://dlqdd20yxc7br" path="res://Scenes/Locations/Objects/clickable_object.tscn" id="5_vin5m"]

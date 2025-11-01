@@ -1,15 +1,13 @@
 # CGViewer.gd
 extends TextureRect
 
-var main_scene: Node2D
-
 # Señal para avisar a la escena principal que se hizo clic.
 signal cg_clicked
+signal cg_visibility_changed(show_main_canvas: bool)
 
 func _ready():
 	# El nodo empieza oculto.
 	hide()
-	main_scene = get_parent().get_parent().get_parent()
 
 # Esta función se activa cuando hay un input SOBRE ESTE NODO.
 func _gui_input(event: InputEvent):
@@ -75,9 +73,4 @@ func hide_cg_instant():
 	show_full_screen(true)
 	
 func show_full_screen(show_main_canvas: bool):
-	if show_main_canvas:
-		main_scene.get_node("CanvasMain").show()
-		main_scene.get_node("ViewerCanvas").show()
-	else:
-		main_scene.get_node("CanvasMain").hide()
-		main_scene.get_node("ViewerCanvas").hide()
+	cg_visibility_changed.emit(show_main_canvas)

@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://bt5atvhvlh3rc"]
 
-[ext_resource type="Script" uid="uid://bhwjqhjj82fum" path="res://Scripts/character_sprite.gd" id="1_drbt0"]
+[ext_resource type="Script" uid="uid://bhwjqhjj82fum" path="res://Scripts/Game/character_sprite.gd" id="1_drbt0"]
 [ext_resource type="SpriteFrames" uid="uid://bd1amg6df0t10" path="res://Resources/Sprites_saves/Ori_sprites.tres" id="2_kyig6"]
 
 [node name="CharacterSpriteListener" type="Control"]

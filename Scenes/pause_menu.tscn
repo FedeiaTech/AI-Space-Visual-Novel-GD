@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://ctnhq8yi20d72"]
 
-[ext_resource type="Script" uid="uid://bs3f4e175rv0k" path="res://Scripts/pause_menu.gd" id="1_emv3i"]
+[ext_resource type="Script" uid="uid://bs3f4e175rv0k" path="res://Scripts/UI/pause_menu.gd" id="1_emv3i"]
 [ext_resource type="Theme" uid="uid://c7kebt85foo2f" path="res://Resources/Text_format/opton_choice_button.tres" id="2_k0w1u"]
 
 [node name="PauseMenu" type="CanvasLayer"]

@@ -7,6 +7,7 @@ extends TextureButton
 ## {"action": {"type": "load_scene", "scene_file": "decompression_chamber", "anchor": "first_choice"}}
 ## {"goto": "first_choice"}
 @export_multiline var action_command: String = ""
+var _parsed_action_command: Dictionary = {}
 
 #verificará si la bandera de misión con el ID que ingresaste 
 # El diccioario "quest_flags" en GameMAnager.gd
@@ -33,6 +34,13 @@ var tween # Para una transición suave
 func _ready():
 	if material:
 		material = material.duplicate()
+	
+	if not action_command.is_empty():
+		var json_result = JSON.parse_string(action_command)
+		if json_result is Dictionary:
+			_parsed_action_command = json_result
+		else:
+			printerr("Error de parseo JSON en: ", name, " -> ", action_command)
 	# Conecta la señal `pressed` del botón a este script
 	pressed.connect(on_object_clicked)
 	
@@ -43,31 +51,18 @@ func _ready():
 	button_up.connect(_on_mouse_button_up)
 	
 func on_object_clicked():
-	print("Paso 1: ¡El botón ha sido clickeado!")
-	# Primero, verifica si las condiciones se cumplen
 	if not required_flag.is_empty() and not GameManager.get_quest_flag(required_flag):
-		# Aquí podrías mostrar un mensaje de error o un diálogo de "no puedes hacer esto"
 		return
 	if not required_item.is_empty() and not InventoryManager.has_item(InventoryManager.current_player_character, required_item):
 		return
 	
-	# Analiza la cadena de texto como un diccionario JSON
-	var parsed_action_command = {}
-	if not action_command.is_empty():
-		var json_result = JSON.parse_string(action_command)
-		if json_result is Dictionary:
-			parsed_action_command = json_result
-		else:
-			printerr("Error de parseo JSON en action_command: ", action_command)
-		if json_result == null:
-			print("¡ERROR! El parseo de JSON falló. El string es inválido.")
-	
-	parsed_action_command["has_transition"] = has_transition
+	var final_action = _parsed_action_command.duplicate() 
+
+	final_action["has_transition"] = has_transition
 	if not transition_type.is_empty():
-		parsed_action_command["transition_type"] = transition_type
+		final_action["transition_type"] = transition_type
 	
-	# Emite la señal con los datos relevantes
-	object_clicked.emit(parsed_action_command)
+	object_clicked.emit(final_action)
 
 func _on_mouse_entered():
 	# Si hay un tween anterior, lo cancelamos para evitar conflictos.

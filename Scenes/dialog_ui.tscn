@@ -1,10 +1,10 @@
 [gd_scene load_steps=7 format=3 uid="uid://t00wn4dwmk2q"]
 
-[ext_resource type="Script" uid="uid://b84251mbmxnt0" path="res://Scripts/dialog_ui.gd" id="1_oixmp"]
-[ext_resource type="Script" uid="uid://c1mxqje3axf07" path="res://Scripts/text_blip_sound.gd" id="2_dy63b"]
+[ext_resource type="Script" uid="uid://b84251mbmxnt0" path="res://Scripts/UI/dialog_ui.gd" id="1_oixmp"]
+[ext_resource type="Script" uid="uid://c1mxqje3axf07" path="res://Scripts/UI/text_blip_sound.gd" id="2_dy63b"]
 [ext_resource type="PackedScene" uid="uid://bsqoddjcxp3nn" path="res://Scenes/player_choice.tscn" id="3_kymi5"]
 [ext_resource type="Theme" uid="uid://b6ifxrvymt2nj" path="res://Resources/Text_format/dialogue_text.tres" id="3_yqatb"]
-[ext_resource type="Script" uid="uid://d0on4nk64kn4n" path="res://Scripts/Dialogues/dialog_box.gd" id="4_5t5tq"]
+[ext_resource type="Script" uid="uid://d0on4nk64kn4n" path="res://Scripts/UI/dialog_box.gd" id="4_5t5tq"]
 [ext_resource type="Texture2D" uid="uid://riwn27cnf4lp" path="res://Assets/UI_assets/_Resources/fog_spaceship.png" id="6_t33e6"]
 
 [node name="DialogUI" type="Control"]

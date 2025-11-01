@@ -4,15 +4,10 @@
 	{"show_cg": "astro_climbing", "instant": true},
 	{"text": "..."},
 	{"text": "Astro se desplaza lentamente tomándose del cable."},
-	{"text": "Cada impulso firme le confirma lo lejos que quedo luego del impacto"},
-	{"item_given": [
-			{
-			"id": "safety_tether",
-			"name": "Cable de sujeción",
-			"description": "Un cable retráctil de alta resistencia diseñado para mantener al astronauta conectado a la nave o estación durante actividades extravehiculares. Fabricado con fibras compuestas y recubrimiento metálico, soporta tensión extrema y evita la deriva en el vacío. Su sistema de anclaje rápido permite asegurarlo a múltiples puntos de la nave.",
-			"quantity": 1,
-			"icon_path": "res://Assets/Inventory_icons/rope.png"
-			},
+	{
+	"text": "Cada impulso firme le confirma lo lejos que quedo luego del impacto",
+	"item_given": [
+			{"id": "safety_tether", "quantity": 1},
 		]
 	},
 	{"show_cg": "astro_entering", "instant": false, "full_screen": true},

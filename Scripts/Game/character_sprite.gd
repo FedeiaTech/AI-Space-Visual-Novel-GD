@@ -8,6 +8,7 @@ var current_position: Character.Position = Character.Position.CENTER
 var current_character_name: String = ""
 var last_known_position: Vector2 = Vector2.ZERO
 var current_facing_direction: String = "right"
+var current_expression: String = "idle"
 
 func _ready() -> void:
 	self.modulate.a = 0
@@ -81,6 +82,8 @@ func resume_talking():
 # Función para cambiar el personaje y moverlo a una posición específica
 # La firma de la función espera siempre una dirección, ya no hay modo "auto"
 func change_character_with_position(character_enum: Character.Name, is_talking: bool, expression: String, target_position: Vector2, facing_direction: String):
+	self.current_expression = expression
+	
 	var character_details = Character.CHARACTER_DETAILS.get(character_enum)
 	
 	if not character_details or not character_details.get("sprite_frames"):
@@ -151,15 +154,7 @@ func change_character_with_position(character_enum: Character.Name, is_talking: 
 	show_sprite()
 
 func get_current_expression() -> String:
-	# Corrección: Usar la propiedad ".animation" de AnimatedSprite2D en Godot 4
-	var current_anim_name = animated_sprite.animation
-	
-	if current_anim_name.begins_with("talking-"):
-		return current_anim_name.replace("talking-", "")
-	elif current_anim_name.begins_with("idle-"):
-		return current_anim_name.replace("idle-", "")
-		
-	return ""
+	return self.current_expression
 
 func get_current_character_name() -> String:
 	return self.current_character_name
@@ -169,6 +164,8 @@ func set_last_known_position(pos: Vector2):
 	last_known_position = pos
 
 func set_expression(expression: String, is_talking: bool):
+	self.current_expression = expression
+	
 	var stance = "talking" if is_talking else "idle"
 	var animation_name = expression + "-" + stance
 	

@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://dlqdd20yxc7br"]
 
-[ext_resource type="Script" uid="uid://camk6rh3c55je" path="res://Scripts/Objects/clickable_object.gd" id="1_1vsgf"]
+[ext_resource type="Script" uid="uid://camk6rh3c55je" path="res://Scripts/Game/clickable_object.gd" id="1_1vsgf"]
 [ext_resource type="Texture2D" uid="uid://dbgri0kmstvf6" path="res://Assets/Inventory_icons/chip.png" id="1_tbbnn"]
 [ext_resource type="Shader" uid="uid://lcya0iddlgrb" path="res://Resources/Shaders/clickable_object.gdshader" id="1_wo0a7"]
 
@@ -14,3 +14,5 @@ offset_right = 40.0
 offset_bottom = 40.0
 texture_normal = ExtResource("1_tbbnn")
 script = ExtResource("1_1vsgf")
+
+[node name="Tween" type="Node" parent="."]

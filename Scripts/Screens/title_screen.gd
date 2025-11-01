@@ -11,6 +11,7 @@ extends Node2D
 @onready var resolution_option_button: OptionButton = %ResolutionOptionButton
 @onready var fullscreen_check_button: CheckButton = %FullscreenCheckButton
 @onready var video_player: VideoStreamPlayer = %VideoStreamPlayer
+@onready var debug_mode_button: Button = %DebugModeButton
 
 # Referencias para los sliders y labels
 @onready var bgm_slider: HSlider = %BGMSlider
@@ -42,6 +43,7 @@ func _ready() -> void:
 	new_game_button.pressed.connect(_on_new_game_button_pressed)
 	options_button.pressed.connect(_on_options_button_pressed)
 	quit_game_button.pressed.connect(_on_quit_game_button_pressed)
+	debug_mode_button.pressed.connect(_on_debug_mode_button_pressed)
 	
 	# Conectar los sliders y el botón de volver del panel de opciones
 	bgm_slider.value_changed.connect(_on_bgm_slider_changed)
@@ -150,8 +152,13 @@ func _on_sfx_slider_changed(value: float):
 	sfx_value_label.text = str(percentage) + "%"
 	
 func _on_new_game_button_pressed():
+	GameManager.start_in_debug_mode = false
 	SceneManager.change_scene("res://Scenes/mainScene.tscn")
-	
+
+func _on_debug_mode_button_pressed():
+	GameManager.start_in_debug_mode = true
+	SceneManager.change_scene("res://Scenes/mainScene.tscn")
+
 func _on_quit_game_button_pressed():
 	SceneManager.transition_out()
 	

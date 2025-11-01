@@ -1,6 +1,6 @@
 [gd_scene load_steps=10 format=3 uid="uid://cy1hi75rpyb3r"]
 
-[ext_resource type="Script" uid="uid://b5haw4d0whol7" path="res://Scripts/title_screen.gd" id="1_twnyg"]
+[ext_resource type="Script" uid="uid://b5haw4d0whol7" path="res://Scripts/Screens/title_screen.gd" id="1_twnyg"]
 [ext_resource type="Texture2D" uid="uid://coqer5tkgvmiv" path="res://Assets/UI_assets/Backgrounds/title_screen_background.png" id="2_6vd4x"]
 [ext_resource type="VideoStream" uid="uid://bw0sp1bipmm0h" path="res://Assets/UI_assets/Backgrounds/loop2.ogv" id="2_12m1t"]
 [ext_resource type="Theme" uid="uid://c432lv6xlywor" path="res://Resources/Text_format/Main_title_screen.tres" id="3_55kwv"]
@@ -267,6 +267,12 @@ unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("4_6vd4x")
 text = "Empezar"
+
+[node name="DebugModeButton" type="Button" parent="CanvasMenu/MainMenu/CenterContainer/VBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("4_6vd4x")
+text = "Modo Debug"
 
 [node name="OptionsButton" type="Button" parent="CanvasMenu/MainMenu/CenterContainer/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true

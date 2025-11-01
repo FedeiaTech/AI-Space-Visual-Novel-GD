@@ -1,0 +1,48 @@
+[
+	{
+		"anchor": "start",
+		"text": "--- MODO DEPURACIÓN INICIADO ---",
+		"hide_characters": true
+	},
+	{
+		"text": "Probando aparición de personajes y diálogo."
+	},
+	{
+		"characters": { "left": "ASTRO", "right": "ORI" },
+		"expressions": { "left": "happy", "right": "idle" },
+		"facing": { "left": "right", "right": "left" },
+		"speaker": "ASTRO",
+		"text": "Hola Ori, ¡estamos en modo debug!"
+	},
+	{
+		"speaker": "ORI",
+		"expressions": { "left": "happy", "right": "happy" },
+		"text": "¡Genial! Probemos un 'item_given'."
+	},
+	{
+		"item_given": {"id": "pocket_watch", "quantity": 1},
+		"text": "Has recibido un Reloj de Bolsillo. (Revisa el inventario 'I')."
+	},
+	{
+		"text": "Ahora, probemos un 'shake'."
+	},
+	{
+		"shake": { "duration": 0.7, "magnitude": 15 },
+		"speaker": "NARRATOR",
+		"text": "¡Terremoto!"
+	},
+	{
+		"text": "Probando 'goto' y 'choices'."
+	},
+	{
+		"choices": [
+			{ "text": "Probar salto 'goto'", "goto": "test_goto" },
+			{ "text": "Probar 'load_scene'", "action": {"type": "load_scene", "scene_file": "command_center", "anchor": "start"} },
+			{ "text": "Probar modo exploración", "flow": "explore" }
+		]
+	},
+	{
+		"anchor": "test_goto",
+		"text": "¡El 'goto' funcionó! --- FIN DE LA PRUEBA ---"
+	}
+]

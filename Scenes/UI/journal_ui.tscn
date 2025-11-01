@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://b7vmdbxmok30i"]
 
-[ext_resource type="Script" uid="uid://cls254lcdcek3" path="res://Scripts/Log/JournalUI.gd" id="1_aog7u"]
+[ext_resource type="Script" uid="uid://cls254lcdcek3" path="res://Scripts/UI/JournalUI.gd" id="1_aog7u"]
 
 [node name="JournalUI" type="Control"]
 layout_mode = 3
