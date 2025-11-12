@@ -8,6 +8,7 @@ signal inventory_toggled
 signal journal_toggled
 signal next_line_pressed
 signal pause_pressed # Para la tecla 'Escape'
+signal quest_log_toggled
 
 func _input(event: InputEvent) -> void:
 	# Usamos 'if' separados (no 'elif') porque un evento puede
@@ -31,4 +32,8 @@ func _input(event: InputEvent) -> void:
 	# "ui_cancel" es la acción por defecto de la tecla 'Escape'
 	if event.is_action_pressed("ui_cancel"):
 		pause_pressed.emit()
+		get_viewport().set_input_as_handled()
+	
+	if event.is_action_pressed("toggle_quest_log"):
+		quest_log_toggled.emit()
 		get_viewport().set_input_as_handled()

@@ -1,0 +1,7 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://dxi6d2u41kgxb"]
+
+[ext_resource type="FontFile" uid="uid://bj4eqo05reeqq" path="res://Resources/Fonts/SPACE.ttf" id="1_8r3hj"]
+
+[resource]
+Label/font_sizes/font_size = 16
+Label/fonts/font = ExtResource("1_8r3hj")

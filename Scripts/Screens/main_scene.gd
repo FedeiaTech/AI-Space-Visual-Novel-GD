@@ -33,6 +33,7 @@ extends Node2D
 @onready var input_manager: Node = %InputManager
 @onready var character_stage_manager: Node = %CharacterStageManager
 @onready var camera_shaker: Node = %CameraShaker
+@onready var quest_log_ui_manager: Node = %QuestLogUIManager
 
 # UI Iconos
 @onready var journal_icon_button: TextureButton = %JournalIconButton
@@ -96,6 +97,7 @@ func _ready() -> void:
 	input_manager.journal_toggled.connect(_on_journal_toggled)
 	input_manager.next_line_pressed.connect(_on_next_line_pressed)
 	input_manager.pause_pressed.connect(_on_pause_pressed)
+	input_manager.quest_log_toggled.connect(_on_quest_log_toggled)
 
 	# Inyección de dependencias
 	dialog_ui.set_dialog_dependencies(dialogue_manager, next_sentence_sound, self)
@@ -147,6 +149,13 @@ func _on_inventory_toggled():
 
 	# Si no, simplemente llama al toggle.
 	inventory_ui_manager.toggle_inventory()
+
+# Se activa cuando se presiona la tecla del registro de misiones.
+func _on_quest_log_toggled():
+	if journal_ui.visible: return
+	if inventory_ui_manager.current_inventory_ui != null: return
+
+	quest_log_ui_manager.toggle_quest_log()
 
 # Se activa cuando se presiona la tecla del diario.
 func _on_journal_toggled():

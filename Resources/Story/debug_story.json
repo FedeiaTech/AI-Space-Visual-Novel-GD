@@ -1,48 +1,337 @@
 [
 	{
 		"anchor": "start",
-		"text": "--- MODO DEPURACIÓN INICIADO ---",
+		"text": "--- MODO DEPURACIÓN AVANZADO ---",
 		"hide_characters": true
 	},
 	{
-		"text": "Probando aparición de personajes y diálogo."
-	},
-	{
-		"characters": { "left": "ASTRO", "right": "ORI" },
-		"expressions": { "left": "happy", "right": "idle" },
-		"facing": { "left": "right", "right": "left" },
-		"speaker": "ASTRO",
-		"text": "Hola Ori, ¡estamos en modo debug!"
-	},
-	{
-		"speaker": "ORI",
-		"expressions": { "left": "happy", "right": "happy" },
-		"text": "¡Genial! Probemos un 'item_given'."
-	},
-	{
-		"item_given": {"id": "pocket_watch", "quantity": 1},
-		"text": "Has recibido un Reloj de Bolsillo. (Revisa el inventario 'I')."
-	},
-	{
-		"text": "Ahora, probemos un 'shake'."
-	},
-	{
-		"shake": { "duration": 0.7, "magnitude": 15 },
-		"speaker": "NARRATOR",
-		"text": "¡Terremoto!"
-	},
-	{
-		"text": "Probando 'goto' y 'choices'."
+		"text": "Selecciona la prueba que deseas ejecutar (Página 1/2)"
 	},
 	{
 		"choices": [
-			{ "text": "Probar salto 'goto'", "goto": "test_goto" },
-			{ "text": "Probar 'load_scene'", "action": {"type": "load_scene", "scene_file": "command_center", "anchor": "start"} },
-			{ "text": "Probar modo exploración", "flow": "explore" }
+			{ "text": "1. Prueba de Narrador (con/sin personajes)", "goto": "narrator_test" },
+			{ "text": "2. Prueba de Personajes (Movimiento y Voz)", "goto": "character_test" },
+			{ "text": "3. Prueba de Estado (Flags, Items)", "goto": "state_test" },
+			{ "text": "4. Prueba de Escena (Shake, CG, Location)", "goto": "scene_test" },
+			{ "text": "Siguiente... (Misiones y Tiempo)", "goto": "debug_menu_page_2" }
 		]
 	},
+
 	{
-		"anchor": "test_goto",
-		"text": "¡El 'goto' funcionó! --- FIN DE LA PRUEBA ---"
+		"anchor": "debug_menu_page_2",
+		"text": "Selecciona la prueba que deseas ejecutar. (Página 2/2)"
+	},
+	{
+		"choices": [
+			{ "text": "5. Prueba de Misiones (Completa)", "goto": "mission_test_original" },
+			{ "text": "6. Prueba de Tiempo (Timer UI)", "goto": "time_test" },
+			{ "text": "Volver...", "goto": "start" }
+		]
+	},
+
+
+	{
+		"anchor": "narrator_test"
+	},
+	{
+		"characters": { "left": "ASTRO", "right": "ORI" },
+		"expressions": { "left": "idle", "right": "idle" },
+		"text": "Personajes en escena."
+	},
+	{
+		"text": "🗣 Prueba de Narrador (sin 'hide_characters'). Los personajes deberían quedarse.",
+		"hide_characters": false
+	},
+	{
+		"text": "Como puedes ver, siguen aquí. El comando 'hide_characters: false' funciona. (o por defecto es 'false')"
+	},
+	{
+		"speaker": "ASTRO",
+		"text": "Sigo aquí."
+	},
+	{
+		"speaker": "ORI",
+		"text": "Yo también."
+	},
+	{
+		"text": "Prueba de Narrador (con 'hide_characters: true'). Los personajes desaparecen.",
+		"hide_characters": true
+	},
+	{
+		"speaker": "ORI",
+		"text": "Y ahora... Dónde estamos?",
+	},
+	{
+		"speaker": "ASTRO",
+		"text": "Me he perdido.",
+	},
+	{
+		"text": "Prueba de narrador completada. Volviendo al menú...",
+	},
+	{
+		"goto": "start"
+	},
+
+
+	{
+		"anchor": "character_test"
+	},
+	{
+		"characters": { "center": "ASTRO", "far_right": "MILKA" },
+		"expressions": { "center": "idle", "far_right": "idle" },
+		"text": "🤐 Pruebas de Personajes 🏃‍♀️ \nProbando 'move_character'. Astro se moverá 200px a la derecha."
+	},
+	{
+		"move_character": { "position": "center", "offset": 200, "duration": 1.0 },
+		"text": "¡Deslizando! (Clic para continuar)",
+		"hide_characters": false
+	},
+	{
+		"move_character": { "position": "center", "offset": -200, "duration": 2.0 },
+		"speaker": "ASTRO",
+		"text": "¡Deslizando mientras hablo -200 px! (Clic para continuar)",
+	},
+	{
+		"text": "A continuación deslizando sin hablar 100 px a la izquierda.",
+	},
+	{
+		"text": "...",
+		"move_character": { "position": "center", "offset": -100, "duration": 0.2 },
+	},
+	{
+		"text": "Milka se volteará en el cuadro siguiente.",
+	},
+	{
+		"text": " ",
+		"characters": {},
+		"facing": { "far_right": "right" }
+	},
+	{
+		"text": "Milka se voltea de nuevo mientras yo, Narrador, relato.",
+		"characters": {},
+		"facing": { "far_right": "left" }
+	},
+	{
+		"text": "Milka se volteará y hablará.",
+	},
+	{
+		"speaker": "MILKA",
+		"text": "¿Alguen dijo algo? ¿Quién anda ahí?",
+		"facing": { "far_right": "right" }
+	},
+	{
+		"text": "Ahora probando un sonido de expresión (duda).",
+		"hide_characters": false
+	},
+	{
+		"speaker": "ASTRO",
+		"expressions": { "center": "doubt" },
+		"text": "¿Hmm? ¿Qué fue eso? (Deberías haber oído el sonido 'doubt')"
+	},
+	{
+		"speaker": "ASTRO",
+		"expressions": { "center": "scare" },
+		"text": "¡Ah! ¡Que miedo! (Deberías haber oído el sonido 'scare')"
+	},
+	{
+		"text": "Prueba de personajes completada. Volviendo al menú",
+	},
+	{
+		"goto": "start"
+	},
+	
+	
+	{
+		"anchor": "state_test"
+	},
+	{
+		"text": "⚙ Prueba de Estado F/I ⚙\nSelecciona las condiciones para la prueba:",
+		"choices": [
+			{ "text": "Activar Flag Y Dar Ítem", "goto": "state_setup_both" },
+			{ "text": "Activar SÓLO Flag", "goto": "state_setup_flag" },
+			{ "text": "Dar SÓLO Ítem", "goto": "state_setup_item" },
+			{ "text": "No hacer nada (Probar condiciones 'false')", "goto": "state_setup_none" }
+		]
+	},
+
+	{
+		"anchor": "state_setup_both",
+		"set_flag": { "id": "debug_flag_test", "value": true },
+		"item_given": { "id": "safety_tether", "quantity": 1 },
+		"text": "Flag activada. Ítem recibido. Listo para probar.",
+		"goto": "state_run_test"
+	},
+	{
+		"anchor": "state_setup_flag",
+		"set_flag": { "id": "debug_flag_test", "value": true },
+		"text": "Flag activada. Ítem NO recibido. Listo para probar.",
+		"goto": "state_run_test"
+	},
+	{
+		"anchor": "state_setup_item",
+		"item_given": { "id": "safety_tether", "quantity": 1 },
+		"text": "Flag desactivada. Ítem recibido. Listo para probar.",
+		"goto": "state_run_test"
+	},
+	{
+		"anchor": "state_setup_none",
+		"text": "Flag desactivada. Ítem NO recibido. Listo para probar.",
+		"goto": "state_run_test"
+	},
+
+	{
+		"anchor": "state_run_test",
+		"text": "Comprobemos las elecciones condicionales..."
+	},
+	{
+		"choices": [
+			{ "text": "Opción 1 (Requiere 'debug_flag_test' = true)", "goto": "state_test_flag_ok", "requires_flag": "debug_flag_test", "flag_value": true },
+			{ "text": "Opción 2 (Requiere 'debug_flag_test' = false)", "goto": "state_test_flag_false_ok", "requires_flag": "debug_flag_test", "flag_value": false },
+			{ "text": "Opción 3 (Requiere 'Cable de sujeción')", "goto": "state_test_item_ok", "requires_item": "safety_tether" },
+			{ "text": "Opción 4 (Requiere ítem 'moneda_oro' - fallará)", "goto": "state_test_fail", "requires_item": "moneda_oro" }
+		]
+	},
+	
+	{ 
+		"anchor": "state_test_flag_ok", 
+		"text": "¡La prueba de 'requires_flag' (true) funcionó!", 
+		"goto": "state_test_reset"
+	},
+	{ 
+		"anchor": "state_test_flag_false_ok", 
+		"text": "¡La prueba de 'requires_flag' (false) funcionó!", 
+		"goto": "state_test_reset"
+	},
+	{ 
+		"anchor": "state_test_item_ok", 
+		"text": "¡La prueba de 'requires_item' funcionó!", 
+		"goto": "state_test_reset"
+	},
+	{ 
+		"anchor": "state_test_fail", 
+		"text": "Algo salió mal (o seleccionaste la opción que debe fallar, lo cual es un éxito).", 
+		"goto": "state_test_reset"
+	},
+
+	{
+		"anchor": "state_test_reset",
+		"text": "Reseteando estado de prueba..."
+	},
+	{
+		"set_flag": { "id": "debug_flag_test", "value": false },
+		"remove_item": "safety_tether",
+		"text": "Flag reseteada, ítem eliminado. Volviendo al menú...",
+		"goto": "start"
+	},
+	
+	{
+		"anchor": "scene_test"
+	},
+	{
+		"text": "Probando 'music'.",
+		"music": "event_horizon"
+	},
+	{
+		"text": "Ahora, un 'show_cg'."
+	},
+	{
+		"show_cg": "dirty_milka_and_ori",
+		"text": "(Clic para continuar)"
+	},
+	{
+		"hide_cg": true,
+		"text": "Y 'hide_cg' funcionó."
+	},
+	{
+		"text": "Ahora, cambiaremos la localización a 'outside_starship' y probaremos el comando 'object'."
+	},
+	{
+		"location": "outside_starship"
+	},
+	{
+		"text": "¡Cargó 'outside_starship'!"
+	},
+	{
+		"text": "(Asumiendo que hay un objeto con id 'puerta_nave' en esa escena...) Lo haremos invisible."
+	},
+	{
+		"object": { "id": "puerta_nave", "visible": false },
+		"text": "Si había un objeto 'puerta_nave', ahora debería estar invisible."
+	},
+	{
+		"text": "Prueba de escena completada.",
+		"goto": "start"
+	},
+	
+	{
+		"anchor": "mission_test_original"
+	},
+	{
+		"text": "Probando el sistema de misiones (Activación Múltiple)..."
+	},
+	{
+		"activate_quest": ["find_ori", "fix_anomaly"],
+		"text": "¡DOS MISIONES ACTIVADAS! (find_ori y fix_anomaly). Revisa el registro (M) para ver ambas."
+	},
+	{
+		"choices": [
+			{ "text": "Preguntar por Ori (Requiere 'find_ori' activa)", "goto": "ori_talk", "requires_quest": "find_ori", "quest_state": "ACTIVE" },
+			{ "text": "Ignorar (Requiere 'find_ori' bloqueada)", "goto": "ori_ignore", "requires_quest": "find_ori", "quest_state": "LOCKED" }
+		]
+	},
+	{ 
+		"anchor": "ori_talk", 
+		"text": "La misión está activa, por eso ves esta opción. Ahora vamos a completar 'find_ori'.",
+		"goto": "complete_mission_test"
+	},
+	{ 
+		"anchor": "ori_ignore", 
+		"text": "No deberías ver esto si 'activate_quest' funcionó.",
+		"goto": "mission_test_end"
+	},
+	{
+		"anchor": "complete_mission_test",
+		"text": "Completando la misión 'find_ori'..."
+	},
+	{
+		"complete_quest": "find_ori",
+		"text": "¡Misión 'find_ori' completada! Revisa el registro (M). Debería estar en la sección 'Completadas'."
+	},
+	{
+		"anchor": "mission_test_end",
+		"text": "Prueba de misiones completada.",
+		"goto": "start"
+	},
+	
+	{
+		"anchor": "time_test"
+	},
+	{
+		"text": "Probando el sistema de tiempo."
+	},
+	{
+		"set_time_absolute": "00:10",
+		"text": "Tiempo establecido a 10 minutos."
+	},
+	{
+		"show_time_ui": true,
+		"text": "El temporizador debería estar visible en la esquina."
+	},
+	{
+		"text": "Añadiendo 60 segundos..."
+	},
+	{
+		"modify_time": 60,
+		"text": "El temporizador ahora debería marcar 11:00."
+	},
+	{
+		"text": "Ocultando el temporizador."
+	},
+	{
+		"show_time_ui": false,
+		"text": "Prueba de tiempo completada."
+	},
+	{
+		"goto": "start"
 	}
 ]

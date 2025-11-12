@@ -18,35 +18,39 @@ var previous_listener: String = ""
 # -------------------------------------------------------------------
 
 # Define qué función maneja cada clave JSON en una línea de diálogo.
-var command_handlers: Dictionary = {
-	# Comandos de escenario (Delegados)
-	"characters": _handle_character_visuals,
-	"text": _handle_text,
-	"move_character": _handle_move_character,
-	
-	# Comandos de flujo de juego
-	"action": _handle_action,
-	"goto": _handle_goto,
-	"flow": _handle_flow,
-	"anchor": _handle_anchor,
-	"choices": _handle_choices,
-	
-	# Comandos de estado (flags, items)
+# Estos comandos se ejecutan PRIMERO y no detienen el procesamiento.
+var setup_and_display_handlers: Dictionary = {
+	# Comandos de estado
 	"set_flag": _handle_set_flag,
 	"item_given": _handle_item_given,
+	"remove_item": _handle_remove_item,
+	"activate_quest": _handle_activate_quest,
+	"complete_quest": _handle_complete_quest,
 	
 	# Comandos de escena y UI
 	"location": _handle_location,
 	"object": _handle_object,
 	"music": _handle_music,
-	"show_cg": _handle_show_cg,
-	"hide_cg": _handle_hide_cg,
 	"shake": _handle_shake,
-	
-	# Comandos de tiempo
+	"show_time_ui": _handle_show_time_ui,
 	"set_time_absolute": _handle_set_time_absolute,
 	"modify_time": _handle_modify_time,
-	"show_time_ui": _handle_show_time_ui,
+	
+	# Comandos de escenario (Delegados)
+	"characters": _handle_character_visuals,
+	"text": _handle_text,
+	"show_cg": _handle_show_cg,
+	"hide_cg": _handle_hide_cg,
+}
+
+# Estos comandos se ejecutan AL FINAL y detienen el procesamiento.
+var flow_control_handlers: Dictionary = {
+	"move_character": _handle_move_character,
+	"action": _handle_action,
+	"goto": _handle_goto,
+	"flow": _handle_flow,
+	"anchor": _handle_anchor,
+	"choices": _handle_choices,
 }
 
 
@@ -54,14 +58,58 @@ var command_handlers: Dictionary = {
 # --- Funciones Principales y de Configuración ---
 # -------------------------------------------------------------------
 
-# Punto de entrada principal. Recibe una línea y ejecuta todos los comandos que contiene.
+# Punto de entrada principal. Recibe una línea y ejecuta los comandos.
 func execute(line: Dictionary, is_preprocessing: bool = false) -> String:
-	for command_name in command_handlers.keys():
+	
+	var flow_command_found: String = ""
+	var display_command_found: bool = false
+
+	# --- Bucle 1: Ejecutar TODOS los comandos de setup/display (¡AHORA PRIMERO!) ---
+	for command_name in setup_and_display_handlers.keys():
 		if line.has(command_name):
-			print("Paso 3: CommandProcessor.execute() ha recibido la línea: ", line)
-			var result = command_handlers[command_name].call(line, is_preprocessing)
-			if result == "stop_processing":
-				return "stop_processing"
+			print("Paso 3: Procesando (Setup/Display): ", command_name)
+			setup_and_display_handlers[command_name].call(line, is_preprocessing)
+			
+			if command_name == "text" or command_name == "show_cg":
+				display_command_found = true
+
+	# --- Bucle 2: Buscar el comando de flujo MÁS IMPORTANTE ---
+	var flow_priority = ["choices", "action", "goto", "move_character", "flow", "anchor"]
+	
+	for command_name in flow_priority:
+		if line.has(command_name):
+			flow_command_found = command_name
+			break # Encontramos el más importante, detenemos la búsqueda
+
+	# --- Bucle 3: Decidir qué hacer con el comando de flujo ---
+	if not flow_command_found.is_empty():
+		
+		var cmd = flow_command_found
+		
+		# Si hay texto (y no estamos pre-procesando), debemos ser selectivos.
+		if display_command_found and not is_preprocessing:
+			
+			# CASO A: "choices". Debe ejecutarse AHORA.
+			if cmd == "choices":
+				print("Paso 3: Ejecutando (Flow): ", cmd)
+				return flow_control_handlers[cmd].call(line, is_preprocessing)
+			
+			# CASO B: "goto" o "action". NO deben ejecutarse. Se manejan al clic.
+			elif cmd == "goto" or cmd == "action":
+				print("Paso 3: Omitiendo (Flow) para clic: ", cmd)
+				return "" # Omite el comando, espera el clic
+				
+			# CASO C: "anchor", "move_character", "flow".
+			# Estos SÍ deben ejecutarse (sus 'handlers' saben qué hacer).
+			else:
+				print("Paso 3: Ejecutando (Flow) con texto: ", cmd)
+				return flow_control_handlers[cmd].call(line, is_preprocessing)
+		
+		else:
+			# Si NO hay texto (o es pre-procesamiento), ejecutamos el comando de flujo ahora.
+			print("Paso 3: Ejecutando (Flow): ", cmd)
+			return flow_control_handlers[cmd].call(line, is_preprocessing)
+
 	return ""
 
 # Recibe la referencia a MainScene (Inyección de dependencia).
@@ -138,12 +186,24 @@ func _handle_flow(line: Dictionary, _is_preprocessing: bool = false) -> String:
 	return ""
 
 # Procesa un ancla (no hace nada si está pre-procesando, avanza si no).
-func _handle_anchor(_line: Dictionary, is_preprocessing: bool) -> String:
-	if not is_preprocessing:
-		main_scene.dialogue_manager.advance_index()
-		main_scene.dialogue_manager.process_current_line.call_deferred()
+func _handle_anchor(line: Dictionary, is_preprocessing: bool) -> String:
+	
+	# Si estamos pre-procesando, solo detenemos (comportamiento antiguo).
+	if is_preprocessing:
 		return "stop_processing"
-	return ""
+		
+	# Si la línea de ancla TAMBIÉN tiene texto o elecciones,
+	# entonces es una línea normal y debe detenerse para esperar el clic.
+	if line.has("text") or line.has("choices") or line.has("show_cg"):
+		return "stop_processing"
+
+	# Si es SÓLO un ancla (o un ancla con 'setup' como 'set_flag'),
+	# avanza automáticamente a la siguiente línea.
+	# ¡ESTO ARREGLA EL BUG DEL "DOBLE CLIC"!
+	main_scene.dialogue_manager.advance_index()
+	main_scene.dialogue_manager.process_current_line.call_deferred()
+	
+	return "stop_processing"
 
 # Muestra un set de elecciones en la UI.
 func _handle_choices(line: Dictionary,_is_preprocessing: bool = false) -> String:
@@ -152,20 +212,48 @@ func _handle_choices(line: Dictionary,_is_preprocessing: bool = false) -> String
 	
 	# Filtra las elecciones según las flags y los items del jugador
 	for choice in all_choices:
+		# 1. Asumimos que todas las condiciones se cumplen por defecto
 		var is_item_condition_met = true
 		var is_flag_condition_met = true
+		var is_quest_condition_met = true
+
+		# 2. Comprobar Ítem
 		var required_item_id = choice.get("requires_item", "")
 		if not required_item_id.is_empty():
 			is_item_condition_met = InventoryManager.has_item(InventoryManager.current_player_character, required_item_id)
 		
+		# 3. Comprobar Flag (bandera simple)
 		var required_flag_id = choice.get("requires_flag", "")
 		if not required_flag_id.is_empty():
 			var expected_flag_value = choice.get("flag_value", true)
-			is_flag_condition_met = GameManager.get_quest_flag(required_flag_id) == expected_flag_value
+			is_flag_condition_met = MissionControl.get_quest_flag(required_flag_id) == expected_flag_value
 		
-		if is_item_condition_met and is_flag_condition_met:
+		# 4. Comprobar Quest (misión compleja)
+		var required_quest_id = choice.get("requires_quest", "")
+		if not required_quest_id.is_empty():
+			var required_state_str = choice.get("quest_state", "ACTIVE").to_upper()
+			var required_state = MissionControl.QuestState.ACTIVE # Por defecto
+
+			if required_state_str == "LOCKED":
+				required_state = MissionControl.QuestState.LOCKED
+			elif required_state_str == "COMPLETED":
+				required_state = MissionControl.QuestState.COMPLETED
+
+			is_quest_condition_met = (MissionControl.get_quest_state(required_quest_id) == required_state)
+		
+		# 5. Decisión final: Solo si TODAS las condiciones son verdaderas
+		if is_item_condition_met and is_flag_condition_met and is_quest_condition_met:
 			playable_choices.append(choice)
-	
+		
+		# (Debug: imprime por qué se omitió una opción)
+		elif not is_item_condition_met:
+			print("Opción '", choice.text, "' omitida: Requiere ítem.")
+		elif not is_flag_condition_met:
+			print("Opción '", choice.text, "' omitida: Requiere flag.")
+		elif not is_quest_condition_met:
+			print("Opción '", choice.text, "' omitida: Requiere estado de misión.")
+
+	# ... (el resto de tu función es perfecto) ...
 	if playable_choices.is_empty():
 		main_scene.dialog_ui.change_line("Narrador", "No puedo hacer eso en este momento.")
 		main_scene.dialogue_manager.advance_index()
@@ -182,7 +270,7 @@ func _handle_set_flag(line: Dictionary,_is_preprocessing: bool = false) -> Strin
 		var flag_id = flag_data.get("id", "")
 		var value = flag_data.get("value", true)
 		if not flag_id.is_empty():
-			GameManager.set_quest_flag(flag_id, value)
+			MissionControl.set_quest_flag(flag_id, value)
 		else:
 			printerr("Error: 'set_flag' sin 'id' de bandera.")
 	else:
@@ -194,6 +282,47 @@ func _handle_item_given(line: Dictionary,_is_preprocessing: bool = false) -> Str
 	main_scene._process_item_given(line["item_given"])
 	return ""
 
+# Elimina un ítem del inventario del jugador.
+func _handle_remove_item(line: Dictionary, _is_preprocessing: bool = false) -> String:
+	var item_data = line.get("remove_item")
+
+	if item_data is String:
+		# Caso 1: Se proporciona un solo string (ID)
+		InventoryManager.remove_item(InventoryManager.current_player_character, item_data)
+	elif item_data is Array:
+		# Caso 2: Se proporciona un array de strings (IDs)
+		for item_id in item_data:
+			if item_id is String:
+				InventoryManager.remove_item(InventoryManager.current_player_character, item_id)
+	return ""
+	
+# Activa una nueva misión en el MissionControl
+func _handle_activate_quest(line: Dictionary, _is_preprocessing: bool = false) -> String:
+	var quest_data = line.get("activate_quest")
+	
+	if quest_data is String:
+		# Caso 1: Se proporciona un solo string (como antes)
+		MissionControl.activate_quest(quest_data)
+	elif quest_data is Array:
+		# Caso 2: Se proporciona un array de strings
+		for quest_id in quest_data:
+			if quest_id is String:
+				MissionControl.activate_quest(quest_id)
+	return ""
+
+# Completa una misión activa en el MissionControl
+func _handle_complete_quest(line: Dictionary, _is_preprocessing: bool = false) -> String:
+	var quest_data = line.get("complete_quest")
+	
+	if quest_data is String:
+		# Caso 1: Se proporciona un solo string
+		MissionControl.complete_quest(quest_data)
+	elif quest_data is Array:
+		# Caso 2: Se proporciona un array de strings
+		for quest_id in quest_data:
+			if quest_id is String:
+				MissionControl.complete_quest(quest_id)
+	return ""
 
 # -------------------------------------------------------------------
 # --- Manejadores: Escena, Efectos y UI ---

@@ -15,6 +15,9 @@ const SOUNDS_MALE: Array[AudioStream] = [
 
 const SOUNDS_FEMALE: Array[AudioStream] = SOUNDS_MALE
 const SOUNDS_OTHER: Array[AudioStream] = SOUNDS_MALE
+const SOUNDS_NARRATOR: Array[AudioStream] = [
+	preload("res://Assets/Sounds/Voices/keyboard_sound.mp3")
+]
 
 var current_gender_sounds: Array[AudioStream]
 var is_active: bool = false
@@ -33,26 +36,34 @@ func play_sound():
 func start_dialogue_sound(character_details: Dictionary, expression: String):
 	if is_active:
 		return
-	
+
 	is_active = true
 	is_playing_expression_sound = false
+
+	var character_name = character_details.get("name", "")
+
+	# 1. ESTABLECER EL GÉNERO PRIMERO (para que _on_audio_finished funcione)
+	# Esto establece el sonido "de reserva" que se reproducirá después 
+	# de la expresión, o si no hay expresión.
+	if character_name == "":
+		# Es el Narrador
+		current_gender_sounds = SOUNDS_NARRATOR
+		pitch_scale = 1.0
+	else:
+		# Es un personaje, establecer su género
+		var character_gender = character_details.get("gender", "-")
+		match character_gender:
+			"male":
+				current_gender_sounds = SOUNDS_MALE
+				pitch_scale = 1.0
+			"female":
+				current_gender_sounds = SOUNDS_FEMALE
+				pitch_scale = 1.5
+			_:
+				current_gender_sounds = SOUNDS_OTHER
+				pitch_scale = 0.5
 	
-	# 1. Configurar los sonidos aleatorios para más tarde
-	var character_gender = character_details.get("gender", "-")
-	
-	# Asegura que current_gender_sounds siempre tenga un valor.
-	match character_gender:
-		"male":
-			current_gender_sounds = SOUNDS_MALE
-			pitch_scale = 1.0
-		"female":
-			current_gender_sounds = SOUNDS_FEMALE
-			pitch_scale = 1.5
-		_:
-			current_gender_sounds = SOUNDS_OTHER
-			pitch_scale = 0.5
-			
-	# 2. Buscar y reproducir el sonido de la expresión
+	# 2. AHORA, buscar y reproducir el sonido de la expresión (si existe)
 	var expression_sounds = character_details.get("expression_sounds", {})
 	if not expression.is_empty() and expression_sounds.has(expression):
 		var expression_sound = expression_sounds[expression]
@@ -61,7 +72,7 @@ func start_dialogue_sound(character_details: Dictionary, expression: String):
 			stream = expression_sound
 			play()
 			return # Salimos para esperar a que termine el sonido de expresión
-			
+
 	# 3. Si no hay sonido de expresión, empezar directamente con los aleatorios
 	_start_next_random_sound()
 

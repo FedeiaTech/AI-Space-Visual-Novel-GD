@@ -78,6 +78,7 @@ func _ready() -> void:
 	center_container.modulate.a = 0
 	options_button.modulate.a = 0
 	new_game_button.modulate.a = 0
+	debug_mode_button.modulate.a = 0
 	quit_game_button.modulate.a = 0
 	
 	# Crea el primer tween para el CenterContainer.
@@ -95,6 +96,7 @@ func tween_fade_in_buttons():
 	
 	buttons_tween.tween_property(options_button, "modulate:a", 1.0, 0.5)
 	buttons_tween.tween_property(new_game_button, "modulate:a", 1.0, 0.5)
+	buttons_tween.tween_property(debug_mode_button, "modulate:a", 1.0, 0.5)
 	buttons_tween.tween_property(quit_game_button, "modulate:a", 1.0, 0.5)
 
 # === El resto del código permanece igual ===

@@ -26,12 +26,13 @@ func set_character_nodes(nodes: Dictionary):
 
 # --- FUNCIONES DE LÓGICA ---
 
-func handle_character_visuals(line: Dictionary, _is_preprocessing: bool = false) -> String:
+func handle_character_visuals(line: Dictionary, is_preprocessing: bool = false) -> String:
 	var characters_data = line.get("characters", {})
 	var expressions_data = line.get("expressions", {})
 	var facing_data = line.get("facing", {})
 	var speaker_key = line.get("speaker", "")
-	var text_data = line.get("text", "")
+	# --- CAMBIO CLAVE 1: No poner valor por defecto ---
+	var text_data = line.get("text") # Si no hay texto, esto será 'null'
 	var positions_data = line.get("positions", {})
 
 	var is_ia_speaking = (speaker_key.to_upper() == "IA")
@@ -47,6 +48,7 @@ func handle_character_visuals(line: Dictionary, _is_preprocessing: bool = false)
 			character_positions = positions_data.duplicate()
 
 	var speaker_position_str = ""
+	# Este bucle aplica TODOS los cambios visuales (facing, expression, etc.)
 	for position_str in character_nodes.keys():
 		var character_node = character_nodes[position_str]
 		if active_characters.has(position_str) and is_instance_valid(character_node):
@@ -78,11 +80,26 @@ func handle_character_visuals(line: Dictionary, _is_preprocessing: bool = false)
 			if is_instance_valid(character_node): character_node.hide_instantly()
 
 	self.character_expression_state = expressions_data.duplicate()
-	var speaker_details = Character.get_details_from_string(speaker_key)
-	main_scene.dialog_ui.change_line(speaker_key, text_data, speaker_details, expressions_data.get(speaker_position_str, "idle"))
 
-	if not is_ia_speaking and not speaker_key.is_empty():
-		previous_speaker = speaker_key
+	# --- CAMBIO CLAVE 2: Lógica Condicional ---
+	
+	# Comprobamos si esta línea REALMENTE tenía texto
+	if text_data != null:
+		# CASO A: SÍ tiene texto. Mostramos el diálogo y esperamos el clic.
+		var speaker_details = Character.get_details_from_string(speaker_key)
+		main_scene.dialog_ui.change_line(speaker_key, text_data, speaker_details, expressions_data.get(speaker_position_str, "idle"))
+
+		if not is_ia_speaking and not speaker_key.is_empty():
+			previous_speaker = speaker_key
+	else:
+		# CASO B: NO tiene texto (¡Tu línea!)
+		# Es un comando de setup. No mostramos la caja de diálogo.
+		# Avanzamos automáticamente a la siguiente línea.
+		if not is_preprocessing:
+			main_scene.dialogue_manager.advance_index()
+			main_scene.dialogue_manager.process_current_line.call_deferred()
+			return "stop_processing" # Importante
+	
 	return ""
 
 func handle_text(line: Dictionary, _is_preprocessing: bool = false) -> String:
@@ -90,24 +107,52 @@ func handle_text(line: Dictionary, _is_preprocessing: bool = false) -> String:
 
 	var speaker_key = line.get("speaker", "NARRATOR")
 
+	# --- CASO 1: HABLA UN PERSONAJE (ej. "ASTRO", "ORI") ---
 	if not speaker_key.is_empty() and speaker_key.to_upper() != "NARRATOR":
-		if active_characters.is_empty():
-			printerr("Error: Diálogo para '", speaker_key, "' pero no hay personajes en escena.")
-			main_scene.dialogue_manager.advance_index()
-			main_scene.dialogue_manager.process_current_line.call_deferred()
-			return "stop_processing"
+		
+		# --- LÓGICA DE BÚSQUEDA MEJORADA ---
+		# Primero, buscamos si el hablante ya está en escena.
+		var speaker_position = ""
+		for position in active_characters:
+			if active_characters[position].to_upper() == speaker_key.to_upper():
+				speaker_position = position
+				break
+		
+		if speaker_position != "":
+			# --- SUB-CASO 1.1: El hablante ESTÁ EN ESCENA ---
+			# (Esta es la lógica que ya tenías)
+			var visuals_data = {
+				"characters": active_characters.duplicate(),
+				"speaker": speaker_key,
+				"text": line.get("text", ""),
+				"positions": character_positions.duplicate(),
+			}
+			visuals_data["expressions"] = line.get("expressions", character_expression_state.duplicate())
+			visuals_data["facing"] = line.get("facing", character_facing_state.duplicate())
+			handle_character_visuals(visuals_data, _is_preprocessing)
+		
+		else:
+			# --- SUB-CASO 1.2: El hablante NO ESTÁ EN ESCENA (¡TU BUG!) ---
+			# El personaje habla "fuera de cámara".
+			
+			# Ponemos a todos los que SÍ están en escena en 'idle'.
+			main_scene.set_current_speaker(null)
+			for position in active_characters.keys():
+				var character_node = character_nodes[position]
+				if is_instance_valid(character_node):
+					character_node.play_idle_animation()
+			
+			# Obtenemos los detalles del hablante (ej. "ORI")
+			var speaker_details = Character.get_details_from_string(speaker_key)
+			var expression = line.get("expressions", {}).get(speaker_key.to_lower(), "idle")
+			
+			# Y enviamos la línea a la UI sin intentar animar a nadie.
+			main_scene.dialog_ui.change_line(speaker_key, line.get("text", ""), speaker_details, expression)
 
-		var visuals_data = {
-			"characters": active_characters.duplicate(),
-			"speaker": speaker_key,
-			"text": line.get("text", ""),
-			"positions": character_positions.duplicate(),
-			"facing": character_facing_state.duplicate()
-		}
-		visuals_data["expressions"] = line.get("expressions", character_expression_state.duplicate())
-		handle_character_visuals(visuals_data, _is_preprocessing)
+	# --- CASO 2: HABLA EL NARRADOR ---
 	else:
-		var should_hide = line.get("hide_characters", true)
+		# (Esta lógica ya es correcta)
+		var should_hide = line.get("hide_characters", false) # Valor por defecto es 'false'
 		if should_hide:
 			if not active_characters.is_empty():
 				for character_node in character_nodes.values():
@@ -126,6 +171,7 @@ func handle_text(line: Dictionary, _is_preprocessing: bool = false) -> String:
 		var narrator_details = Character.get_details_from_string("NARRATOR")
 		main_scene.set_current_speaker(null)
 		main_scene.dialog_ui.change_line("NARRATOR", line.get("text", ""), narrator_details, "idle")
+	
 	return ""
 
 func handle_move_character(line: Dictionary, _is_preprocessing: bool = false) -> String:
@@ -145,8 +191,11 @@ func handle_move_character(line: Dictionary, _is_preprocessing: bool = false) ->
 	return "stop_processing"
 
 func _start_character_moves_and_timer(moves: Array, wait_for_click: bool):
+	# ¡BLOQUEA EL DIÁLOGO!
+	# Esto previene que el jugador haga clic en _handle_mouse_click
 	main_scene.is_dialogue_blocked = true
-	main_scene.dialog_ui.set_click_to_continue_enabled(false)
+	main_scene.dialog_ui.set_click_to_continue_enabled(false) # Oculta el triángulo
+	
 	var max_duration = 0.0
 
 	for move in moves:
@@ -166,15 +215,25 @@ func _start_character_moves_and_timer(moves: Array, wait_for_click: bool):
 
 	if max_duration > 0:
 		var timer = get_tree().create_timer(max_duration)
+		# Usamos .bind() para pasar el parámetro 'wait_for_click'.
 		timer.timeout.connect(_on_movement_finished.bind(wait_for_click))
 	else:
+		# Si no hay movimiento, desbloquear inmediatamente
 		_on_movement_finished(wait_for_click)
 
+# Se ejecuta CUANDO EL TIMER TERMINA.
 func _on_movement_finished(wait_for_click: bool):
+	# Desbloqueamos la entrada del jugador
 	main_scene.is_dialogue_blocked = false
+	
 	if wait_for_click:
+		# CASO A: La línea tenía texto (ej. "¡Deslizando!").
+		# El movimiento terminó. Mostramos el triángulo
+		# y esperamos a que el jugador haga clic.
 		main_scene.dialog_ui.set_click_to_continue_enabled(true)
 	else:
+		# CASO B: La línea NO tenía texto (ej. "text": "...").
+		# El movimiento terminó. Avanzamos automáticamente.
 		main_scene.dialogue_manager.advance_index()
 		main_scene.dialogue_manager.process_current_line.call_deferred()
 
