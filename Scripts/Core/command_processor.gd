@@ -10,7 +10,7 @@ extends Node
 var main_scene: Node2D
 var stage_manager: Node
 var camera_shaker: Node
-var cg_viewer: TextureRect
+var cg_viewer: PanelContainer
 
 var previous_listener: String = ""
 
@@ -127,7 +127,7 @@ func set_camera_shaker(shaker: Node):
 	self.camera_shaker = shaker
 
 # Recibe la referencia al CGViewer (Inyección de dependencia).
-func set_cg_viewer(viewer: TextureRect):
+func set_cg_viewer(viewer: PanelContainer):
 	self.cg_viewer = viewer
 
 # -------------------------------------------------------------------
@@ -372,7 +372,9 @@ func _handle_object(line: Dictionary, is_preprocessing: bool = false) -> String:
 		printerr("CommandProcessor Error: 'object' no tiene 'id'.")
 		return ""
 		
-	var location_container = main_scene.get_node("InteractiveLocation")
+	# La ruta ahora incluye "InteractiveControl", igual que en _handle_location
+	var location_container = main_scene.get_node("InteractiveControl").get_node("InteractiveLocation")
+		
 	if location_container == null or location_container.get_child_count() == 0:
 		printerr("CommandProcessor Error: No hay localización cargada.")
 		return ""

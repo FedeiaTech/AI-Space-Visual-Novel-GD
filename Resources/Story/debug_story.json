@@ -228,34 +228,64 @@
 		"anchor": "scene_test"
 	},
 	{
-		"text": "Probando 'music'.",
+		"text": "Probando 'music'. Reproduciendo...",
 		"music": "event_horizon"
 	},
 	{
-		"text": "Ahora, un 'show_cg'."
+		"text": "Ahora, un 'show_cg' con 'full_screen: false'."
+	},
+	{
+		"show_cg": "dirty_milka_and_ori",
+		"text": "Mostrando imagen CG (Clic para continuar).",
+		"full_screen": false
+	},
+	{
+		"text": "Esto permite un diálogo mientras se muestra la imagen."
+	},
+	{
+		"speaker": "MILKA",
+		"text": "Espero que esto funcione.",
+	},
+	{
+		"hide_cg": true,
+		"text": "Quitando imagen. 'hide_cg' funcionó."
+	},
+	{
+		"text": "Ahora, un 'show_cg' con 'full_screen: true' o true por defecto(sin declaración). \nNo se verá el diálogo (Click para en la imagen para continuar)."
 	},
 	{
 		"show_cg": "dirty_milka_and_ori",
 	},
 	{
 		"hide_cg": true,
-		"text": "Y 'hide_cg' funcionó."
+		"text": "Fin de las pruebas CG."
 	},
 	{
-		"text": "Ahora, cambiaremos la localización a 'outside_starship' y probaremos el comando 'object'."
+		"text": "Ahora, cambiaremos la localización a 'command_center' y probaremos el comando 'object'."
 	},
 	{
+		"location": "command_center"
+	},
+	{
+		"text": "¡Cargó 'command_center'!"
+	},
+	{
+		"text": "(Asumiendo que hay un objeto con id 'ori_stunned' en esa escena...) Lo ocultaremos"
+	},
+	{
+		"object": { "id": "ori_stunned", "visible": false },
+		"text": "Si había un objeto 'ori_stunned', ahora debería estar invisible."
+	},
+	{
+		"text": "Volviendo a hacer visible el objeto."
+	},
+	{
+		"object": { "id": "ori_stunned", "visible": true },
+		"text": "Si había un objeto 'ori_stunned', ahora debería estar VISIBLE"
+	},
+	{
+		"text": "Se restauró la escena inicial...",
 		"location": "outside_starship"
-	},
-	{
-		"text": "¡Cargó 'outside_starship'!"
-	},
-	{
-		"text": "(Asumiendo que hay un objeto con id 'puerta_nave' en esa escena...) Lo haremos invisible."
-	},
-	{
-		"object": { "id": "puerta_nave", "visible": false },
-		"text": "Si había un objeto 'puerta_nave', ahora debería estar invisible."
 	},
 	{
 		"text": "Prueba de escena completada.",

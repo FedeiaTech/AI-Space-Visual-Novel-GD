@@ -51,7 +51,7 @@ extends Node2D
 @onready var return_button: Button = %ReturnButton
 
 # CG
-@onready var cg_viewer: TextureRect = %CGSprite
+@onready var cg_viewer: PanelContainer = %CGViewerWindow
 
 # === Precarga de escenas ===
 const PauseMenuScene = preload("res://Scenes/pause_menu.tscn")
