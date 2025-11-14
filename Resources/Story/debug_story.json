@@ -12,7 +12,7 @@
 			{ "text": "1. Prueba de Narrador (con/sin personajes)", "goto": "narrator_test" },
 			{ "text": "2. Prueba de Personajes (Movimiento y Voz)", "goto": "character_test" },
 			{ "text": "3. Prueba de Estado (Flags, Items)", "goto": "state_test" },
-			{ "text": "4. Prueba de Escena (Shake, CG, Location)", "goto": "scene_test" },
+			{ "text": "4. Prueba de Escena (Music, CG, Location, Objects)", "goto": "scene_test" },
 			{ "text": "Siguiente... (Misiones y Tiempo)", "goto": "debug_menu_page_2" }
 		]
 	},
@@ -236,7 +236,6 @@
 	},
 	{
 		"show_cg": "dirty_milka_and_ori",
-		"text": "(Clic para continuar)"
 	},
 	{
 		"hide_cg": true,

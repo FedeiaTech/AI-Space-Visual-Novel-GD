@@ -115,6 +115,7 @@ func _ready() -> void:
 	
 	camera_shaker.set_main_scene_reference(self)
 	command_processor.set_camera_shaker(camera_shaker)
+	command_processor.set_cg_viewer(cg_viewer)
 	
 	# Estado inicial de la UI
 	explorer_mode_icon.hide()

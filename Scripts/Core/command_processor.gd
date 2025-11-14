@@ -10,6 +10,7 @@ extends Node
 var main_scene: Node2D
 var stage_manager: Node
 var camera_shaker: Node
+var cg_viewer: TextureRect
 
 var previous_listener: String = ""
 
@@ -63,15 +64,23 @@ func execute(line: Dictionary, is_preprocessing: bool = false) -> String:
 	
 	var flow_command_found: String = ""
 	var display_command_found: bool = false
+	var stop_from_setup: bool = false # Para 'show_cg' y 'location'
 
-	# --- Bucle 1: Ejecutar TODOS los comandos de setup/display (¡AHORA PRIMERO!) ---
+	# --- Bucle 1: Ejecutar TODOS los comandos de setup/display ---
 	for command_name in setup_and_display_handlers.keys():
 		if line.has(command_name):
 			print("Paso 3: Procesando (Setup/Display): ", command_name)
-			setup_and_display_handlers[command_name].call(line, is_preprocessing)
+			var result = setup_and_display_handlers[command_name].call(line, is_preprocessing)
 			
-			if command_name == "text" or command_name == "show_cg":
+			if command_name == "text":
 				display_command_found = true
+			
+			# --- LÓGICA CORREGIDA ---
+			# Solo 'show_cg', 'hide_cg' y 'location' deben detener el procesamiento aquí.
+			if command_name == "show_cg" or command_name == "hide_cg" or command_name == "location":
+				if result == "stop_processing":
+					stop_from_setup = true
+			# --- FIN DE CORRECCIÓN ---
 
 	# --- Bucle 2: Buscar el comando de flujo MÁS IMPORTANTE ---
 	var flow_priority = ["choices", "action", "goto", "move_character", "flow", "anchor"]
@@ -79,37 +88,30 @@ func execute(line: Dictionary, is_preprocessing: bool = false) -> String:
 	for command_name in flow_priority:
 		if line.has(command_name):
 			flow_command_found = command_name
-			break # Encontramos el más importante, detenemos la búsqueda
+			break 
 
 	# --- Bucle 3: Decidir qué hacer con el comando de flujo ---
 	if not flow_command_found.is_empty():
-		
 		var cmd = flow_command_found
 		
-		# Si hay texto (y no estamos pre-procesando), debemos ser selectivos.
 		if display_command_found and not is_preprocessing:
-			
-			# CASO A: "choices". Debe ejecutarse AHORA.
 			if cmd == "choices":
 				print("Paso 3: Ejecutando (Flow): ", cmd)
 				return flow_control_handlers[cmd].call(line, is_preprocessing)
-			
-			# CASO B: "goto" o "action". NO deben ejecutarse. Se manejan al clic.
 			elif cmd == "goto" or cmd == "action":
 				print("Paso 3: Omitiendo (Flow) para clic: ", cmd)
-				return "" # Omite el comando, espera el clic
-				
-			# CASO C: "anchor", "move_character", "flow".
-			# Estos SÍ deben ejecutarse (sus 'handlers' saben qué hacer).
+				return ""
 			else:
 				print("Paso 3: Ejecutando (Flow) con texto: ", cmd)
 				return flow_control_handlers[cmd].call(line, is_preprocessing)
-		
 		else:
-			# Si NO hay texto (o es pre-procesamiento), ejecutamos el comando de flujo ahora.
 			print("Paso 3: Ejecutando (Flow): ", cmd)
 			return flow_control_handlers[cmd].call(line, is_preprocessing)
 
+	# Si un comando de setup (como 'show_cg') detuvo el flujo, lo retornamos ahora.
+	if stop_from_setup:
+		return "stop_processing"
+		
 	return ""
 
 # Recibe la referencia a MainScene (Inyección de dependencia).
@@ -123,6 +125,10 @@ func set_stage_manager(manager: Node):
 # Recibe la referencia al CameraShaker (Inyección de dependencia).
 func set_camera_shaker(shaker: Node):
 	self.camera_shaker = shaker
+
+# Recibe la referencia al CGViewer (Inyección de dependencia).
+func set_cg_viewer(viewer: TextureRect):
+	self.cg_viewer = viewer
 
 # -------------------------------------------------------------------
 # --- Manejadores: Escenario y Personajes (Delegados) ---
@@ -411,10 +417,11 @@ func _handle_show_cg(line: Dictionary, _is_preprocessing: bool) -> String:
 		printerr("Comando 'show_cg' no tiene un nombre de archivo.")
 		return ""
 	var image_path = "res://Assets/CGs/" + image_name + ".png"
-	var cg_viewer = main_scene.get_node("CGCanvas/CGSprite")
 	var is_instant = line.get("instant", false)
-	var is_full_screen = line.get("full_screen", false)
-	if cg_viewer:
+	
+	var is_full_screen = line.get("full_screen", true)
+	
+	if is_instance_valid(cg_viewer):
 		cg_viewer.show()
 		if is_instant:
 			cg_viewer.show_cg_instant(image_path, is_full_screen)
@@ -424,15 +431,16 @@ func _handle_show_cg(line: Dictionary, _is_preprocessing: bool) -> String:
 
 # Oculta el CG actual.
 func _handle_hide_cg(line: Dictionary, _is_preprocessing: bool) -> String:
-	var cg_viewer = main_scene.get_node("CGCanvas/CGSprite")
-	if cg_viewer:
-		var is_instant = line.get("instant", false)
+	
+	var is_instant = line.get("instant", false)
+		
+	if is_instance_valid(cg_viewer):
 		if is_instant:
 			cg_viewer.hide_cg_instant()
-			main_scene.get_node("InteractiveLocation").show()
+			#main_scene.get_node("InteractiveLocation").show()
 		else:
 			cg_viewer.hide_cg_transition()
-			main_scene.get_node("InteractiveLocation").show()
+			#main_scene.get_node("InteractiveLocation").show()
 	return ""
 
 # Pide a MainScene que inicie un temblor de pantalla.
