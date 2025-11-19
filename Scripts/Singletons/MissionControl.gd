@@ -116,3 +116,11 @@ func get_completed_quests() -> Array[Dictionary]:
 			quest_data["id"] = quest_id
 			completed_quest_list.append(quest_data)
 	return completed_quest_list
+	
+# Resetea todas las misiones a su estado "LOCKED" (Bloqueado)
+func reset_all_quests():
+	for quest_id in quest_states:
+		quest_states[quest_id] = QuestState.LOCKED
+
+	print("ControlDeMision: Todas las misiones han sido reseteadas.")
+	quest_log_updated.emit() # Actualiza la UI por si está abierta

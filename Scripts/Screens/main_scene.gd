@@ -176,8 +176,17 @@ func _on_next_line_pressed():
 	if journal_ui.visible: return
 	if inventory_ui_manager.current_inventory_ui != null: return
 
-	# 1. Si el CG está visible, avanza el diálogo directamente.
+	# 1. BLOQUEO: Si el video se está reproduciendo activamente, NO hacer nada.
+	if cg_viewer.is_video_playing:
+		return
+
+	# 2. AVANCE DE VIDEO/CG: Si el video terminó (pausado) y el visor sigue visible.
 	if cg_viewer.is_visible():
+		# --- ¡LA SOLUCIÓN ESTÁ AQUÍ! ---
+		# Forzamos el cierre del visor visualmente ANTES de avanzar la lógica.
+		cg_viewer.reset_and_hide() 
+		
+		# Luego ejecutamos la lógica de avanzar índice y mostrar UI.
 		_on_cg_viewer_cg_clicked()
 		return
 
@@ -190,6 +199,12 @@ func _on_next_line_pressed():
 	var has_choices = current_line.has("choices")
 	
 	if not has_choices:
+		# --- CORRECCIÓN 2: AUTO-CIERRE ---
+		# Si teníamos un video mostrándose (que ya está pausado porque pasó el bloqueo de arriba),
+		# y estamos avanzando el texto, debemos cerrar el video.
+		if cg_viewer.is_visible() and cg_viewer.video_player_node.visible:
+			cg_viewer.reset_and_hide() # Llamamos a la función pública
+			
 		dialog_ui.skip_text_animation()
 		next_sentence_sound.play()
 		dialogue_manager.advance_index()

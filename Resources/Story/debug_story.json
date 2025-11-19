@@ -244,7 +244,7 @@
 	},
 	{
 		"speaker": "MILKA",
-		"text": "Espero que esto funcione.",
+		"text": "Espero que esto esté funcionando.",
 	},
 	{
 		"hide_cg": true,
@@ -259,6 +259,27 @@
 	{
 		"hide_cg": true,
 		"text": "Fin de las pruebas CG."
+	},
+	{
+		"text": "Ahora, vamos a probar un video en pantalla completa."
+	},
+	{
+		"play_video": "loop",
+		"full_screen": true
+	},
+	{
+		"text": "El video ha terminado."
+	},
+	{
+		"text": "Ahora, un video en la ventana pequeña (y la UI se queda)."
+	},
+	{
+		"play_video": "loop2",
+		"full_screen": false,
+		"text": "El video se reproduce..."
+	},
+	{
+		"text": "El video ha terminado."
 	},
 	{
 		"text": "Ahora, cambiaremos la localización a 'command_center' y probaremos el comando 'object'."
@@ -325,6 +346,13 @@
 	{
 		"complete_quest": "find_ori",
 		"text": "¡Misión 'find_ori' completada! Revisa el registro (M). Debería estar en la sección 'Completadas'."
+	},
+	{
+		"text": "Reseteando todas las misiones y banderas...",
+		"set_flag": { "id": "debug_flag_test", "value": false },
+		"remove_item": ["safety_tether", "pocket_watch"],
+		"reset_quests": true,
+		"goto": "start"
 	},
 	{
 		"anchor": "mission_test_end",

@@ -27,6 +27,7 @@ var setup_and_display_handlers: Dictionary = {
 	"remove_item": _handle_remove_item,
 	"activate_quest": _handle_activate_quest,
 	"complete_quest": _handle_complete_quest,
+	"reset_quests": _handle_reset_quests,
 	
 	# Comandos de escena y UI
 	"location": _handle_location,
@@ -42,6 +43,7 @@ var setup_and_display_handlers: Dictionary = {
 	"text": _handle_text,
 	"show_cg": _handle_show_cg,
 	"hide_cg": _handle_hide_cg,
+	"play_video": _handle_play_video,
 }
 
 # Estos comandos se ejecutan AL FINAL y detienen el procesamiento.
@@ -330,6 +332,11 @@ func _handle_complete_quest(line: Dictionary, _is_preprocessing: bool = false) -
 				MissionControl.complete_quest(quest_id)
 	return ""
 
+# Llama a la función de reseteo en MissionControl
+func _handle_reset_quests(_line: Dictionary, _is_preprocessing: bool = false) -> String:
+	MissionControl.reset_all_quests()
+	return ""
+
 # -------------------------------------------------------------------
 # --- Manejadores: Escena, Efectos y UI ---
 # -------------------------------------------------------------------
@@ -444,6 +451,38 @@ func _handle_hide_cg(line: Dictionary, _is_preprocessing: bool) -> String:
 			cg_viewer.hide_cg_transition()
 			#main_scene.get_node("InteractiveLocation").show()
 	return ""
+
+# Inicia la reproducción de un video en el CGViewer.
+func _handle_play_video(line: Dictionary, _is_preprocessing: bool) -> String:
+	var video_name = line.get("play_video")
+	if video_name.is_empty():
+		printerr("Comando 'play_video' no tiene un nombre de archivo.")
+		return ""
+
+	# Asegúrate de que tus videos estén en formato .ogv o .webm
+	var video_path = "res://Assets/Videos/" + video_name + ".ogv"
+	var video_stream = load(video_path)
+
+	if not video_stream:
+		printerr("No se pudo cargar el video en la ruta: ", video_path)
+		return ""
+
+	var is_instant = line.get("instant", false)
+	var is_full_screen = line.get("full_screen", true)
+
+	if is_instance_valid(cg_viewer):
+		# Ocultamos la imagen (CGSprite)
+		cg_viewer.cg_sprite_node.hide()
+
+		# (Llamamos a la nueva función que crearemos en el siguiente paso)
+		if is_instant:
+			cg_viewer.play_video_instant(video_stream, is_full_screen)
+		else:
+			cg_viewer.play_video_transition(video_stream, is_full_screen)
+	else:
+		printerr("Error: La referencia a CGViewer no es válida.")
+
+	return "stop_processing" # Detiene el diálogo hasta que el video termine
 
 # Pide a MainScene que inicie un temblor de pantalla.
 func _handle_shake(line: Dictionary, _is_preprocessing: bool = false) -> String:

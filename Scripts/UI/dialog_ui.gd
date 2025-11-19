@@ -57,9 +57,14 @@ func set_click_to_continue_enabled(enabled: bool):
 			triangle_particles.show()
 
 func _handle_mouse_click():
-	if main_scene_ref.is_dialogue_blocked: # <--- ¡ESTA LÍNEA ES CLAVE!
-		return # No hacer nada si un 'move_character' está en progreso
+	if main_scene_ref.is_dialogue_blocked:
+		return 
 		
+	# Bloqueo para video activo (ESTO YA ESTÁ BIEN)
+	if main_scene_ref.cg_viewer.is_video_playing: 
+		print("Clic ignorado: Video activo.")
+		return 
+	
 	if dialogue_manager_ref == null or next_sentence_sound_ref == null:
 		printerr("Error: Dependencias del diálogo no asignadas en DialogUI.")
 		return
@@ -75,6 +80,8 @@ func _handle_mouse_click():
 	
 	if current_line.is_empty():
 		# (Comportamiento seguro)
+		if main_scene_ref.cg_viewer.is_visible():
+			main_scene_ref.cg_viewer.reset_and_hide()
 		next_sentence_sound_ref.play()
 		dialogue_manager_ref.advance_index()
 		dialogue_manager_ref.process_current_line()
@@ -82,7 +89,7 @@ func _handle_mouse_click():
 
 	# 2. Si la línea actual tiene "choices", el clic no debe hacer NADA.
 	if current_line.has("choices"):
-		return # Ignora el clic
+		return
 	
 	# 3. Si la línea actual tiene "move_character" Y "text",
 	# el 'move_character' ya terminó (porque no estamos bloqueados).
@@ -96,16 +103,24 @@ func _handle_mouse_click():
 	
 	if is_instance_valid(command_processor):
 		if current_line.has("goto"):
+			if main_scene_ref.cg_viewer.is_visible():
+				main_scene_ref.cg_viewer.reset_and_hide()
 			next_sentence_sound_ref.play()
 			command_processor._handle_goto(current_line, false)
 			return
 		
 		if current_line.has("action"):
+			if main_scene_ref.cg_viewer.is_visible():
+				main_scene_ref.cg_viewer.reset_and_hide()
 			next_sentence_sound_ref.play()
 			command_processor._handle_action(current_line, false)
 			return
 	
 	# 5. Si no hay 'choices', 'goto', o 'action', simplemente avanzar
+	
+	if main_scene_ref.cg_viewer.is_visible():
+		main_scene_ref.cg_viewer.reset_and_hide()
+	
 	next_sentence_sound_ref.play()
 	dialogue_manager_ref.advance_index()
 	dialogue_manager_ref.process_current_line()
