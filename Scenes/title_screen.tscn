@@ -55,157 +55,6 @@ stretch_mode = 6
 
 [node name="CanvasMenu" type="CanvasLayer" parent="."]
 
-[node name="OptionsPanel" type="Control" parent="CanvasMenu"]
-unique_name_in_owner = true
-visible = false
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-
-[node name="ColorRect" type="ColorRect" parent="CanvasMenu/OptionsPanel"]
-custom_minimum_size = Vector2(0, 300)
-layout_mode = 1
-anchors_preset = 14
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.113725, 0.113725, 0.113725, 0.588235)
-
-[node name="CenterContainer" type="CenterContainer" parent="CanvasMenu/OptionsPanel"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -82.0
-offset_top = -11.5
-offset_right = 82.0
-offset_bottom = 11.5
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer"]
-layout_mode = 2
-
-[node name="VBoxContainerLeft" type="VBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer"]
-layout_mode = 2
-
-[node name="VideoLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerLeft"]
-layout_mode = 2
-text = "Imágen"
-horizontal_alignment = 1
-
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerLeft"]
-layout_mode = 2
-
-[node name="ResolutionLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerLeft/VBoxContainer"]
-layout_mode = 2
-text = "Resolución"
-
-[node name="ResolutionOptionButton" type="OptionButton" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerLeft/VBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="FullscreenHContainer" type="HBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerLeft"]
-layout_mode = 2
-
-[node name="FullscreenCheckButton" type="CheckButton" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerLeft/FullscreenHContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="FullscreenLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerLeft/FullscreenHContainer"]
-layout_mode = 2
-text = "Pantalla completa"
-
-[node name="VBoxContainerRight" type="VBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer"]
-custom_minimum_size = Vector2(400, 0)
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="SoundsLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerRight"]
-layout_mode = 2
-text = "Sonidos"
-horizontal_alignment = 1
-
-[node name="BGM_HBoxContainer" type="HBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerRight"]
-layout_mode = 2
-theme_override_constants/separation = 10
-alignment = 1
-
-[node name="MusicNameLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerRight/BGM_HBoxContainer"]
-layout_mode = 2
-text = "Música (BGM)"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="BGMSlider" type="HSlider" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerRight/BGM_HBoxContainer"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
-min_value = -45.0
-max_value = 0.0
-
-[node name="BGMValueLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerRight/BGM_HBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "100%"
-
-[node name="Voices_HBoxContainer" type="HBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerRight"]
-layout_mode = 2
-theme_override_constants/separation = 10
-alignment = 1
-
-[node name="VoicesNameLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerRight/Voices_HBoxContainer"]
-layout_mode = 2
-text = "Voces"
-
-[node name="VoicesSlider" type="HSlider" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerRight/Voices_HBoxContainer"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
-min_value = -45.0
-max_value = 0.0
-
-[node name="VoicesValueLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerRight/Voices_HBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "100%"
-
-[node name="SFX_HBoxContainer2" type="HBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerRight"]
-layout_mode = 2
-theme_override_constants/separation = 10
-alignment = 1
-
-[node name="SFXNameLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerRight/SFX_HBoxContainer2"]
-layout_mode = 2
-text = "Efectos"
-
-[node name="SFXSlider" type="HSlider" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerRight/SFX_HBoxContainer2"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
-min_value = -45.0
-max_value = 0.0
-
-[node name="SFXValueLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerRight/SFX_HBoxContainer2"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "100%"
-
-[node name="OptionsBackButton" type="Button" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerRight"]
-unique_name_in_owner = true
-layout_mode = 2
-theme = ExtResource("4_6vd4x")
-text = "Volver"
-
 [node name="MainMenu" type="Control" parent="CanvasMenu"]
 unique_name_in_owner = true
 layout_mode = 3
@@ -285,6 +134,175 @@ unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("4_6vd4x")
 text = "Salir"
+
+[node name="OptionsPanel" type="Control" parent="CanvasMenu"]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="ColorRect" type="ColorRect" parent="CanvasMenu/OptionsPanel"]
+custom_minimum_size = Vector2(0, 300)
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.113725, 0.113725, 0.113725, 0.905882)
+
+[node name="CenterContainer" type="CenterContainer" parent="CanvasMenu/OptionsPanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -82.0
+offset_top = -11.5
+offset_right = 82.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="VBoxContainerScreen" type="VBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="VideoLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerScreen"]
+layout_mode = 2
+text = "Imágen"
+horizontal_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerScreen"]
+layout_mode = 2
+
+[node name="ResolutionLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerScreen/VBoxContainer"]
+layout_mode = 2
+text = "Resolución"
+
+[node name="ResolutionOptionButton" type="OptionButton" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerScreen/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="FullscreenHContainer" type="HBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerScreen"]
+layout_mode = 2
+
+[node name="FullscreenCheckButton" type="CheckButton" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerScreen/FullscreenHContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="FullscreenLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerScreen/FullscreenHContainer"]
+layout_mode = 2
+text = "Pantalla completa"
+
+[node name="VBoxContainerSounds" type="VBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="SoundsLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerSounds"]
+layout_mode = 2
+text = "Sonidos"
+horizontal_alignment = 1
+
+[node name="BGM_HBoxContainer" type="HBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerSounds"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="MusicNameLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerSounds/BGM_HBoxContainer"]
+layout_mode = 2
+text = "Música (BGM)"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BGMSlider" type="HSlider" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerSounds/BGM_HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+min_value = -45.0
+max_value = 0.0
+
+[node name="BGMValueLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerSounds/BGM_HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "100%"
+
+[node name="Voices_HBoxContainer" type="HBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerSounds"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="VoicesNameLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerSounds/Voices_HBoxContainer"]
+layout_mode = 2
+text = "Voces"
+
+[node name="VoicesSlider" type="HSlider" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerSounds/Voices_HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+min_value = -45.0
+max_value = 0.0
+
+[node name="VoicesValueLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerSounds/Voices_HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "100%"
+
+[node name="SFX_HBoxContainer2" type="HBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerSounds"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="SFXNameLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerSounds/SFX_HBoxContainer2"]
+layout_mode = 2
+text = "Efectos"
+
+[node name="SFXSlider" type="HSlider" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerSounds/SFX_HBoxContainer2"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+min_value = -45.0
+max_value = 0.0
+
+[node name="SFXValueLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerSounds/SFX_HBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "100%"
+
+[node name="VBoxContainerCursors" type="VBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="CursorsLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerCursors"]
+layout_mode = 2
+text = "Estilo de Cursor"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerCursors"]
+custom_minimum_size = Vector2(0, 70)
+layout_mode = 2
+
+[node name="CursorSelectorContainer" type="HBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerCursors/ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="OptionsBackButton" type="Button" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("4_6vd4x")
+text = "Volver"
 
 [node name="Label" type="Label" parent="CanvasMenu"]
 custom_minimum_size = Vector2(420, 40)

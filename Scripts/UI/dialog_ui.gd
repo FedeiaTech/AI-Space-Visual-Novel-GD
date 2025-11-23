@@ -80,8 +80,8 @@ func _handle_mouse_click():
 	
 	if current_line.is_empty():
 		# (Comportamiento seguro)
-		if main_scene_ref.cg_viewer.is_visible():
-			main_scene_ref.cg_viewer.reset_and_hide()
+		#if main_scene_ref.cg_viewer.is_visible():
+			#main_scene_ref.cg_viewer.reset_and_hide()
 		next_sentence_sound_ref.play()
 		dialogue_manager_ref.advance_index()
 		dialogue_manager_ref.process_current_line()
@@ -103,8 +103,8 @@ func _handle_mouse_click():
 	
 	if is_instance_valid(command_processor):
 		if current_line.has("goto"):
-			if main_scene_ref.cg_viewer.is_visible():
-				main_scene_ref.cg_viewer.reset_and_hide()
+			#if main_scene_ref.cg_viewer.is_visible():
+				#main_scene_ref.cg_viewer.reset_and_hide()
 			next_sentence_sound_ref.play()
 			command_processor._handle_goto(current_line, false)
 			return
@@ -118,8 +118,8 @@ func _handle_mouse_click():
 	
 	# 5. Si no hay 'choices', 'goto', o 'action', simplemente avanzar
 	
-	if main_scene_ref.cg_viewer.is_visible():
-		main_scene_ref.cg_viewer.reset_and_hide()
+	#if main_scene_ref.cg_viewer.is_visible():
+		#main_scene_ref.cg_viewer.reset_and_hide()
 	
 	next_sentence_sound_ref.play()
 	dialogue_manager_ref.advance_index()

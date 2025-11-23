@@ -1,8 +1,68 @@
-[gd_scene load_steps=2 format=3 uid="uid://bsqoddjcxp3nn"]
+[gd_scene load_steps=15 format=3 uid="uid://bsqoddjcxp3nn"]
 
+[ext_resource type="Shader" uid="uid://bjgj8vabojphn" path="res://Assets/Shaders/ripple_button.gdshader" id="1_1gpta"]
 [ext_resource type="Theme" uid="uid://c7kebt85foo2f" path="res://Resources/Text_format/opton_choice_button.tres" id="1_krtt2"]
+[ext_resource type="Script" uid="uid://fs335djofywr" path="res://Scripts/UI/RippleButton.gd" id="3_j83g5"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_w1yfk"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pha6x"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0d3yn"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_yjh6i"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ufw1m"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6wl2m"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_1gpta"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_j83g5"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vr0p6"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1gpta"]
+shader = ExtResource("1_1gpta")
+shader_parameter/size = Vector2(0, 0)
+shader_parameter/center1 = Vector2(0, 0)
+shader_parameter/center2 = Vector2(0, 0)
+shader_parameter/time1 = 0.0
+shader_parameter/time2 = 0.0
+shader_parameter/width1 = 0.05
+shader_parameter/width2 = 0.1
+shader_parameter/corner_radius = 0.0
+shader_parameter/glow = 0.0
+shader_parameter/color = Color(1, 1, 1, 1)
+shader_parameter/background_opacity = 0.3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w1yfk"]
+bg_color = Color(1, 1, 1, 1)
 
 [node name="Button" type="Button"]
 custom_minimum_size = Vector2(700, 50)
 theme = ExtResource("1_krtt2")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_w1yfk")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxEmpty_pha6x")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_0d3yn")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxEmpty_yjh6i")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_ufw1m")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxEmpty_6wl2m")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_1gpta")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_j83g5")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_vr0p6")
 text = "Primer opción"
+script = ExtResource("3_j83g5")
+
+[node name="BackgroundEffect" type="Panel" parent="."]
+unique_name_in_owner = true
+show_behind_parent = true
+material = SubResource("ShaderMaterial_1gpta")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_w1yfk")

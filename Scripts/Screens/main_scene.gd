@@ -182,11 +182,10 @@ func _on_next_line_pressed():
 
 	# 2. AVANCE DE VIDEO/CG: Si el video terminó (pausado) y el visor sigue visible.
 	if cg_viewer.is_visible():
-		# --- ¡LA SOLUCIÓN ESTÁ AQUÍ! ---
-		# Forzamos el cierre del visor visualmente ANTES de avanzar la lógica.
-		cg_viewer.reset_and_hide() 
-		
-		# Luego ejecutamos la lógica de avanzar índice y mostrar UI.
+		# Si el CGViewer está visible Y está marcado como full_screen, lo cerramos.
+		if cg_viewer.is_full_screen:
+			cg_viewer.reset_and_hide()
+		#Ejecutamos la lógica de avanzar índice y mostrar UI.
 		_on_cg_viewer_cg_clicked()
 		return
 

@@ -27,6 +27,7 @@ JournalManager="*res://Scripts/Singletons/JournalManager.gd"
 SceneLibrary="*res://Scripts/Singletons/SceneLibrary.gd"
 StoryLibrary="*res://Scripts/Singletons/StoryLibrary.gd"
 MissionControl="*res://Scripts/Singletons/MissionControl.gd"
+CursorManager="*res://Scripts/Singletons/CursorManager.gd"
 
 [display]
 

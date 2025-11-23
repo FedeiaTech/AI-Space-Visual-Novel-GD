@@ -60,8 +60,20 @@ func _gui_input(event: InputEvent):
 			print("Video en reproducción. Clic bloqueado.")
 			return
 
-		# CASO 2: El video está congelado o es una imagen -> AVANZAR
-		print("Avanzando diálogo...")
+		# CASO 2: El video HA TERMINADO (o es una imagen)
+		print("Avanzando diálogo post-video/cg...")
+		
+		# --- ¡CORRECCIÓN CLAVE AQUÍ! ---
+		# Si la escena NO era de pantalla completa, no la cerramos.
+		# Solo avanzamos el diálogo.
+		if not is_full_screen:
+			# Solo avisamos a la escena principal de avanzar.
+			cg_clicked.emit() 
+			return
+		# -----------------------------
+		
+		# Si era de pantalla completa (el comportamiento por defecto de un CG),
+		# la cerramos y luego avanzamos.
 		reset_and_hide()
 		cg_clicked.emit()
 

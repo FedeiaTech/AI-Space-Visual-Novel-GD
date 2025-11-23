@@ -44,6 +44,7 @@ var setup_and_display_handlers: Dictionary = {
 	"show_cg": _handle_show_cg,
 	"hide_cg": _handle_hide_cg,
 	"play_video": _handle_play_video,
+	"hide_video": _handle_hide_video,
 }
 
 # Estos comandos se ejecutan AL FINAL y detienen el procesamiento.
@@ -483,6 +484,10 @@ func _handle_play_video(line: Dictionary, _is_preprocessing: bool) -> String:
 		printerr("Error: La referencia a CGViewer no es válida.")
 
 	return "stop_processing" # Detiene el diálogo hasta que el video termine
+
+func _handle_hide_video(line: Dictionary, _is_preprocessing: bool) -> String:
+	# Simplemente delegamos al manejador de ocultar CG, ya que la acción es la misma.
+	return _handle_hide_cg(line, _is_preprocessing)
 
 # Pide a MainScene que inicie un temblor de pantalla.
 func _handle_shake(line: Dictionary, _is_preprocessing: bool = false) -> String:

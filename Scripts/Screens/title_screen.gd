@@ -24,6 +24,10 @@ extends Node2D
 
 @onready var options_back_button: Button = %OptionsBackButton
 
+# --- NUEVA REFERENCIA ---
+# Asegúrate de que en tu escena hayas creado este contenedor y le hayas puesto el nombre único %CursorSelectorContainer
+@onready var cursor_selector_container: HBoxContainer = %CursorSelectorContainer 
+
 # Variables para los AudioBuses
 var bgm_bus_index: int = AudioServer.get_bus_index("BGM")
 var voices_bus_index: int = AudioServer.get_bus_index("Voices")
@@ -54,6 +58,9 @@ func _ready() -> void:
 	# === Configuración de pantalla completa ===
 	fullscreen_check_button.toggled.connect(_on_fullscreen_toggled)
 	_update_fullscreen_button_state()
+	
+	# === Configuración de Cursores (¡NUEVO!) ===
+	_setup_cursor_selector()
 	
 	if video_player:
 		video_player.loop = true
@@ -98,6 +105,41 @@ func tween_fade_in_buttons():
 	buttons_tween.tween_property(new_game_button, "modulate:a", 1.0, 0.5)
 	buttons_tween.tween_property(debug_mode_button, "modulate:a", 1.0, 0.5)
 	buttons_tween.tween_property(quit_game_button, "modulate:a", 1.0, 0.5)
+
+# === NUEVA FUNCIÓN: Configuración de Cursores ===
+func _setup_cursor_selector():
+	# Limpiar hijos anteriores por si acaso
+	for child in cursor_selector_container.get_children():
+		child.queue_free()
+		
+	# Recorrer los colores disponibles en el Manager
+	for color in CursorManager.AVAILABLE_COLORS:
+		var btn = Button.new()
+		
+		# Configuración visual del botón
+		btn.custom_minimum_size = Vector2(64, 64) # Tamaño del cuadro
+		
+		# Obtenemos el icono del Manager
+		var icon_texture = CursorManager.get_preview_icon(color)
+		if icon_texture:
+			btn.icon = icon_texture
+		else:
+			btn.text = color # Fallback si no carga la imagen
+			
+		btn.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		btn.expand_icon = true 
+		btn.tooltip_text = color.capitalize()
+		
+		# Conectar la señal
+		btn.pressed.connect(_on_cursor_button_pressed.bind(color))
+		
+		# Añadir al contenedor
+		cursor_selector_container.add_child(btn)
+
+# === NUEVA FUNCIÓN: Callback del Botón de Cursor ===
+func _on_cursor_button_pressed(color_name: String):
+	CursorManager.set_cursor_theme(color_name)
+
 
 # === El resto del código permanece igual ===
 
