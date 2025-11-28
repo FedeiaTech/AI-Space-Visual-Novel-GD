@@ -1,6 +1,27 @@
-[gd_scene load_steps=2 format=3 uid="uid://drryfmjyx8kew"]
+[gd_scene load_steps=6 format=3 uid="uid://drryfmjyx8kew"]
 
 [ext_resource type="Script" uid="uid://deal1f2t13ec4" path="res://Scripts/UI/inventory_ui.gd" id="1_p83af"]
+[ext_resource type="Theme" uid="uid://dxi6d2u41kgxb" path="res://Resources/Text_format/TitleTextUI.tres" id="2_o62ck"]
+[ext_resource type="Shader" uid="uid://xv2k2uxy87xq" path="res://Assets/Shaders/item_highlight.gdshader" id="3_sfqc8"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o62ck"]
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_kyjlm"]
+shader = ExtResource("3_sfqc8")
+shader_parameter/speed = 1.0
+shader_parameter/line_width = 0.15
+shader_parameter/line_color = Color(1, 1, 1, 1)
+shader_parameter/pause_duration = 0.15
+shader_parameter/offset = 2.0
+shader_parameter/pixelate_line = 1
 
 [node name="InventoryUI" type="CanvasLayer"]
 layer = 100
@@ -15,40 +36,65 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.67451)
 
-[node name="ItemListContainer" type="VBoxContainer" parent="."]
-offset_left = 60.0
-offset_top = 92.0
-offset_right = 448.0
-offset_bottom = 571.0
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -53.5
+offset_top = -269.0
+offset_right = 53.5
+offset_bottom = 269.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="Panel" type="Panel" parent="ItemListContainer"]
+[node name="BackpackLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_o62ck")
+text = "Mochila"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
 
-[node name="ItemDetailsPanel" type="VBoxContainer" parent="."]
-offset_left = 550.0
-offset_top = 101.0
-offset_right = 1063.0
-offset_bottom = 455.0
+[node name="ItemListContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+
+[node name="Panel" type="Panel" parent="VBoxContainer/HBoxContainer/ItemListContainer"]
+layout_mode = 2
+
+[node name="VSeparator" type="VSeparator" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 100
+theme_override_styles/separator = SubResource("StyleBoxFlat_o62ck")
+
+[node name="ItemDetailsPanel" type="VBoxContainer" parent="VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(350, 0)
+layout_mode = 2
 mouse_filter = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="ItemDetailsPanel"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/ItemDetailsPanel"]
 custom_minimum_size = Vector2(0, 300)
 layout_mode = 2
 
-[node name="ItemIconDisplay" type="TextureRect" parent="ItemDetailsPanel/HBoxContainer"]
+[node name="ItemIconDisplay" type="TextureRect" parent="VBoxContainer/HBoxContainer/ItemDetailsPanel/HBoxContainer"]
 unique_name_in_owner = true
+material = SubResource("ShaderMaterial_kyjlm")
 custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
 mouse_filter = 2
 expand_mode = 2
 stretch_mode = 3
 
-[node name="ItemNameLabel" type="Label" parent="ItemDetailsPanel"]
+[node name="ItemNameLabel" type="Label" parent="VBoxContainer/HBoxContainer/ItemDetailsPanel"]
 unique_name_in_owner = true
 layout_mode = 2
+theme = ExtResource("2_o62ck")
 text = "Nombre"
 
-[node name="ItemDescriptionLabel" type="Label" parent="ItemDetailsPanel"]
+[node name="ItemDescriptionLabel" type="Label" parent="VBoxContainer/HBoxContainer/ItemDetailsPanel"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 180)
 layout_mode = 2
@@ -66,4 +112,5 @@ offset_top = 26.0
 offset_right = -44.0
 offset_bottom = 57.0
 grow_horizontal = 0
+theme = ExtResource("2_o62ck")
 text = "X"

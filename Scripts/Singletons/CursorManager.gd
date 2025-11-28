@@ -3,17 +3,17 @@
 extends Node
 
 # Lista de colores disponibles basada en tus carpetas
-const AVAILABLE_COLORS = ["blue", "green", "purple", "red", "yellow"]
+const AVAILABLE_COLORS = ["gray", "blue", "green", "purple", "red", "yellow"]
 
 # Ruta base
 const BASE_PATH = "res://Assets/UI_assets/Cursors/delta-neon-%s/"
 
 # Guardamos el color actual
-var current_color: String = "blue"
+var current_color: String = "gray"
 
 func _ready():
 	# Iniciar con el color por defecto (azul)
-	set_cursor_theme("blue")
+	set_cursor_theme("gray")
 
 func set_cursor_theme(color_name: String):
 	if not color_name in AVAILABLE_COLORS:

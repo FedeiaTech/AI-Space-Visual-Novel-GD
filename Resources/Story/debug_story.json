@@ -12,7 +12,7 @@
 			{ "text": "1. Prueba de Narrador (con/sin personajes)", "goto": "narrator_test" },
 			{ "text": "2. Prueba de Personajes (Movimiento y Voz)", "goto": "character_test" },
 			{ "text": "3. Prueba de Estado (Flags, Items)", "goto": "state_test" },
-			{ "text": "4. Prueba de Escena (Music, CG, Location, Objects)", "goto": "scene_test" },
+			{ "text": "4. Prueba de Escena (Music, CG, Video, Location, Objects)", "goto": "scene_test" },
 			{ "text": "Siguiente... (Misiones y Tiempo)", "goto": "debug_menu_page_2" }
 		]
 	},
@@ -25,6 +25,7 @@
 		"choices": [
 			{ "text": "5. Prueba de Misiones (Completa)", "goto": "mission_test_original" },
 			{ "text": "6. Prueba de Tiempo (Timer UI)", "goto": "time_test" },
+			{ "text": "7. Prueba de Waiting (Animaciones de Espera)", "goto": "waiting_test" },
 			{ "text": "Volver...", "goto": "start" }
 		]
 	},
@@ -271,7 +272,7 @@
 		"full_screen": true
 	},
 	{
-		"text": "('hide_vdeo' no es necesario ya que la imagen se retirará sola)."
+		"text": "('hide_video' no es necesario ya que la imagen se retirará sola)."
 	},
 	{
 		"text": "El video ha terminado."
@@ -282,11 +283,15 @@
 	{
 		"play_video": "loop2",
 		"full_screen": false,
-		"text": "El video se reproduce..."
+		"text": "Algo dice aca."
+	
 	},
-	{ "text": "El video no se ha cerrado aún." },
-	{ "hide_video": true,
-	"text": "El video se ha cerrado gracias a 'hide_video'." },
+	{ 	
+		"text": "Mientras el video se reproduce el dialogo no avanza." },
+	{ 	
+		"text": "El dialogo puede mostrarse sobre el video finalizado." },
+	{ 	"hide_video": true,
+		"text": "El video se ha cerrado gracias a 'hide_video'." },
 	{
 		"text": "El video ha terminado."
 	},
@@ -398,6 +403,58 @@
 		"text": "Prueba de tiempo completada."
 	},
 	{
+		"goto": "start"
+	},
+	
+	
+	{
+		"anchor": "waiting_test",
+		"hide_characters": true,
+		"text": "--- PRUEBA DE IDLE/WAITING ---\nEl sistema espera entre 10 y 20 segundos antes de ejecutar la animación."
+	},
+	{
+		"characters": { "left": "ASTRO" },
+		"facing": { "left": "right" },
+		"text": "1. Astro a la IZQUIERDA (Mirando derecha).\n⛔ NO HAGAS CLIC. Espera hasta 20s para ver 'waiting_left'."
+	},
+	{
+		"text": "¡Viste la animación! (O te cansaste de esperar). Probemos el otro lado."
+	},
+	{
+		"characters": { "right": "ASTRO" },
+		"facing": { "right": "left" },
+		"text": "2. Astro a la DERECHA (Mirando izquierda).\n⛔ NO HAGAS CLIC. Espera hasta 20s para ver 'waiting_right'."
+	},
+	{
+		"text": "Ahora probaremos a Astro rompiendo la cuarta pared."
+	},
+	{
+		"characters": { "center": "ASTRO" },
+		"expressions": { "center": "idle" },
+		"facing": { "center": "right" },
+		"text": "Astro está normal."
+	},
+	{
+		"speaker": "ASTRO",
+		"text": "¡Ey! ¡Te estoy hablando a ti, jugador!",
+		"facing": { "center": "center" }
+	},
+	{
+		"text": "Ahora Astro está en 'idle_center'. ⛔ NO HAGAS CLIC. Espera 15s para ver 'waiting_center'."
+	},
+	{
+		"text": "Prueba finalizada. Astro vuelve a mirar a la derecha.",
+		"facing": { "center": "right" }
+	},
+	{
+		"text": "Excelente. Ahora probemos con un personaje estándar."
+	},
+	{
+		"characters": { "center": "MILKA" },
+		"text": "3. Milka en el CENTRO.\n⛔ NO HAGAS CLIC. Espera hasta 20s para ver su animación 'waiting' genérica."
+	},
+	{
+		"text": "Prueba de waiting finalizada. Los personajes se sienten vivos.",
 		"goto": "start"
 	}
 ]

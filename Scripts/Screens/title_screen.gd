@@ -12,6 +12,8 @@ extends Node2D
 @onready var fullscreen_check_button: CheckButton = %FullscreenCheckButton
 @onready var video_player: VideoStreamPlayer = %VideoStreamPlayer
 @onready var debug_mode_button: Button = %DebugModeButton
+@onready var starfield_background: TextureRect = %StarfieldBackground
+@onready var planet_texture: TextureRect = %PlanetTexture
 
 # Referencias para los sliders y labels
 @onready var bgm_slider: HSlider = %BGMSlider
@@ -21,11 +23,7 @@ extends Node2D
 @onready var bgm_value_label: Label = %BGMValueLabel
 @onready var voices_value_label: Label = %VoicesValueLabel
 @onready var sfx_value_label: Label = %SFXValueLabel
-
 @onready var options_back_button: Button = %OptionsBackButton
-
-# --- NUEVA REFERENCIA ---
-# Asegúrate de que en tu escena hayas creado este contenedor y le hayas puesto el nombre único %CursorSelectorContainer
 @onready var cursor_selector_container: HBoxContainer = %CursorSelectorContainer 
 
 # Variables para los AudioBuses
@@ -43,6 +41,14 @@ var available_resolutions: Array = [
 ]
 
 func _ready() -> void:
+	# Shaders activación
+	# Al arrancar el juego, forzamos que los efectos se activen (Static Mode = false)
+	if starfield_background.material:
+		starfield_background.material.set_shader_parameter("static_mode", false)
+		
+	if planet_texture.material:
+		planet_texture.material.set_shader_parameter("static_mode", false)
+		
 	# Conectar los botones del menú principal
 	new_game_button.pressed.connect(_on_new_game_button_pressed)
 	options_button.pressed.connect(_on_options_button_pressed)

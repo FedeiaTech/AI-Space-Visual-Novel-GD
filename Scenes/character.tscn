@@ -15,5 +15,4 @@ script = ExtResource("1_ushfy")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(626, 494)
 sprite_frames = ExtResource("2_ushfy")
-animation = &"walking_hand-talking_center"
-frame_progress = 0.0508797
+animation = &"waiting_center"

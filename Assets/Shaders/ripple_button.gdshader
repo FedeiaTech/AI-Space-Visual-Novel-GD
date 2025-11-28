@@ -13,7 +13,7 @@ uniform vec4 color : source_color = vec4(1.0);
 
 // --- AÑADIDO: Opacidad Base ---
 // 0.0 = Invisible (solo efectos), 1.0 = Sólido, 0.3 = Semitransparente
-uniform float background_opacity : hint_range(0.0, 1.0) = 0.0; 
+uniform float background_opacity : hint_range(0.0, 1.0) = 0.0;
 // -----------------------------
 
 float rounded_box(vec2 p, vec2 b, float r) {
@@ -31,9 +31,9 @@ void fragment() {
     float aspect_ratio = size.x / size.y;
     vec2 uv = UV - vec2(0.5);
     uv.x *= aspect_ratio;
-    
+
     float capsule_distance;
-    
+
     if (corner_radius == 0.0) {
         vec2 rect_size = vec2(aspect_ratio * 0.5, 0.5);
         capsule_distance = rounded_box(uv, rect_size, 0.0);
@@ -47,9 +47,9 @@ void fragment() {
         vec2 rect_size = vec2(aspect_ratio * 0.5, 0.5);
         capsule_distance = rounded_box(uv, rect_size, actual_radius);
     }
-    
+
     bool in_capsule = capsule_distance <= 0.0;
-    
+
     float glow_alpha = 0.0;
     if (glow > 0.0) {
         float glow_distance = -capsule_distance;
@@ -57,37 +57,37 @@ void fragment() {
         glow_alpha = (1.0 - glow_falloff) * color.a * glow;
         glow_alpha *= step(0.0, glow_distance);
     }
-    
+
     vec2 center1_uv = (UV - center1);
     center1_uv.x *= aspect_ratio;
     float center1_d = length(center1_uv);
-    
+
     vec2 center2_uv = (UV - center2);
     center2_uv.x *= aspect_ratio;
     float center2_d = length(center2_uv);
-    
+
     float max_center1_radius = max(aspect_ratio, 1.0) * 0.8;
-    
+
     float outer_radius = 0.1 + (max_center1_radius - 0.1) * time1;
     float inner_radius_factor = mix(0.1, 1.2, time1);
     float inner_radius = outer_radius * inner_radius_factor;
-    
-    float ring = smoothstep(inner_radius - 0.20, inner_radius + 0.20, center1_d) - 
+
+    float ring = smoothstep(inner_radius - 0.20, inner_radius + 0.20, center1_d) -
                  smoothstep(outer_radius - 0.20, outer_radius + 0.20, center1_d);
-    
+
     float circle2_blur = smoothstep(center2_d - 0.2, center2_d + 0.2, 0.1 + (max_center1_radius - 0.1) * time2 - 0.2);
-    
+
     bool in_edge_area = abs(capsule_distance) <= width1 && in_capsule;
-    
+
     if (in_capsule) {
         float circle1_alpha = max(ring - max(time1, 0.1), 0.0);
         float circle2_alpha = in_edge_area ? circle2_blur : circle2_blur * 0.30;
-        
+
         // --- CAMBIO: Cálculo de Alfa ---
         // Tomamos el máximo entre los efectos y la opacidad base
         float effects_alpha = max(circle1_alpha, circle2_alpha);
         float final_alpha = max(effects_alpha, background_opacity);
-        
+
         // Multiplicamos por el alpha del color original
         final_alpha *= color.a;
         // ------------------------------
@@ -95,7 +95,7 @@ void fragment() {
         vec3 final_color = color.rgb;
         vec4 base_color = vec4(final_color, final_alpha);
         vec4 glow_layer = vec4(color.rgb, glow_alpha);
-        
+
         COLOR = base_color + glow_layer;
     } else {
         COLOR = vec4(color.rgb, glow_alpha);

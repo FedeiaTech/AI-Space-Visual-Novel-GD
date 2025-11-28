@@ -3,6 +3,11 @@
 extends Node
 
 const ITEM_DATABASE = {
+	"astro_gloves": {
+		"name": "Guantes",
+		"description": "Partes fundamentales del EVA. Son exactamente de mi talle.",
+		"icon_path": "res://Assets/Inventory_icons/gloves.png"
+	},
 	"pocket_watch": {
 		"name": "Reloj Antiguo",
 		"description": "Un reloj que me ayuda a concentrarme... me lo dió mi abuelo y significa mucho para mí.",
@@ -43,6 +48,7 @@ func _ready():
 	add_item(Character.Name.ASTRO, "pocket_watch", 1)
 	add_item(Character.Name.ASTRO, "mapa_rasgado", 1)
 	add_item(Character.Name.ASTRO, "moneda_oro", 1)
+	add_item(Character.Name.ASTRO, "astro_gloves", 1)
 	# --- Fin de ítems de prueba ---
 
 # `item_details` ahora es un diccionario con "id", "name", "description", etc.
