@@ -1,0 +1,131 @@
+[gd_scene load_steps=12 format=3 uid="uid://ca5yk17c7psj2"]
+
+[ext_resource type="Script" uid="uid://b02w667i7rv2k" path="res://Scripts/Minigames/RopeMiniGame.gd" id="1_i42ui"]
+[ext_resource type="Shader" uid="uid://csrie53spg10x" path="res://Assets/Shaders/animated_starfield.gdshader" id="2_edtm2"]
+[ext_resource type="Shader" uid="uid://gc162agvc8et" path="res://Assets/Shaders/ImageContrastAlpha.gdshader" id="3_edtm2"]
+[ext_resource type="Texture2D" uid="uid://cu4t1t4bs5m5p" path="res://Assets/Minigames/Rope/extra-rope.png" id="3_efecb"]
+[ext_resource type="Texture2D" uid="uid://d0wxqodf23mv1" path="res://Assets/Minigames/Rope/astro-climging-128-spritesheet.png" id="3_i42ui"]
+[ext_resource type="Texture2D" uid="uid://dmnosdaaca6wm" path="res://Assets/Minigames/Rope/left_key_arrow.png" id="5_r8qlh"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_efecb"]
+shader = ExtResource("2_edtm2")
+shader_parameter/background_color = Color(0, 0, 0.02, 1)
+shader_parameter/nebula_color1 = Color(0.2, 0.05, 0.3, 1)
+shader_parameter/nebula_color2 = Color(0, 0.121714, 0.171493, 1)
+shader_parameter/nebula_density = 0.5
+shader_parameter/nebula_speed = 0.02
+shader_parameter/aspect_ratio = 1.0
+shader_parameter/star_density = 1.3
+shader_parameter/layer_parascale = 4
+shader_parameter/star_speed = Vector2(0.5, 0)
+shader_parameter/star_size = 3.0
+shader_parameter/twinkle_effect = 0.6
+shader_parameter/twinkle_speed = 0.3
+shader_parameter/static_mode = false
+shader_parameter/black_hole_enabled = false
+shader_parameter/bh_center = Vector2(0.5, 0.5)
+shader_parameter/bh_radius = 0.15
+shader_parameter/lensing_strength = 0.5
+shader_parameter/accretion_disk_color = Color(1, 0.5, 0.2, 1)
+shader_parameter/disk_width = 0.04
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_r8qlh"]
+shader = ExtResource("3_edtm2")
+shader_parameter/edge_darkening = 3.0
+
+[sub_resource type="Animation" id="Animation_n08c3"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("%Sprite2D:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_i42ui"]
+resource_name = "climb"
+length = 5.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("%Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0, 128]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_8355o"]
+_data = {
+&"RESET": SubResource("Animation_n08c3"),
+&"climb": SubResource("Animation_i42ui")
+}
+
+[node name="RopeGame" type="Node2D"]
+script = ExtResource("1_i42ui")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer"]
+material = SubResource("ShaderMaterial_efecb")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Player" type="Node2D" parent="CanvasLayer"]
+unique_name_in_owner = true
+
+[node name="ExtraRope" type="Sprite2D" parent="CanvasLayer/Player"]
+unique_name_in_owner = true
+visible = false
+material = SubResource("ShaderMaterial_r8qlh")
+position = Vector2(210, 437)
+texture = ExtResource("3_efecb")
+
+[node name="Sprite2D" type="Sprite2D" parent="CanvasLayer/Player"]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_r8qlh")
+position = Vector2(472, 384)
+texture = ExtResource("3_i42ui")
+hframes = 12
+vframes = 11
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="CanvasLayer/Player"]
+unique_name_in_owner = true
+libraries = {
+&"": SubResource("AnimationLibrary_8355o")
+}
+
+[node name="ArrowIndicator" type="Sprite2D" parent="CanvasLayer"]
+unique_name_in_owner = true
+position = Vector2(1094, 307)
+texture = ExtResource("5_r8qlh")
+
+[node name="Timer" type="Timer" parent="."]
+unique_name_in_owner = true
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
