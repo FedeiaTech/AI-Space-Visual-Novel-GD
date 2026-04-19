@@ -3,9 +3,9 @@
 [ext_resource type="Script" uid="uid://b02w667i7rv2k" path="res://Scripts/Minigames/RopeMiniGame.gd" id="1_i42ui"]
 [ext_resource type="Shader" uid="uid://csrie53spg10x" path="res://Assets/Shaders/animated_starfield.gdshader" id="2_edtm2"]
 [ext_resource type="Shader" uid="uid://gc162agvc8et" path="res://Assets/Shaders/ImageContrastAlpha.gdshader" id="3_edtm2"]
-[ext_resource type="Texture2D" uid="uid://cu4t1t4bs5m5p" path="res://Assets/Minigames/Rope/extra-rope.png" id="3_efecb"]
-[ext_resource type="Texture2D" uid="uid://d0wxqodf23mv1" path="res://Assets/Minigames/Rope/astro-climging-128-spritesheet.png" id="3_i42ui"]
-[ext_resource type="Texture2D" uid="uid://dmnosdaaca6wm" path="res://Assets/Minigames/Rope/left_key_arrow.png" id="5_r8qlh"]
+[ext_resource type="Texture2D" uid="uid://1khqbky8sqxb" path="res://Assets/Minigames/Rope/extra-rope.png" id="3_efecb"]
+[ext_resource type="Texture2D" uid="uid://dtllv1icynvdx" path="res://Assets/Minigames/Rope/astro-climging-128-spritesheet.png" id="3_i42ui"]
+[ext_resource type="Texture2D" uid="uid://nxt4yxa7b77f" path="res://Assets/Minigames/Rope/left_key_arrow.png" id="5_r8qlh"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_efecb"]
 shader = ExtResource("2_edtm2")
