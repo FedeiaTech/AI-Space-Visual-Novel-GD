@@ -51,7 +51,7 @@ func _ready():
 	button_up.connect(_on_mouse_button_up)
 	
 func on_object_clicked():
-	if not required_flag.is_empty() and not GameManager.get_quest_flag(required_flag):
+	if not required_flag.is_empty() and not MissionControl.get_quest_flag(required_flag):
 		return
 	if not required_item.is_empty() and not InventoryManager.has_item(InventoryManager.current_player_character, required_item):
 		return

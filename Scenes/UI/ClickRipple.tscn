@@ -1,0 +1,25 @@
+[gd_scene load_steps=4 format=3 uid="uid://bo1i801guoyoe"]
+
+[ext_resource type="Shader" uid="uid://c8i07n5j6vuts" path="res://Assets/Shaders/click_ripple.gdshader" id="1_8rrqd"]
+[ext_resource type="Script" uid="uid://f0anfau61qi4" path="res://Scripts/UI/click_ripple.gd" id="2_blaqt"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_g5tgd"]
+shader = ExtResource("1_8rrqd")
+shader_parameter/time = 0.0
+shader_parameter/color = Color(1, 1, 1, 0.5)
+
+[node name="ClickRipple" type="ColorRect"]
+material = SubResource("ShaderMaterial_g5tgd")
+custom_minimum_size = Vector2(100, 100)
+anchors_preset = -1
+anchor_left = 0.039
+anchor_top = 0.069
+anchor_right = 0.039
+anchor_bottom = 0.069
+offset_left = -49.92
+offset_top = -49.68
+offset_right = 50.08
+offset_bottom = 50.32
+pivot_offset = Vector2(100, 100)
+mouse_filter = 2
+script = ExtResource("2_blaqt")

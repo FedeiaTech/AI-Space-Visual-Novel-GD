@@ -12,6 +12,8 @@ extends Node2D
 @onready var fullscreen_check_button: CheckButton = %FullscreenCheckButton
 @onready var video_player: VideoStreamPlayer = %VideoStreamPlayer
 @onready var debug_mode_button: Button = %DebugModeButton
+@onready var starfield_background: TextureRect = %StarfieldBackground
+@onready var planet_texture: TextureRect = %PlanetTexture
 
 # Referencias para los sliders y labels
 @onready var bgm_slider: HSlider = %BGMSlider
@@ -21,8 +23,8 @@ extends Node2D
 @onready var bgm_value_label: Label = %BGMValueLabel
 @onready var voices_value_label: Label = %VoicesValueLabel
 @onready var sfx_value_label: Label = %SFXValueLabel
-
 @onready var options_back_button: Button = %OptionsBackButton
+@onready var cursor_selector_container: HBoxContainer = %CursorSelectorContainer 
 
 # Variables para los AudioBuses
 var bgm_bus_index: int = AudioServer.get_bus_index("BGM")
@@ -39,6 +41,14 @@ var available_resolutions: Array = [
 ]
 
 func _ready() -> void:
+	# Shaders activación
+	# Al arrancar el juego, forzamos que los efectos se activen (Static Mode = false)
+	if starfield_background.material:
+		starfield_background.material.set_shader_parameter("static_mode", false)
+		
+	if planet_texture.material:
+		planet_texture.material.set_shader_parameter("static_mode", false)
+		
 	# Conectar los botones del menú principal
 	new_game_button.pressed.connect(_on_new_game_button_pressed)
 	options_button.pressed.connect(_on_options_button_pressed)
@@ -54,6 +64,9 @@ func _ready() -> void:
 	# === Configuración de pantalla completa ===
 	fullscreen_check_button.toggled.connect(_on_fullscreen_toggled)
 	_update_fullscreen_button_state()
+	
+	# === Configuración de Cursores (¡NUEVO!) ===
+	_setup_cursor_selector()
 	
 	if video_player:
 		video_player.loop = true
@@ -78,6 +91,7 @@ func _ready() -> void:
 	center_container.modulate.a = 0
 	options_button.modulate.a = 0
 	new_game_button.modulate.a = 0
+	debug_mode_button.modulate.a = 0
 	quit_game_button.modulate.a = 0
 	
 	# Crea el primer tween para el CenterContainer.
@@ -95,7 +109,43 @@ func tween_fade_in_buttons():
 	
 	buttons_tween.tween_property(options_button, "modulate:a", 1.0, 0.5)
 	buttons_tween.tween_property(new_game_button, "modulate:a", 1.0, 0.5)
+	buttons_tween.tween_property(debug_mode_button, "modulate:a", 1.0, 0.5)
 	buttons_tween.tween_property(quit_game_button, "modulate:a", 1.0, 0.5)
+
+# === NUEVA FUNCIÓN: Configuración de Cursores ===
+func _setup_cursor_selector():
+	# Limpiar hijos anteriores por si acaso
+	for child in cursor_selector_container.get_children():
+		child.queue_free()
+		
+	# Recorrer los colores disponibles en el Manager
+	for color in CursorManager.AVAILABLE_COLORS:
+		var btn = Button.new()
+		
+		# Configuración visual del botón
+		btn.custom_minimum_size = Vector2(64, 64) # Tamaño del cuadro
+		
+		# Obtenemos el icono del Manager
+		var icon_texture = CursorManager.get_preview_icon(color)
+		if icon_texture:
+			btn.icon = icon_texture
+		else:
+			btn.text = color # Fallback si no carga la imagen
+			
+		btn.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		btn.expand_icon = true 
+		btn.tooltip_text = color.capitalize()
+		
+		# Conectar la señal
+		btn.pressed.connect(_on_cursor_button_pressed.bind(color))
+		
+		# Añadir al contenedor
+		cursor_selector_container.add_child(btn)
+
+# === NUEVA FUNCIÓN: Callback del Botón de Cursor ===
+func _on_cursor_button_pressed(color_name: String):
+	CursorManager.set_cursor_theme(color_name)
+
 
 # === El resto del código permanece igual ===
 

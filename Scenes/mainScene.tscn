@@ -1,9 +1,9 @@
-[gd_scene load_steps=35 format=3 uid="uid://bypw7eihxexrm"]
+[gd_scene load_steps=37 format=3 uid="uid://bypw7eihxexrm"]
 
 [ext_resource type="Script" uid="uid://cox74slg0ewob" path="res://Scripts/Screens/main_scene.gd" id="1_m8nr8"]
 [ext_resource type="Script" uid="uid://dupk7xq8ogjhp" path="res://Scripts/Core/command_processor.gd" id="2_0vbqt"]
 [ext_resource type="AudioStream" uid="uid://c2np4otufsxe5" path="res://Assets/Sounds/Fx/blink.wav" id="2_47rga"]
-[ext_resource type="Script" uid="uid://ba0ombp5bygup" path="res://Scripts/Game/CameraShaker.gd" id="2_bofyi"]
+[ext_resource type="Script" uid="uid://ba0ombp5bygup" path="res://Scripts/Core/CameraShaker.gd" id="2_bofyi"]
 [ext_resource type="Script" uid="uid://b5xd0w07mpnid" path="res://Scripts/Core/CharacterStageManager.gd" id="2_daoup"]
 [ext_resource type="Texture2D" uid="uid://cxvq66lt1w87w" path="res://Assets/Scenes_images/scene0_spaceship.png" id="3_0vbqt"]
 [ext_resource type="Script" uid="uid://2mdj4khts5rv" path="res://Scripts/UI/inventory_ui_manager.gd" id="3_w1dup"]
@@ -13,8 +13,8 @@
 [ext_resource type="Script" uid="uid://dwycxanoffwpy" path="res://Scripts/Core/DialogueManager.gd" id="4_uvydw"]
 [ext_resource type="Theme" uid="uid://c7kebt85foo2f" path="res://Resources/Text_format/opton_choice_button.tres" id="6_yyxd1"]
 [ext_resource type="PackedScene" uid="uid://mhbb42m57i3x" path="res://Scenes/Locations/outside_starship.tscn" id="7_iypob"]
+[ext_resource type="Script" uid="uid://ca8q3sgwwsv30" path="res://Scripts/UI/QuestLogUIManager.gd" id="8_boirm"]
 [ext_resource type="Script" uid="uid://ctnfkifo68y7v" path="res://Scripts/UI/CGViewer.gd" id="8_eol8w"]
-[ext_resource type="Theme" uid="uid://bws3rt7rqr07v" path="res://Resources/Text_format/Icons_UI_labels.tres" id="9_5bsxs"]
 [ext_resource type="PackedScene" uid="uid://b7vmdbxmok30i" path="res://Scenes/UI/journal_ui.tscn" id="10_mhr8t"]
 [ext_resource type="Texture2D" uid="uid://cutks2k55huad" path="res://Assets/UI_assets/Icons/tablet2_mini_black.png" id="11_5bsxs"]
 [ext_resource type="Texture2D" uid="uid://bwrs8ogqvf3h5" path="res://Assets/UI_assets/Icons/tablet_mini_xs.png" id="11_ekaqe"]
@@ -29,6 +29,10 @@
 [ext_resource type="Texture2D" uid="uid://d4bc5e5e7uqrh" path="res://Assets/UI_assets/Icons/setting_dark_mini.png" id="18_eol8w"]
 [ext_resource type="Texture2D" uid="uid://bxwvtu50wm2pw" path="res://Assets/UI_assets/Icons/setting_light_mini.png" id="19_daoup"]
 [ext_resource type="Texture2D" uid="uid://crck47yj4qw2q" path="res://Assets/UI_assets/Icons/setting_contrast _mini.png" id="20_bofyi"]
+[ext_resource type="Theme" uid="uid://d1rxy503oma0" path="res://Resources/Text_format/ContentTextUI.tres" id="23_boirm"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_boirm"]
+bg_color = Color(0, 0, 0, 1)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_mrjo7"]
 resource_local_to_scene = true
@@ -92,6 +96,10 @@ script = ExtResource("2_daoup")
 unique_name_in_owner = true
 script = ExtResource("2_0vbqt")
 
+[node name="DialogueManager" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("4_uvydw")
+
 [node name="InventoryUIManager" type="Node" parent="."]
 unique_name_in_owner = true
 script = ExtResource("3_w1dup")
@@ -100,9 +108,9 @@ script = ExtResource("3_w1dup")
 unique_name_in_owner = true
 script = ExtResource("4_eol8w")
 
-[node name="DialogueManager" type="Node" parent="."]
+[node name="QuestLogUIManager" type="Node" parent="."]
 unique_name_in_owner = true
-script = ExtResource("4_uvydw")
+script = ExtResource("8_boirm")
 
 [node name="BackgroundMusic" type="AudioStreamPlayer" parent="."]
 unique_name_in_owner = true
@@ -139,15 +147,33 @@ unique_name_in_owner = true
 
 [node name="CGCanvas" type="CanvasLayer" parent="InteractiveControl"]
 
-[node name="CGSprite" type="TextureRect" parent="InteractiveControl/CGCanvas"]
+[node name="CGViewerWindow" type="PanelContainer" parent="InteractiveControl/CGCanvas"]
 unique_name_in_owner = true
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+custom_minimum_size = Vector2(800, 450)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_boirm")
 script = ExtResource("8_eol8w")
+
+[node name="CGSprite" type="TextureRect" parent="InteractiveControl/CGCanvas/CGViewerWindow"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="VideoPlayer" type="VideoStreamPlayer" parent="InteractiveControl/CGCanvas/CGViewerWindow"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+expand = true
 
 [node name="ViewerCanvas" type="CanvasLayer" parent="InteractiveControl"]
 unique_name_in_owner = true
@@ -160,6 +186,17 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="AutoAdvanceButton" type="Button" parent="InteractiveControl/ViewerCanvas"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 30)
+offset_left = 1059.0
+offset_top = 489.0
+offset_right = 1159.0
+offset_bottom = 519.0
+theme = ExtResource("6_yyxd1")
+toggle_mode = true
+text = "▶  AUTO"
 
 [node name="LookButton" type="Button" parent="InteractiveControl/ViewerCanvas"]
 unique_name_in_owner = true
@@ -331,7 +368,7 @@ stretch_mode = 3
 [node name="JournalIconLabel" type="Label" parent="CanvasNotification/Icons_ui/MarginContainer/IconContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-theme = ExtResource("9_5bsxs")
+theme = ExtResource("23_boirm")
 text = " Diario (J)"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -348,7 +385,7 @@ stretch_mode = 3
 [node name="InventorylIconLabel" type="Label" parent="CanvasNotification/Icons_ui/MarginContainer/IconContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-theme = ExtResource("9_5bsxs")
+theme = ExtResource("23_boirm")
 text = " Inventario (I)"
 horizontal_alignment = 1
 
@@ -364,7 +401,7 @@ stretch_mode = 3
 [node name="SettingsIconLabel" type="Label" parent="CanvasNotification/Icons_ui/MarginContainer/IconContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-theme = ExtResource("9_5bsxs")
+theme = ExtResource("23_boirm")
 text = " Opciones (Esc)"
 horizontal_alignment = 1
 

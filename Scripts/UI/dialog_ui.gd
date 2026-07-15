@@ -13,13 +13,17 @@ signal choice_selected(choice_data: Dictionary, item_given_data: Dictionary)
 @onready var dialog_box: PanelContainer = %DialogBox
 @onready var triangle_next: Polygon2D = %triangleNext
 @onready var triangle_particles: CPUParticles2D = %triangleParticles
+var auto_advance_button: Button = null
 
 #precarga de escena de eleccion
 const ChoiceButtonScene = preload("res://Scenes/player_choice.tscn")
 
 const ANIMATION_SPEED : int = 30
 const SENTENCE_PAUSE : float = 0.5
-const NO_SOUND_CHARS : Array = [".", "!", "?"]
+# "Pausers" (Detienen el sonido Y pausan la oración)
+const PAUSE_CHARS : Array = [".", "!", "?", ","] 
+# "Silencers" (Detienen el sonido de la letra anterior, pero NO pausan)
+const SILENT_CHARS : Array = [" "]
 
 var animate_text : bool = false
 var current_visible_characters : int = 0
@@ -31,6 +35,13 @@ var dialogue_manager_ref: Node = null
 var next_sentence_sound_ref: AudioStreamPlayer = null
 var main_scene_ref: Node = null
 
+# Auto-avance (comando "wait" y botón AUTO)
+var pending_wait_seconds: float = 0.0
+var auto_advance_timer: Timer
+var auto_advance_enabled: bool = false
+const AUTO_ADVANCE_DEFAULT_DELAY: float = 2.5
+
+
 func _ready() -> void:
 	#Resetear display
 	choice_list.hide()
@@ -38,10 +49,22 @@ func _ready() -> void:
 	speaker_name.text = ""
 	triangle_next.hide()
 	triangle_particles.hide()
-	
+
 	#conectar señales
 	dialog_box.dialog_clicked.connect(_handle_mouse_click)
 	sentence_pause_timer.timeout.connect(_on_sentence_pause_timeout)
+
+	# Timer de auto-avance para el comando "wait" y el botón AUTO
+	auto_advance_timer = Timer.new()
+	auto_advance_timer.one_shot = true
+	auto_advance_timer.timeout.connect(_on_auto_advance_timeout)
+	add_child(auto_advance_timer)
+
+func set_auto_advance_button(btn: Button) -> void:
+	auto_advance_button = btn
+	if is_instance_valid(auto_advance_button):
+		auto_advance_button.toggled.connect(_on_auto_advance_toggled)
+		_update_auto_advance_button_style()
 	
 func set_click_to_continue_enabled(enabled: bool):
 	can_advance_dialogue = enabled
@@ -56,24 +79,75 @@ func set_click_to_continue_enabled(enabled: bool):
 func _handle_mouse_click():
 	if main_scene_ref.is_dialogue_blocked:
 		return
-		
+
+	# Bloqueo para video activo (ESTO YA ESTÁ BIEN)
+	if main_scene_ref.cg_viewer.is_video_playing:
+		print("Clic ignorado: Video activo.")
+		return
+
 	if dialogue_manager_ref == null or next_sentence_sound_ref == null:
 		printerr("Error: Dependencias del diálogo no asignadas en DialogUI.")
 		return
 
+	# Si el auto-avance está corriendo, un clic lo cancela y avanza manualmente
+	if not auto_advance_timer.is_stopped():
+		auto_advance_timer.stop()
+
+	if animate_text:
+		skip_text_animation()
+		return
+
+	# 1. Obtener la línea actual
 	var current_line = {}
 	if dialogue_manager_ref.dialog_index < dialogue_manager_ref.dialog_lines.size():
 		current_line = dialogue_manager_ref.dialog_lines[dialogue_manager_ref.dialog_index]
+	
+	if current_line.is_empty():
+		# (Comportamiento seguro)
+		#if main_scene_ref.cg_viewer.is_visible():
+			#main_scene_ref.cg_viewer.reset_and_hide()
+		next_sentence_sound_ref.play()
+		dialogue_manager_ref.advance_index()
+		dialogue_manager_ref.process_current_line()
+		return
 
-	var has_choices = current_line.has("choices")
-
-	if not has_choices:
-		if animate_text:
-			skip_text_animation()
-		else:
+	# 2. Si la línea actual tiene "choices", el clic no debe hacer NADA.
+	if current_line.has("choices"):
+		return
+	
+	# 3. Si la línea actual tiene "move_character" Y "text",
+	# el 'move_character' ya terminó (porque no estamos bloqueados).
+	# El clic SÍ debe avanzar el diálogo.
+	if current_line.has("move_character") and current_line.has("text"):
+		# No hacemos nada especial, dejamos que la lógica de avance normal (Paso 5) funcione.
+		pass
+	
+	# 4. Comprobar si la línea actual tiene un comando de flujo "post-clic"
+	var command_processor = main_scene_ref.command_processor
+	
+	if is_instance_valid(command_processor):
+		if current_line.has("goto"):
+			#if main_scene_ref.cg_viewer.is_visible():
+				#main_scene_ref.cg_viewer.reset_and_hide()
 			next_sentence_sound_ref.play()
-			dialogue_manager_ref.advance_index()
-			dialogue_manager_ref.process_current_line()
+			command_processor._handle_goto(current_line, false)
+			return
+		
+		if current_line.has("action"):
+			if main_scene_ref.cg_viewer.is_visible():
+				main_scene_ref.cg_viewer.reset_and_hide()
+			next_sentence_sound_ref.play()
+			command_processor._handle_action(current_line, false)
+			return
+	
+	# 5. Si no hay 'choices', 'goto', o 'action', simplemente avanzar
+	
+	#if main_scene_ref.cg_viewer.is_visible():
+		#main_scene_ref.cg_viewer.reset_and_hide()
+	
+	next_sentence_sound_ref.play()
+	dialogue_manager_ref.advance_index()
+	dialogue_manager_ref.process_current_line()
 
 # Recibir referencia de la escena principal
 func set_dialog_dependencies(dm: Node, nss: AudioStreamPlayer, ms: Node):
@@ -83,31 +157,53 @@ func set_dialog_dependencies(dm: Node, nss: AudioStreamPlayer, ms: Node):
 
 func _process(delta: float) -> void:
 	if animate_text and sentence_pause_timer.is_stopped():
-		if dialog_line.visible_ratio < 1:
-			dialog_line.visible_ratio += (1.0 / dialog_line.text.length()) * (ANIMATION_SPEED * delta)
+		if dialog_line.visible_ratio < 1.0:
+			dialog_line.visible_ratio = minf(
+				dialog_line.visible_ratio + (1.0 / dialog_line.text.length()) * (ANIMATION_SPEED * delta),
+				1.0
+			)
+			
 			if dialog_line.visible_characters > current_visible_characters:
 				current_visible_characters = dialog_line.visible_characters
 				var current_char = dialog_line.text[current_visible_characters - 1]
 				
-				# Verifica si el caracter actual es un signo de puntuación
-				if NO_SOUND_CHARS.has(current_char):
-					# Detiene el sonido y la animación, y espera
+				# CASO 1: El caracter PAUSA la oración (ej. '.')
+				if PAUSE_CHARS.has(current_char):
+					# Detiene el sonido de la letra anterior
 					if text_blip_sound and text_blip_sound.is_playing():
 						text_blip_sound.stop_sound()
 					
+					# Inicia el temporizador de pausa
 					if current_visible_characters < dialog_line.text.length():
 						sentence_pause_timer.start(SENTENCE_PAUSE)
+				
+				# CASO 2: El caracter es SILENCIOSO (ej. ' ')
+				elif SILENT_CHARS.has(current_char):
+					# Detiene el sonido de la letra anterior, pero no pausa
+					if text_blip_sound and text_blip_sound.is_playing():
+						text_blip_sound.stop_sound()
+				
+				# CASO 3: Es un caracter normal (ej. 'A')
 				else:
-					# Si no es un signo de puntuación, asegúrate de que el sonido se esté reproduciendo
+					# Asegúrate de que el sonido se esté reproduciendo
 					if text_blip_sound and not text_blip_sound.is_playing():
 						text_blip_sound.play_sound()
+						
 		else:
 			animate_text = false
 			if text_blip_sound:
 				text_blip_sound.stop_sound()
 			text_animation_done.emit()
-			triangle_next.show()
-			triangle_particles.show()
+			if pending_wait_seconds > 0.0:
+				# Comando "wait" explícito: tiene prioridad sobre el botón AUTO
+				auto_advance_timer.start(pending_wait_seconds)
+				pending_wait_seconds = 0.0
+			elif auto_advance_enabled:
+				# Botón AUTO activo: avance automático con delay por defecto
+				auto_advance_timer.start(AUTO_ADVANCE_DEFAULT_DELAY)
+			else:
+				triangle_next.show()
+				triangle_particles.show()
 
 # CORRECCIÓN 1: Cambia la firma para que reciba el nombre como String
 func change_line(speaker_key: String, text: String, character_details: Dictionary, expression: String = ""):
@@ -125,6 +221,10 @@ func change_line(speaker_key: String, text: String, character_details: Dictionar
 		# Usa el color definido en Character.gd para el texto del diálogo.
 		var narrator_text_color = character_details.get("color", Color.GRAY) # Gris como color de respaldo
 		dialog_line.add_theme_color_override("default_color", narrator_text_color)
+		
+		if text_blip_sound:
+			text_blip_sound.start_dialogue_sound(character_details, expression)
+	
 	else:
 		# Lógica existente para otros personajes
 		if not character_details.is_empty():
@@ -171,14 +271,54 @@ func display_choices(choices: Array):
 	choice_list.show()
 
 func skip_text_animation():
+	pending_wait_seconds = 0.0
 	dialog_line.visible_ratio = 1
 	if text_blip_sound:
 		text_blip_sound.stop_sound()
-	triangle_next.show()
-	triangle_particles.show()
+	# Si AUTO está activo, iniciar timer en vez de mostrar triángulo
+	if auto_advance_enabled:
+		auto_advance_timer.start(AUTO_ADVANCE_DEFAULT_DELAY)
+	else:
+		auto_advance_timer.stop()
+		triangle_next.show()
+		triangle_particles.show()
+
+func _on_auto_advance_timeout():
+	if main_scene_ref == null or main_scene_ref.is_dialogue_blocked:
+		return
+	next_sentence_sound_ref.play()
+	dialogue_manager_ref.advance_index()
+	dialogue_manager_ref.process_current_line()
+
+func _on_auto_advance_toggled(toggled_on: bool):
+	auto_advance_enabled = toggled_on
+	_update_auto_advance_button_style()
+	# Si se activa mientras el triángulo está visible, arrancar el timer inmediatamente
+	if toggled_on and not animate_text and auto_advance_timer.is_stopped():
+		if triangle_next.visible:
+			triangle_next.hide()
+			triangle_particles.hide()
+			auto_advance_timer.start(AUTO_ADVANCE_DEFAULT_DELAY)
+
+func _update_auto_advance_button_style() -> void:
+	if not is_instance_valid(auto_advance_button):
+		return
+	auto_advance_button.text = "■  AUTO" if auto_advance_enabled else "▶  AUTO"
 
 func _on_sentence_pause_timeout():
-	# Reanuda la animación y el sonido de diálogo
+	# Reanuda la animación de texto
 	animate_text = true
+	
 	if text_blip_sound:
-		text_blip_sound.play_sound()
+		# Comprobamos si AÚN nos quedan caracteres por mostrar
+		if current_visible_characters < dialog_line.text.length():
+			# Obtenemos el SIGUIENTE caracter que está a punto de mostrarse
+			var next_char = dialog_line.text[current_visible_characters] # No restamos 1
+			
+			# Si el siguiente caracter NO es un "Pauser" Y NO es un "Silencer",
+			# entonces SÍ reanudamos el sonido.
+			if not PAUSE_CHARS.has(next_char) and not SILENT_CHARS.has(next_char):
+				text_blip_sound.play_sound()
+		else:
+			# Estamos al final de la línea, no reanudar el sonido.
+			pass

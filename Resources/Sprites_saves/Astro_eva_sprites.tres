@@ -1,7 +1,7 @@
 [gd_resource type="SpriteFrames" load_steps=6 format=3 uid="uid://c4torjju5jh5s"]
 
 [ext_resource type="Texture2D" uid="uid://bkrcdpolw0m2t" path="res://Assets/Character_Sprites/Astro_eva/idle/eva3.png" id="1_lmitd"]
-[ext_resource type="Texture2D" uid="uid://bqn45t4ehqt7a" path="res://Assets/Character_Sprites/Astro_eva/idle/eva2.png" id="2_beran"]
+[ext_resource type="Texture2D" path="res://Assets/Character_Sprites/Astro_eva/idle/eva2.png" id="2_beran"]
 [ext_resource type="Texture2D" uid="uid://bcjjw0mfmqwm0" path="res://Assets/Character_Sprites/Astro_eva/idle/eva1.png" id="3_lhp51"]
 [ext_resource type="Texture2D" uid="uid://d1dvuj2v50ohr" path="res://Assets/Character_Sprites/Astro_eva/idle/eva4.png" id="4_tg2ev"]
 [ext_resource type="Texture2D" uid="uid://dfnm4bthkx8oq" path="res://Assets/Character_Sprites/Astro_eva/idle/eva5.png" id="5_mkgi1"]

@@ -1,12 +1,56 @@
-[gd_scene load_steps=10 format=3 uid="uid://cy1hi75rpyb3r"]
+[gd_scene load_steps=17 format=3 uid="uid://cy1hi75rpyb3r"]
 
 [ext_resource type="Script" uid="uid://b5haw4d0whol7" path="res://Scripts/Screens/title_screen.gd" id="1_twnyg"]
 [ext_resource type="Texture2D" uid="uid://coqer5tkgvmiv" path="res://Assets/UI_assets/Backgrounds/title_screen_background.png" id="2_6vd4x"]
-[ext_resource type="VideoStream" uid="uid://bw0sp1bipmm0h" path="res://Assets/UI_assets/Backgrounds/loop2.ogv" id="2_12m1t"]
+[ext_resource type="Shader" uid="uid://csrie53spg10x" path="res://Assets/Shaders/animated_starfield.gdshader" id="2_8mikk"]
+[ext_resource type="VideoStream" uid="uid://hpn3251haf1" path="res://Assets/UI_assets/video_menu/aaa.ogv" id="3_6vd4x"]
 [ext_resource type="Theme" uid="uid://c432lv6xlywor" path="res://Resources/Text_format/Main_title_screen.tres" id="3_55kwv"]
 [ext_resource type="Theme" uid="uid://c7kebt85foo2f" path="res://Resources/Text_format/opton_choice_button.tres" id="4_6vd4x"]
 [ext_resource type="FontFile" uid="uid://8pjpsu5kgwu3" path="res://Resources/Fonts/New Space.ttf" id="4_55kwv"]
+[ext_resource type="Shader" uid="uid://cxxoxumhfictr" path="res://Assets/Shaders/planet_sprite_atmosphere.gdshader" id="4_w5sh6"]
+[ext_resource type="Texture2D" uid="uid://c4tryfus1ti40" path="res://Assets/UI_assets/Backgrounds/planet.png" id="5_o1e67"]
 [ext_resource type="FontFile" uid="uid://bj4eqo05reeqq" path="res://Resources/Fonts/SPACE.ttf" id="6_12m1t"]
+[ext_resource type="Theme" uid="uid://d1rxy503oma0" path="res://Resources/Text_format/ContentTextUI.tres" id="7_n82rj"]
+[ext_resource type="Theme" uid="uid://dxi6d2u41kgxb" path="res://Resources/Text_format/TitleTextUI.tres" id="8_0061g"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_sqelc"]
+shader = ExtResource("2_8mikk")
+shader_parameter/background_color = Color(0.0196078, 0.0392157, 0.0509804, 1)
+shader_parameter/nebula_color1 = Color(0.2, 0.05, 0.3, 1)
+shader_parameter/nebula_color2 = Color(0, 0.3, 0.4, 1)
+shader_parameter/nebula_density = 0.5
+shader_parameter/nebula_speed = 0.02
+shader_parameter/aspect_ratio = 1.778
+shader_parameter/star_density = 1.7931
+shader_parameter/layer_parascale = 4
+shader_parameter/star_speed = Vector2(0.01, 0)
+shader_parameter/star_size = 3.0
+shader_parameter/twinkle_effect = 0.0
+shader_parameter/twinkle_speed = 0.0
+shader_parameter/static_mode = true
+shader_parameter/black_hole_enabled = true
+shader_parameter/bh_center = Vector2(0.75, 0.3)
+shader_parameter/bh_radius = 0.045
+shader_parameter/lensing_strength = 0.355
+shader_parameter/accretion_disk_color = Color(0.00784314, 0.0352941, 0.0705882, 1)
+shader_parameter/disk_width = 0.039
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ycay6"]
+shader = ExtResource("4_w5sh6")
+shader_parameter/atmosphere_color = Color(0.3, 0.6, 1, 1)
+shader_parameter/atmo_intensity = 0.973
+shader_parameter/planet_radius = 0.379
+shader_parameter/atmo_thickness = 0.075
+shader_parameter/light_direction = Vector2(-1, -1)
+shader_parameter/shadow_intensity = 0.452
+shader_parameter/rotation_speed = 0.00500005
+shader_parameter/static_mode = true
+shader_parameter/cloud_color = Color(0.9, 0.9, 1, 1)
+shader_parameter/cloud_alpha = 1.0
+shader_parameter/cloud_thickness = 0.023
+shader_parameter/cloud_speed_1 = 0.023
+shader_parameter/cloud_speed_2 = -0.00199998
+shader_parameter/cloud_scale = 4.863
 
 [sub_resource type="Theme" id="Theme_12m1t"]
 RichTextLabel/font_sizes/normal_font_size = 43
@@ -21,13 +65,25 @@ script = ExtResource("1_twnyg")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="ColorRect" type="TextureRect" parent="CanvasLayer"]
+[node name="StarfieldBackground" type="TextureRect" parent="CanvasLayer"]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_sqelc")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 texture = ExtResource("2_6vd4x")
+
+[node name="PlanetTexture" type="TextureRect" parent="CanvasLayer"]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_ycay6")
+offset_left = -1677.0
+offset_top = -1650.0
+offset_right = 823.0
+offset_bottom = 850.0
+texture = ExtResource("5_o1e67")
 
 [node name="VideoStreamPlayer" type="VideoStreamPlayer" parent="CanvasLayer"]
 unique_name_in_owner = true
@@ -38,7 +94,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_vertical = 3
-stream = ExtResource("2_12m1t")
+stream = ExtResource("3_6vd4x")
 volume_db = -80.0
 autoplay = true
 loop = true
@@ -54,157 +110,6 @@ grow_vertical = 2
 stretch_mode = 6
 
 [node name="CanvasMenu" type="CanvasLayer" parent="."]
-
-[node name="OptionsPanel" type="Control" parent="CanvasMenu"]
-unique_name_in_owner = true
-visible = false
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-
-[node name="ColorRect" type="ColorRect" parent="CanvasMenu/OptionsPanel"]
-custom_minimum_size = Vector2(0, 300)
-layout_mode = 1
-anchors_preset = 14
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.113725, 0.113725, 0.113725, 0.588235)
-
-[node name="CenterContainer" type="CenterContainer" parent="CanvasMenu/OptionsPanel"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -82.0
-offset_top = -11.5
-offset_right = 82.0
-offset_bottom = 11.5
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer"]
-layout_mode = 2
-
-[node name="VBoxContainerLeft" type="VBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer"]
-layout_mode = 2
-
-[node name="VideoLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerLeft"]
-layout_mode = 2
-text = "Imágen"
-horizontal_alignment = 1
-
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerLeft"]
-layout_mode = 2
-
-[node name="ResolutionLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerLeft/VBoxContainer"]
-layout_mode = 2
-text = "Resolución"
-
-[node name="ResolutionOptionButton" type="OptionButton" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerLeft/VBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="FullscreenHContainer" type="HBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerLeft"]
-layout_mode = 2
-
-[node name="FullscreenCheckButton" type="CheckButton" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerLeft/FullscreenHContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="FullscreenLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerLeft/FullscreenHContainer"]
-layout_mode = 2
-text = "Pantalla completa"
-
-[node name="VBoxContainerRight" type="VBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer"]
-custom_minimum_size = Vector2(400, 0)
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="SoundsLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerRight"]
-layout_mode = 2
-text = "Sonidos"
-horizontal_alignment = 1
-
-[node name="BGM_HBoxContainer" type="HBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerRight"]
-layout_mode = 2
-theme_override_constants/separation = 10
-alignment = 1
-
-[node name="MusicNameLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerRight/BGM_HBoxContainer"]
-layout_mode = 2
-text = "Música (BGM)"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="BGMSlider" type="HSlider" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerRight/BGM_HBoxContainer"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
-min_value = -45.0
-max_value = 0.0
-
-[node name="BGMValueLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerRight/BGM_HBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "100%"
-
-[node name="Voices_HBoxContainer" type="HBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerRight"]
-layout_mode = 2
-theme_override_constants/separation = 10
-alignment = 1
-
-[node name="VoicesNameLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerRight/Voices_HBoxContainer"]
-layout_mode = 2
-text = "Voces"
-
-[node name="VoicesSlider" type="HSlider" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerRight/Voices_HBoxContainer"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
-min_value = -45.0
-max_value = 0.0
-
-[node name="VoicesValueLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerRight/Voices_HBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "100%"
-
-[node name="SFX_HBoxContainer2" type="HBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerRight"]
-layout_mode = 2
-theme_override_constants/separation = 10
-alignment = 1
-
-[node name="SFXNameLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerRight/SFX_HBoxContainer2"]
-layout_mode = 2
-text = "Efectos"
-
-[node name="SFXSlider" type="HSlider" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerRight/SFX_HBoxContainer2"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
-min_value = -45.0
-max_value = 0.0
-
-[node name="SFXValueLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerRight/SFX_HBoxContainer2"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "100%"
-
-[node name="OptionsBackButton" type="Button" parent="CanvasMenu/OptionsPanel/CenterContainer/HBoxContainer/VBoxContainerRight"]
-unique_name_in_owner = true
-layout_mode = 2
-theme = ExtResource("4_6vd4x")
-text = "Volver"
 
 [node name="MainMenu" type="Control" parent="CanvasMenu"]
 unique_name_in_owner = true
@@ -286,6 +191,195 @@ layout_mode = 2
 theme = ExtResource("4_6vd4x")
 text = "Salir"
 
+[node name="OptionsPanel" type="Control" parent="CanvasMenu"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="ColorRect" type="ColorRect" parent="CanvasMenu/OptionsPanel"]
+custom_minimum_size = Vector2(0, 300)
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.113725, 0.113725, 0.113725, 0.905882)
+
+[node name="CenterContainer" type="CenterContainer" parent="CanvasMenu/OptionsPanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -82.0
+offset_top = -11.5
+offset_right = 82.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("7_n82rj")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="TitleOptionsLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("8_0061g")
+text = "Opciones"
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="VBoxContainerScreen" type="VBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="VideoLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerScreen"]
+layout_mode = 2
+text = "Imágen"
+horizontal_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerScreen"]
+layout_mode = 2
+
+[node name="ResolutionLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerScreen/VBoxContainer"]
+layout_mode = 2
+text = "Resolución"
+
+[node name="ResolutionOptionButton" type="OptionButton" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerScreen/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="FullscreenHContainer" type="HBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerScreen"]
+layout_mode = 2
+
+[node name="FullscreenCheckButton" type="CheckButton" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerScreen/FullscreenHContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="FullscreenLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerScreen/FullscreenHContainer"]
+layout_mode = 2
+text = "Pantalla completa"
+
+[node name="VSeparator" type="VSeparator" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="VBoxContainerSounds" type="VBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="SoundsLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerSounds"]
+layout_mode = 2
+text = "Sonidos"
+horizontal_alignment = 1
+
+[node name="BGM_HBoxContainer" type="HBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerSounds"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="MusicNameLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerSounds/BGM_HBoxContainer"]
+layout_mode = 2
+text = "Música (BGM)"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BGMSlider" type="HSlider" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerSounds/BGM_HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+min_value = -45.0
+max_value = 0.0
+
+[node name="BGMValueLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerSounds/BGM_HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "100%"
+
+[node name="Voices_HBoxContainer" type="HBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerSounds"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="VoicesNameLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerSounds/Voices_HBoxContainer"]
+layout_mode = 2
+text = "Voces"
+
+[node name="VoicesSlider" type="HSlider" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerSounds/Voices_HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+min_value = -45.0
+max_value = 0.0
+
+[node name="VoicesValueLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerSounds/Voices_HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "100%"
+
+[node name="SFX_HBoxContainer2" type="HBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerSounds"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="SFXNameLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerSounds/SFX_HBoxContainer2"]
+layout_mode = 2
+text = "Efectos"
+
+[node name="SFXSlider" type="HSlider" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerSounds/SFX_HBoxContainer2"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+min_value = -45.0
+max_value = 0.0
+
+[node name="SFXValueLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerSounds/SFX_HBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "100%"
+
+[node name="VSeparator2" type="VSeparator" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="VBoxContainerCursors" type="VBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="CursorsLabel" type="Label" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerCursors"]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+text = "Estilo de Cursor"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerCursors"]
+custom_minimum_size = Vector2(0, 70)
+layout_mode = 2
+
+[node name="CursorSelectorContainer" type="HBoxContainer" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer/HBoxContainer/VBoxContainerCursors/ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="OptionsBackButton" type="Button" parent="CanvasMenu/OptionsPanel/CenterContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("4_6vd4x")
+text = "Volver"
+
 [node name="Label" type="Label" parent="CanvasMenu"]
 custom_minimum_size = Vector2(420, 40)
 anchors_preset = 3
@@ -299,4 +393,4 @@ grow_horizontal = 0
 grow_vertical = 0
 size_flags_vertical = 8
 theme = SubResource("Theme_6vd4x")
-text = "Ver 0.0.7 - Fedeia.Dev ©"
+text = "Ver 0.0.9 - Fedeia.Dev ©"

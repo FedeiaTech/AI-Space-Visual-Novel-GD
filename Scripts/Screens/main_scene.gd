@@ -33,6 +33,7 @@ extends Node2D
 @onready var input_manager: Node = %InputManager
 @onready var character_stage_manager: Node = %CharacterStageManager
 @onready var camera_shaker: Node = %CameraShaker
+@onready var quest_log_ui_manager: Node = %QuestLogUIManager
 
 # UI Iconos
 @onready var journal_icon_button: TextureButton = %JournalIconButton
@@ -48,9 +49,10 @@ extends Node2D
 @onready var protect_control: Control = %ProtectControl
 @onready var look_button: Button = %LookButton
 @onready var return_button: Button = %ReturnButton
+@onready var auto_advance_button: Button = %AutoAdvanceButton
 
 # CG
-@onready var cg_viewer: TextureRect = %CGSprite
+@onready var cg_viewer: PanelContainer = %CGViewerWindow
 
 # === Precarga de escenas ===
 const PauseMenuScene = preload("res://Scenes/pause_menu.tscn")
@@ -96,9 +98,11 @@ func _ready() -> void:
 	input_manager.journal_toggled.connect(_on_journal_toggled)
 	input_manager.next_line_pressed.connect(_on_next_line_pressed)
 	input_manager.pause_pressed.connect(_on_pause_pressed)
+	input_manager.quest_log_toggled.connect(_on_quest_log_toggled)
 
 	# Inyección de dependencias
 	dialog_ui.set_dialog_dependencies(dialogue_manager, next_sentence_sound, self)
+	dialog_ui.set_auto_advance_button(auto_advance_button)
 	var character_nodes_dict = {
 		"left": character_sprite_1,
 		"center": character_sprite_2,
@@ -113,6 +117,7 @@ func _ready() -> void:
 	
 	camera_shaker.set_main_scene_reference(self)
 	command_processor.set_camera_shaker(camera_shaker)
+	command_processor.set_cg_viewer(cg_viewer)
 	
 	# Estado inicial de la UI
 	explorer_mode_icon.hide()
@@ -133,6 +138,7 @@ func _ready() -> void:
 	set_process(false) 
 	is_transitioning = true
 	look_button.hide()
+	auto_advance_button.hide()
 	SceneManager.transition_in(transition_effect)
 	
 # -------------------------------------------------------------------
@@ -147,6 +153,13 @@ func _on_inventory_toggled():
 
 	# Si no, simplemente llama al toggle.
 	inventory_ui_manager.toggle_inventory()
+
+# Se activa cuando se presiona la tecla del registro de misiones.
+func _on_quest_log_toggled():
+	if journal_ui.visible: return
+	if inventory_ui_manager.current_inventory_ui != null: return
+
+	quest_log_ui_manager.toggle_quest_log()
 
 # Se activa cuando se presiona la tecla del diario.
 func _on_journal_toggled():
@@ -166,8 +179,16 @@ func _on_next_line_pressed():
 	if journal_ui.visible: return
 	if inventory_ui_manager.current_inventory_ui != null: return
 
-	# 1. Si el CG está visible, avanza el diálogo directamente.
+	# 1. BLOQUEO: Si el video se está reproduciendo activamente, NO hacer nada.
+	if cg_viewer.is_video_playing:
+		return
+
+	# 2. AVANCE DE VIDEO/CG: Si el video terminó (pausado) y el visor sigue visible.
 	if cg_viewer.is_visible():
+		# Si el CGViewer está visible Y está marcado como full_screen, lo cerramos.
+		if cg_viewer.is_full_screen:
+			cg_viewer.reset_and_hide()
+		#Ejecutamos la lógica de avanzar índice y mostrar UI.
 		_on_cg_viewer_cg_clicked()
 		return
 
@@ -180,6 +201,12 @@ func _on_next_line_pressed():
 	var has_choices = current_line.has("choices")
 	
 	if not has_choices:
+		# --- CORRECCIÓN 2: AUTO-CIERRE ---
+		# Si teníamos un video mostrándose (que ya está pausado porque pasó el bloqueo de arriba),
+		# y estamos avanzando el texto, debemos cerrar el video.
+		if cg_viewer.is_visible() and cg_viewer.video_player_node.visible:
+			cg_viewer.reset_and_hide() # Llamamos a la función pública
+			
 		dialog_ui.skip_text_animation()
 		next_sentence_sound.play()
 		dialogue_manager.advance_index()
@@ -330,6 +357,7 @@ func _on_transition_in_completed():
 	dialogue_manager.process_current_line()
 	is_transitioning = false
 	look_button.show()
+	auto_advance_button.show()
 
 
 # -------------------------------------------------------------------
@@ -380,6 +408,7 @@ func _on_cg_visibility_changed(show_main_canvas: bool):
 func _on_look_button_pressed() -> void:
 	protect_control.show()
 	look_button.hide()
+	auto_advance_button.hide()
 	return_button.show()
 	canvas_main.hide()
 	is_dialog_input_blocked = true
@@ -388,6 +417,7 @@ func _on_look_button_pressed() -> void:
 func _on_return_button_pressed() -> void:
 	protect_control.show()
 	look_button.show()
+	auto_advance_button.show()
 	return_button.hide()
 	canvas_main.show()
 	is_dialog_input_blocked = false

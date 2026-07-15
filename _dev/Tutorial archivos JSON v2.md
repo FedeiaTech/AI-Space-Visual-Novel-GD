@@ -344,4 +344,45 @@
 > **Ambiente y Visuales:** [`location`](#comando-location) · [`music`](#comando-music) · [`object`](#comando-object) · [`show_cg`](#comando-show_cg) · [`hide_cg`](#comando-hide_cg)  
 > **Lógica e Inventario:** [`item_given`](#comando-item_given) · [`set_flag`](#comando-set_flag)  
 > **Elecciones:** [`choices`](#comando-choices)  
-> **Tiempo:** [`set_time_absolute`](#comando-set_time_absolute) · [`modify_time`](#comando-modify_time) · [`show_time_ui`](#comando-show_time_ui)
+> **Tiempo:** [`set_time_absolute`](#comando-set_time_absolute) · [`modify_time`](#comando-modify_time) · [`show_time_ui`](#comando-show_time_ui)  
+> **Cinemática:** [`wait`](#comando-wait) · [`sfx`](#comando-sfx)
+
+---
+
+## 7. Comandos de **Cinemática** <a id="seccion-cinematica"></a>
+
+---
+
+### [`wait`](#glosario-wait) <a id="comando-wait"></a>
+**Propósito:** Avanza el diálogo automáticamente después de X segundos sin click del jugador. Ideal para secuencias cinemáticas.  
+**Sintaxis:**
+```json
+"wait": segundos
+```
+**Ejemplo:**
+```json
+{ "text": "El sistema falla...", "wait": 2.5 }
+{ "text": "...", "wait": 1.0 }
+```
+**Notas:**
+- El jugador puede hacer clic para cancelar la espera y avanzar manualmente.
+- El triángulo de "siguiente" no aparece durante la cuenta regresiva.
+- Si el jugador clica para saltar la animación de texto, el auto-avance se cancela.
+
+---
+
+### [`sfx`](#glosario-sfx) <a id="comando-sfx"></a>
+**Propósito:** Reproduce un efecto de sonido puntual sin interrumpir la música de fondo.  
+**Sintaxis:**
+```json
+"sfx": "nombre_del_archivo"
+```
+**Ejemplo:**
+```json
+{ "speaker": "Astro", "text": "¡Cuidado!", "sfx": "alarm_beep" }
+{ "text": "La puerta se cierra con un golpe seco.", "sfx": "door_slam" }
+```
+**Notas:**
+- El archivo debe estar en `Assets/Sounds/FX/` con extensión `.mp3`.
+- Se puede combinar con cualquier otro comando en la misma línea.
+- El nodo de audio se crea y destruye automáticamente al terminar.
